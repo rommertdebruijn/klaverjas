@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/main.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/app.js"></script>
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div id="main-content" class="container">
+   <div id="connections">
+        <div class="row">
+            <div class="col-md-6">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label for="connect">WebSocket connection:</label>
+                        <button id="connect" class="btn btn-default" type="submit">Connect</button>
+                        <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="lobby">
+        <div class="row">
+            <div id="start" class="col-md-6">
+                <form class="form-inline">
+                    <button id="startGame" class="btn btn-default" type="submit">Start game!</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <table id="players" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Players</th>
+                    </tr>
+                    </thead>
+                    <tbody id="playersInfo">
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <table id="general" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>General</th>
+                    </tr>
+                    </thead>
+                    <tbody id="generalInfo">
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <form class="form-inline">
+                    <table id="games" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Games</th>
+                        </tr>
+                        </thead>
+                        <tbody id="gamesInfo">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="table">
+        <div class="row">
+            <div class="col-md-3"><div>[SCORE]</div></div>
+            <div class="partner col-md-6">
+                <div id="player-north" class="player-name">[waiting for player]</div>
+                <div id="cards-north"></div>
+            </div>
+            <div class="col-md-3">
+                <div>[ROEM]</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="opponent col-md-3">
+                <div id="player-west" class="player-name">[waiting for player]</div>
+                <div id="cards-west"></div>
+            </div>
+            <div id="cards-table" class="col-md-6">
+                <div class="cards-table">
+                    [tafel]
+                </div>
+            </div>
+            <div class="opponent col-md-3">
+                <div id="player-east" class="player-name">[waiting for player]</div>
+                <div id="cards-east"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">[spacer]</div>
+            <div class="player col-md-6">
+                <div id="player-south" class="player-name">[waiting for player]</div>
+                <div id="cards-south">[hand]</div>
+            </div>
+            <div id="leave" class="col-md-3">
+                <form class="form-inline">
+                    <button id="leaveGame" class="btn btn-default" type="submit">Leave game</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
