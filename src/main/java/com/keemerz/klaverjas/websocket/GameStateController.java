@@ -34,6 +34,7 @@ public class GameStateController {
 
         GameState gameState = GameState.createNewGame();
         gameState.fillSeat(sendingPlayer);
+        gameState.dealHands();
         gameStateRepository.updateGameState(gameState);
 
         updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);

@@ -160,6 +160,10 @@ function renderCard(card) {
 
 function showGameState(state) {
     $("#player-south").text(state.players['SOUTH']);
+    $("#player-west").text(state.players['WEST']);
+    $("#player-north").text(state.players['NORTH']);
+    $("#player-east").text(state.players['EAST']);
+
 
     if (state.hand.length > 0) {
         $("#cards-south").empty();
