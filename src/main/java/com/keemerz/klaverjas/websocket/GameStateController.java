@@ -19,7 +19,6 @@ import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 public class GameStateController {
@@ -81,7 +80,7 @@ public class GameStateController {
         for (String playerId : gameState.determinePlayerIds()) {
             String userId = PlayerRepository.getInstance().getPlayerByPlayerId(playerId).getUserId();
 
-            PlayerGameState playerGameState = GameStateToPlayerGameStateConverter.toPlayerGameState(playerId, gameState);
+            PlayerGameState playerGameState = GameStateToPlayerGameStateConverter.toPlayerGameStateForPlayer(playerId, gameState);
             webSocket.convertAndSendToUser(userId, "/topic/game", playerGameState);
         }
         if (!gameState.determinePlayerIds().contains(sendingPlayerId)) {

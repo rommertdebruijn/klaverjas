@@ -122,4 +122,11 @@ public class GameState {
         return Collections.unmodifiableList(playerIds);
     }
 
+    public Seat getAbsoluteSeatForPlayer(String playerId) {
+        return getPlayers().entrySet().stream().
+                filter(entry -> entry.getValue().getPlayerId().equals(playerId))
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }
