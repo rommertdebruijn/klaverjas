@@ -1,16 +1,14 @@
 package com.keemerz.klaverjas.websocket;
 
 import com.keemerz.klaverjas.converter.GameStateToPlayerGameStateConverter;
-import com.keemerz.klaverjas.domain.ActiveGame;
-import com.keemerz.klaverjas.domain.GameState;
-import com.keemerz.klaverjas.domain.Player;
-import com.keemerz.klaverjas.domain.PlayerGameState;
+import com.keemerz.klaverjas.domain.*;
 import com.keemerz.klaverjas.repository.ActiveGamesRepository;
 import com.keemerz.klaverjas.repository.GameStateRepository;
 import com.keemerz.klaverjas.repository.PlayerRepository;
 import com.keemerz.klaverjas.websocket.inbound.GameJoinMessage;
 import com.keemerz.klaverjas.websocket.inbound.GameLeaveMessage;
 import com.keemerz.klaverjas.websocket.inbound.GameStartMessage;
+import com.keemerz.klaverjas.websocket.inbound.PlayCardMessage;
 import com.keemerz.klaverjas.websocket.outbound.ActiveGamesMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -74,6 +72,29 @@ public class GameStateController {
 
             List<ActiveGame> activeGames = ActiveGamesRepository.getInstance().getActiveGames();
             webSocket.convertAndSend("/topic/lobby", new ActiveGamesMessage(activeGames));
+        }
+    }
+
+    @MessageMapping("/game/playcard")
+    public void playCard(PlayCardMessage message, Principal principal) {
+        Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
+
+        // TODO only 1 card per turn for this player :)
+        // TODO render currentTrick
+        GameState gameState = gameStateRepository.getGameState(message.getGameId());
+        if (gameState.determinePlayerIds().contains(sendingPlayer.getPlayerId())) {
+            Seat seat = gameState.getAbsoluteSeatForPlayer(sendingPlayer.getPlayerId());
+            List<Card> cards = gameState.getHands().get(seat);
+            cards.stream()
+                    .filter(card -> card.getCardId().equals(message.getCardId()))
+                    .findFirst()
+                    .ifPresent(card -> {
+                        gameState.playCard(seat, message.getCardId());
+                        gameStateRepository.updateGameState(gameState);
+
+                        updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
+                    });
+
         }
     }
 

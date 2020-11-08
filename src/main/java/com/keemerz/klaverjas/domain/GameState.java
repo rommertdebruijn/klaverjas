@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.keemerz.klaverjas.domain.Seat.NORTH;
 import static com.keemerz.klaverjas.domain.Seat.SOUTH;
 
 public class GameState {
@@ -14,7 +15,7 @@ public class GameState {
     private Seat dealer;
     private List<Trick> previousTricks = new ArrayList<>();
     private Suit trump = Suit.CLUBS;
-    private Seat turn = SOUTH;
+    private Seat turn = NORTH;
     private Trick currentTrick = new Trick(trump, turn, new HashMap<>());
 
     public GameState(String gameId) {
@@ -128,5 +129,15 @@ public class GameState {
                 .findFirst()
                 .map(Map.Entry::getKey)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public void playCard(Seat seat, String cardId) {
+        Card card = getHands().get(seat).stream()
+                .filter(c -> c.getCardId().equals(cardId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+        getHands().get(seat).remove(card);
+        currentTrick.getCardsPlayed().put(seat, card);
+        turn = turn.getLeftHandPlayer(); // todo if trick ends, determine winner
     }
 }

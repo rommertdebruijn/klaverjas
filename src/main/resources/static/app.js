@@ -99,7 +99,7 @@ function showGoodbyeMessage(message) {
 function updateActiveGames(activeGames) {
     $("#gamesInfo").empty();
     for (var j=0;j<activeGames.length;j++) {
-        showGameActive(activeGames[j]);
+        showActiveGame(activeGames[j]);
     }
 }
 
@@ -110,7 +110,7 @@ function updateLoggedInPlayers(loggedInPlayers) {
     }
 }
 
-function showGameActive(activeGame) {
+function showActiveGame(activeGame) {
     var playerString = "";
     for (var i=0;i<activeGame.playerNames.length;i++) {
         playerString = playerString + activeGame.playerNames[i] + " "
@@ -146,16 +146,27 @@ function getSuitCharacter(suit) {
     }
 }
 
+function playCard(gameId, cardId) {
+    stompQueueClient.send("/app/game/playcard", {}, JSON.stringify({ 'gameId' : gameId, 'cardId' : cardId }));
+}
+
 function renderCard(card) {
-    return "" +
-        "<div class=\"card-in-hand " + card.suit + "\">" +
-            "<div class=\"suit\">" +
-                getSuitCharacter(card.suit) +
-            "</div>" +
-            "<div class=\"rank\">" +
-               card.rank +
-            "</div>"
+    var cardId = card.cardId;
+    var cardHtml = "" +
+        "<div id=\"card-" + cardId + "\" class=\"card-in-hand " + card.suit + "\">" +
+        "<div class=\"suit\">" +
+        getSuitCharacter(card.suit) +
+        "</div>" +
+        "<div class=\"rank\">" +
+        card.rank +
+        "</div>" +
         "</div>";
+    $("#cards-south").append(cardHtml);
+    if (cardId) {
+        $("#card-" + cardId).click(function() {
+            playCard(gameState.gameId, cardId);
+        });
+    }
 }
 
 function showGameState(state) {
@@ -168,7 +179,7 @@ function showGameState(state) {
     if (state.hand.length > 0) {
         $("#cards-south").empty();
         for (var i=0;i<state.hand.length;i++) {
-            $("#cards-south").append(renderCard(state.hand[i]));
+            renderCard(state.hand[i]);
         }
     }
 }
