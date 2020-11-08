@@ -150,23 +150,47 @@ function playCard(gameId, cardId) {
     stompQueueClient.send("/app/game/playcard", {}, JSON.stringify({ 'gameId' : gameId, 'cardId' : cardId }));
 }
 
-function renderCard(card) {
+function renderCardInHand(card) {
     var cardId = card.cardId;
     var cardHtml = "" +
         "<div id=\"card-" + cardId + "\" class=\"card-in-hand " + card.suit + "\">" +
-        "<div class=\"suit\">" +
-        getSuitCharacter(card.suit) +
-        "</div>" +
-        "<div class=\"rank\">" +
-        card.rank +
-        "</div>" +
+        "  <div class=\"suit\">" +
+            getSuitCharacter(card.suit) +
+        "  </div>" +
+        "  <div class=\"rank\">" +
+            card.rank +
+        "  </div>" +
         "</div>";
     $("#cards-south").append(cardHtml);
+
     if (cardId) {
         $("#card-" + cardId).click(function() {
             playCard(gameState.gameId, cardId);
         });
     }
+}
+
+function renderCardOnTable(card, containerId) {
+    $(containerId).empty();
+    if (card) {
+        var cardHtml ="" +
+            "<div class=\"card-on-table " + card.suit + "\">" +
+            "  <div class=\"suit\">" +
+            getSuitCharacter(card.suit) +
+            "  </div>" +
+            "  <div class=\"rank\">" +
+            card.rank +
+            "  </div>" +
+            "</div>";
+        $(containerId).append(cardHtml);
+    }
+}
+
+function renderCurrentTrick(gameState) {
+    renderCardOnTable(gameState.currentTrick.cardsPlayed['NORTH'], "#trickCardNorth");
+    renderCardOnTable(gameState.currentTrick.cardsPlayed['EAST'], "#trickCardEast");
+    renderCardOnTable(gameState.currentTrick.cardsPlayed['SOUTH'], "#trickCardSouth");
+    renderCardOnTable(gameState.currentTrick.cardsPlayed['WEST'], "#trickCardWest");
 }
 
 function showGameState(state) {
@@ -175,11 +199,12 @@ function showGameState(state) {
     $("#player-north").text(state.players['NORTH']);
     $("#player-east").text(state.players['EAST']);
 
+    renderCurrentTrick(state);
 
     if (state.hand.length > 0) {
         $("#cards-south").empty();
         for (var i=0;i<state.hand.length;i++) {
-            renderCard(state.hand[i]);
+            renderCardInHand(state.hand[i]);
         }
     }
 }

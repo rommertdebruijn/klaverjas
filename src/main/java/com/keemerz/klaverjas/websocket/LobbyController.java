@@ -34,7 +34,9 @@ public class LobbyController {
 	public LobbyMessage helloMessage(HelloMessage message, Principal principal) {
 		String userId = principal.getName(); // from Spring security
 		Player player = playerRepository.getPlayerByUserId(userId);
-		playersInLobby.add(player);
+		if (!playersInLobby.contains(player)) {
+			playersInLobby.add(player);
+		}
 
 		List<ActiveGame> activeGames = activeGamesRepository.getActiveGames();
 		return new PlayerJoinsLobbyMessage(HtmlUtils.htmlEscape(player.getName()) + " has joined the lobby.", getPlayerNames(), activeGames);

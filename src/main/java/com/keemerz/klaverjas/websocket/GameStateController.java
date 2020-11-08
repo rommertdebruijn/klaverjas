@@ -51,12 +51,11 @@ public class GameStateController {
 
             gameState.fillSeat(sendingPlayer);
             gameStateRepository.updateGameState(gameState);
-
-            updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
-
-            List<ActiveGame> activeGames = ActiveGamesRepository.getInstance().getActiveGames();
-            webSocket.convertAndSend("/topic/lobby", new ActiveGamesMessage(activeGames));
         }
+        updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
+
+        List<ActiveGame> activeGames = ActiveGamesRepository.getInstance().getActiveGames();
+        webSocket.convertAndSend("/topic/lobby", new ActiveGamesMessage(activeGames));
     }
 
     @MessageMapping("/game/leave")
