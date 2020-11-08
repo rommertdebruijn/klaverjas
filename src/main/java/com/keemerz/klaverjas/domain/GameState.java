@@ -2,6 +2,7 @@ package com.keemerz.klaverjas.domain;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.keemerz.klaverjas.domain.Seat.SOUTH;
 
@@ -10,6 +11,7 @@ public class GameState {
     private String gameId;
     private Map<Seat, List<Card>> hands = new HashMap<>();
     private Map<Seat, Player> players = new HashMap<>();
+    private Seat dealer;
     private List<Trick> previousTricks = new ArrayList<>();
     private Suit trump = Suit.CLUBS;
     private Seat turn = SOUTH;
@@ -17,6 +19,10 @@ public class GameState {
 
     public GameState(String gameId) {
         this.gameId = gameId;
+    }
+
+    public static GameState createNewGame() {
+        return new GameState(UUID.randomUUID().toString());
     }
 
     public String getGameId() {
@@ -37,6 +43,14 @@ public class GameState {
 
     public void setPlayers(Map<Seat, Player> players) {
         this.players = players;
+    }
+
+    public Seat getDealer() {
+        return dealer;
+    }
+
+    public void setDealer(Seat dealer) {
+        this.dealer = dealer;
     }
 
     public List<Trick> getPreviousTricks() {
@@ -69,6 +83,21 @@ public class GameState {
 
     public void setCurrentTrick(Trick currentTrick) {
         this.currentTrick = currentTrick;
+    }
+
+    public void dealHands() {
+        ShuffledDeck deck = new ShuffledDeck();
+        List<Card> cards = deck.getCards();
+
+        // OK, it's not 3-2-3, but hey
+        for (int card = 0; card< cards.size();) {
+            for (Seat seat : Seat.values()) {
+                List<Card> hand = hands.getOrDefault(seat, new ArrayList<>());
+                hand.add(cards.get(card));
+                hands.put(seat, hand);
+                card++;
+            }
+        }
     }
 
     public void fillSeat(Player player) {

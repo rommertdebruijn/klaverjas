@@ -33,7 +33,7 @@ public class GameStateController {
     public void startGame(GameStartMessage message, Principal principal) {
         Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
 
-        GameState gameState = new GameState("GAME-" + UUID.randomUUID().toString());
+        GameState gameState = GameState.createNewGame();
         gameState.fillSeat(sendingPlayer);
         gameStateRepository.updateGameState(gameState);
 
