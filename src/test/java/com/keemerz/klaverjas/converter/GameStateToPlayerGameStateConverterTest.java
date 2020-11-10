@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.keemerz.klaverjas.domain.Rank.ACE;
-import static com.keemerz.klaverjas.domain.Rank.SEVEN;
+import static com.keemerz.klaverjas.domain.Bid.*;
+import static com.keemerz.klaverjas.domain.Rank.*;
 import static com.keemerz.klaverjas.domain.Seat.*;
 import static com.keemerz.klaverjas.domain.Suit.*;
 import static org.hamcrest.CoreMatchers.is;
@@ -32,6 +32,13 @@ class GameStateToPlayerGameStateConverterTest {
                 .withPlayer(EAST, new TestPlayerBuilder().withPlayerId("playerEastId").withPlayerName("Eddy").build())
                 .withPlayer(SOUTH, new TestPlayerBuilder().withPlayerId("playerSouthId").withPlayerName("Simone").build())
                 .withPlayer(WEST, new TestPlayerBuilder().withPlayerId("playerWestId").withPlayerName("Wendy").build())
+                .withBidding(
+                        new TestBiddingBuilder()
+                            .withProposedTrump(HEARTS)
+                            .withBid(NORTH, PASS)
+                            .withBid(EAST, PASS)
+                            .withBid(SOUTH, PLAY)
+                            .build())
                 .withCurrentTrick( // TODO we can enhance the test builder to automatically remove cards in trick and in previousTricks from the starting hands!
                         new TestTrickBuilder()
                                 .withCardPlayed(NORTH, Card.of(SPADES, ACE))
@@ -46,8 +53,14 @@ class GameStateToPlayerGameStateConverterTest {
     }
 
     @Test
-    public void shouldRotateForNorth() {
+    public void shouldRotateGameForNorth() {
         PlayerGameState output = GameStateToPlayerGameStateConverter.toPlayerGameStateForPlayer("playerNorthId", inputGameState);
+
+        assertThat(output.getBidding().getProposedTrump(), is(HEARTS));
+        assertThat(output.getBidding().getBids().get(NORTH), is(PLAY));
+        assertNull(output.getBidding().getBids().get(EAST));
+        assertThat(output.getBidding().getBids().get(SOUTH), is(PASS));
+        assertThat(output.getBidding().getBids().get(WEST), is(PASS));
 
         assertThat(output.getHand(), is(removeCardPlayed(ALL_SPADES, Card.of(SPADES, ACE))));
 
@@ -70,8 +83,14 @@ class GameStateToPlayerGameStateConverterTest {
     }
 
     @Test
-    public void shouldRotateForEast() {
+    public void shouldRotateGameForEast() {
         PlayerGameState output = GameStateToPlayerGameStateConverter.toPlayerGameStateForPlayer("playerEastId", inputGameState);
+
+        assertThat(output.getBidding().getProposedTrump(), is(HEARTS));
+        assertNull(output.getBidding().getBids().get(NORTH));
+        assertThat(output.getBidding().getBids().get(EAST), is(PASS));
+        assertThat(output.getBidding().getBids().get(SOUTH), is(PASS));
+        assertThat(output.getBidding().getBids().get(WEST), is(PLAY));
 
         assertThat(output.getHand(), is(removeCardPlayed(ALL_HEARTS, Card.of(HEARTS, SEVEN))));
 
@@ -94,8 +113,14 @@ class GameStateToPlayerGameStateConverterTest {
     }
 
     @Test
-    public void shouldRotateForSouth() {
+    public void shouldRotateGameForSouth() {
         PlayerGameState output = GameStateToPlayerGameStateConverter.toPlayerGameStateForPlayer("playerSouthId", inputGameState);
+
+        assertThat(output.getBidding().getProposedTrump(), is(HEARTS));
+        assertThat(output.getBidding().getBids().get(NORTH), is(PASS));
+        assertThat(output.getBidding().getBids().get(EAST), is(PASS));
+        assertThat(output.getBidding().getBids().get(SOUTH), is(PLAY));
+        assertNull(output.getBidding().getBids().get(WEST));
 
         assertThat(output.getHand(), is(ALL_DIAMONDS));
 
@@ -118,8 +143,14 @@ class GameStateToPlayerGameStateConverterTest {
     }
 
     @Test
-    public void shouldRotateForWest() {
+    public void shouldRotateGameForWest() {
         PlayerGameState output = GameStateToPlayerGameStateConverter.toPlayerGameStateForPlayer("playerWestId", inputGameState);
+
+        assertThat(output.getBidding().getProposedTrump(), is(HEARTS));
+        assertThat(output.getBidding().getBids().get(NORTH), is(PASS));
+        assertThat(output.getBidding().getBids().get(EAST), is(PLAY));
+        assertNull(output.getBidding().getBids().get(SOUTH));
+        assertThat(output.getBidding().getBids().get(WEST), is(PASS));
 
         assertThat(output.getHand(), is(ALL_CLUBS));
 

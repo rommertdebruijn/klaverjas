@@ -13,10 +13,12 @@ public class TestGameStateBuilder {
     private List<Trick> previousTricks = new ArrayList<>();
     private Suit trump = Suit.CLUBS;
     private Seat turn = NORTH;
+    private Bidding bidding = new Bidding(trump, new HashMap<>());
     private Trick currentTrick = new Trick(trump, turn, new HashMap<>());
 
     public GameState build() {
         GameState gameState = new GameState(gameId);
+        gameState.setBidding(bidding);
         gameState.setPlayers(players);
         gameState.setHands(hands);
         gameState.setDealer(dealer);
@@ -59,6 +61,11 @@ public class TestGameStateBuilder {
 
     public TestGameStateBuilder withPreviousTricks(List<Trick> previousTricks) {
         this.previousTricks = previousTricks;
+        return this;
+    }
+
+    public TestGameStateBuilder withBidding(Bidding bidding) {
+        this.bidding = bidding;
         return this;
     }
 

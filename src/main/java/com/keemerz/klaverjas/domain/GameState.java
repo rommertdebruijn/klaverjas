@@ -4,17 +4,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.keemerz.klaverjas.domain.Seat.NORTH;
-import static com.keemerz.klaverjas.domain.Seat.SOUTH;
+import static com.keemerz.klaverjas.domain.Seat.*;
+import static com.keemerz.klaverjas.domain.Suit.CLUBS;
 
 public class GameState {
 
     private String gameId;
+    private Bidding bidding;
+    private Suit trump = CLUBS;
     private Map<Seat, List<Card>> hands = new HashMap<>();
     private Map<Seat, Player> players = new HashMap<>();
-    private Seat dealer;
+    private Seat dealer = WEST;
     private List<Trick> previousTricks = new ArrayList<>();
-    private Suit trump = Suit.CLUBS;
     private Seat turn = NORTH;
     private Trick currentTrick = new Trick(trump, turn, new HashMap<>());
 
@@ -28,6 +29,23 @@ public class GameState {
 
     public String getGameId() {
         return gameId;
+    }
+
+    public Bidding getBidding() {
+        return bidding;
+    }
+
+    public GameState setBidding(Bidding bidding) {
+        this.bidding = bidding;
+        return this;
+    }
+
+    public Suit getTrump() {
+        return trump;
+    }
+
+    public void setTrump(Suit trump) {
+        this.trump = trump;
     }
 
     public Map<Seat, List<Card>> getHands() {
@@ -60,14 +78,6 @@ public class GameState {
 
     public void setPreviousTricks(List<Trick> previousTricks) {
         this.previousTricks = previousTricks;
-    }
-
-    public Suit getTrump() {
-        return trump;
-    }
-
-    public void setTrump(Suit trump) {
-        this.trump = trump;
     }
 
     public Seat getTurn() {

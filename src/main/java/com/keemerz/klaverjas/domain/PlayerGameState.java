@@ -8,6 +8,7 @@ public class PlayerGameState {
     private String gameId;
     private boolean playerStillPlaying;
 
+    private Bidding bidding;
     private List<Card> hand;
     private Trick currentTrick;
     private Map<Seat, String> players;
@@ -20,12 +21,13 @@ public class PlayerGameState {
 
     private PlayerGameState(String gameId, boolean playerStillPlaying) {
         this.gameId = gameId;
-        this.playerStillPlaying = playerStillPlaying;
+        this.playerStillPlaying = playerStillPlaying; // ok not too pretty
     }
 
-    public PlayerGameState(String gameId, boolean playerStillPlaying, List<Card> hand, Trick currentTrick, Map<Seat, String> players, Map<Seat, Integer> nrOfCardsInHand, Seat turn) {
+    public PlayerGameState(String gameId, Bidding bidding, boolean playerStillPlaying, List<Card> hand, Trick currentTrick, Map<Seat, String> players, Map<Seat, Integer> nrOfCardsInHand, Seat turn) {
         this.gameId = gameId;
         this.playerStillPlaying = playerStillPlaying;
+        this.bidding = bidding;
         this.hand = hand;
         this.currentTrick = currentTrick;
         this.players = players;
@@ -39,6 +41,10 @@ public class PlayerGameState {
 
     public boolean isPlayerStillPlaying() {
         return playerStillPlaying;
+    }
+
+    public Bidding getBidding() {
+        return bidding;
     }
 
     public List<Card> getHand() {

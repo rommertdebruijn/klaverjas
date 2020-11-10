@@ -18,6 +18,8 @@ import org.springframework.stereotype.Controller;
 import java.security.Principal;
 import java.util.List;
 
+import static com.keemerz.klaverjas.domain.Suit.CLUBS;
+
 @Controller
 public class GameStateController {
 
@@ -32,7 +34,6 @@ public class GameStateController {
 
         GameState gameState = GameState.createNewGame();
         gameState.fillSeat(sendingPlayer);
-        gameState.dealHands();
         gameStateRepository.updateGameState(gameState);
 
         updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
@@ -48,8 +49,11 @@ public class GameStateController {
 
         GameState gameState = gameStateRepository.getGameState(message.getGameId());
         if (!gameState.determinePlayerIds().contains(sendingPlayer.getPlayerId())) {
-
             gameState.fillSeat(sendingPlayer);
+            if (gameState.getPlayers().size() > 1) { // if 4th player joins, deal first hand
+                gameState.dealHands();
+                gameState.setBidding(Bidding.createFirstGameBidding()); // first game always clubs
+            }
             gameStateRepository.updateGameState(gameState);
         }
         updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
@@ -98,6 +102,7 @@ public class GameStateController {
     }
 
     private void updateGameStateForAllPlayers(String sendingPlayerId, GameState gameState) {
+
         for (String playerId : gameState.determinePlayerIds()) {
             String userId = PlayerRepository.getInstance().getPlayerByPlayerId(playerId).getUserId();
 

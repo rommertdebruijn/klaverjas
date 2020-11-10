@@ -13,9 +13,19 @@ public class GameStateToPlayerGameStateConverter {
     public static PlayerGameState toPlayerGameStateForPlayer(String playerId, GameState gameState) {
         Seat currentPlayerSeat = gameState.getAbsoluteSeatForPlayer(playerId);
 
-        Trick rotatedTrick = gameState.getCurrentTrick().rotateForSeat(currentPlayerSeat);
+        Bidding rotatedBidding = null;
+        if (gameState.getBidding() != null) {
+            rotatedBidding = gameState.getBidding().rotateForSeat(currentPlayerSeat);
+        }
+
+        Trick rotatedTrick = null;
+        if (gameState.getCurrentTrick() != null) {
+            rotatedTrick = gameState.getCurrentTrick().rotateForSeat(currentPlayerSeat);
+        }
+
         return new PlayerGameState(
                 gameState.getGameId(),
+                rotatedBidding,
                 true,
                 gameState.getHands().get(currentPlayerSeat),
                 rotatedTrick,

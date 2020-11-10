@@ -193,13 +193,23 @@ function renderCurrentTrick(gameState) {
     renderCardOnTable(gameState.currentTrick.cardsPlayed['WEST'], "#trickCardWest");
 }
 
+function renderBidding(bidding) {
+    $("#bidding").empty();
+    $("#bidding").append("<div>Spelen op</div><div class=\"trump\">" + getSuitCharacter(bidding.proposedTrump) + "</div>");
+}
+
 function showGameState(state) {
     $("#player-south").text(state.players['SOUTH']);
     $("#player-west").text(state.players['WEST']);
     $("#player-north").text(state.players['NORTH']);
     $("#player-east").text(state.players['EAST']);
 
-    renderCurrentTrick(state);
+    if (state.bidding) {
+        alert("bidding has started!");
+        renderBidding(state.bidding);
+    } else {
+        renderCurrentTrick(state);
+    }
 
     if (state.hand.length > 0) {
         $("#cards-south").empty();
