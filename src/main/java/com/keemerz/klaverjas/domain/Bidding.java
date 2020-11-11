@@ -9,6 +9,7 @@ import static com.keemerz.klaverjas.domain.Suit.CLUBS;
 public class Bidding {
 
     private Suit proposedTrump;
+    private List<Suit> availableSuits = new ArrayList<>();
     private Map<Seat, Bid> bids = new HashMap<>();
 
     public static Bidding createFirstGameBidding() {
@@ -46,6 +47,11 @@ public class Bidding {
 
     public Bidding setBids(Map<Seat, Bid> bids) {
         this.bids = bids;
+        return this;
+    }
+
+    public Bidding setAvailableSuits(List<Suit> availableSuits) {
+        this.availableSuits = availableSuits;
         return this;
     }
 

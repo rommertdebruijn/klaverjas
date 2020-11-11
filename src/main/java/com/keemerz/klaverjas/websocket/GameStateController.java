@@ -100,6 +100,27 @@ public class GameStateController {
 
         }
     }
+//
+//    @MessageMapping("/game/playcard")
+//    public void placeBid(PlaceBidMessage message, Principal principal) {
+//        Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
+//
+//        GameState gameState = gameStateRepository.getGameState(message.getGameId());
+//        if (gameState.determinePlayerIds().contains(sendingPlayer.getPlayerId())) {
+//            Seat seat = gameState.getAbsoluteSeatForPlayer(sendingPlayer.getPlayerId());
+//            List<Card> cards = gameState.getHands().get(seat);
+//            cards.stream()
+//                    .filter(card -> card.getCardId().equals(message.getCardId()))
+//                    .findFirst()
+//                    .ifPresent(card -> {
+//                        gameState.playCard(seat, message.getCardId());
+//                        gameStateRepository.updateGameState(gameState);
+//
+//                        updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
+//                    });
+//
+//        }
+//    }
 
     private void updateGameStateForAllPlayers(String sendingPlayerId, GameState gameState) {
 
