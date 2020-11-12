@@ -19,7 +19,7 @@ body {
 }
 
 .partner {
-    height: 100px;
+    height: 130px;
     background-color: cadetblue;
 }
 
@@ -37,6 +37,12 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1.5em;
     color: white;
+}
+
+.player-name-highlight {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1.5em;
+    color: goldenrod;
 }
 
 #cards-table {
@@ -95,6 +101,37 @@ body {
 
 .action {
     margin: 5px;
-    background-color: slategrey;
+    background-color: goldenrod;
     color: white;
+    width: 100px;
+}
+
+.bidOnTable {
+    width: 50px;
+    background-color: white;
+}
+
+.hidden-cards {
+    padding-left: 20px;
+}
+
+.half-card {
+    width: 10px;
+    height: 90px;
+    border-left: 2px solid white;
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+    background-color: #005d8b;
+    float: left;
+    -moz-border-radius-topleft:  0.2em;
+    -moz-border-radius-bottomleft:  0.2em;
+}
+
+.full-card {
+    width: 50px;
+    height: 90px;
+    background-color: #005d8b;
+    border: 2px solid white;
+    border-radius: 0.2em;
+    float: left;
 }

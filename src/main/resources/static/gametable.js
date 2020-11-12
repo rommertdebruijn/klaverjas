@@ -90,7 +90,7 @@ function renderCurrentTrick(currentTrick) {
 
 function renderPlayerBidOnTable(elementId, bid) {
     if (!!bid) {
-        $(elementId).append("<div>" + bid + "</div>");
+        $(elementId).append("<div class=\"bidOnTable\">" + bid + "</div>");
     }
 }
 
@@ -170,14 +170,51 @@ function cleanTable() {
     $("#bidding").empty();
 }
 
+function renderHiddenCards(state, seat, $element) {
+    var nrOfCardsInHand = state.nrOfCardsInHand[seat];
+    var handHtml = '' +
+        '<div class="row">' +
+        '  <div class="hidden-cards">';
+
+    for (var i = 0; i < nrOfCardsInHand - 1; i++) {
+        handHtml += '<div class="half-card" />';
+    }
+    if (nrOfCardsInHand > 0) {
+        handHtml += '<div class="full-card" />'
+    }
+
+    handHtml += '' +
+        '  </div>' +
+        '</div>';
+
+    $element.append(handHtml);
+}
+
+function renderPlayer(state, seat) {
+    var $player = $("#player-" + seat.toLowerCase());
+    $player.empty();
+
+    var nameClass = "player-name";
+    if (state.turn === seat) {
+        nameClass = "player-name-highlight";
+    }
+
+    var nameHtml = '<div class="' + nameClass + '">' + state.players[seat] + '</div>';
+    $player.append(nameHtml);
+
+    if ('SOUTH' !== seat) {
+        renderHiddenCards(state, seat, $player);
+    }
+}
+
 function showGameState(state) {
-    $("#player-south").text(state.players['SOUTH']);
-    $("#player-west").text(state.players['WEST']);
-    $("#player-north").text(state.players['NORTH']);
-    $("#player-east").text(state.players['EAST']);
+    renderPlayer(state, 'NORTH');
+    renderPlayer(state, 'EAST');
+    renderPlayer(state, 'SOUTH');
+    renderPlayer(state, 'WEST');
 
     cleanTable();
-    if (!bidding.finalTrump) {
+    if (!!state.bidding) {
         renderBidding(state.bidding);
         renderBiddingBox(state.bidding);
     }
