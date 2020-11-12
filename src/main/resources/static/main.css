@@ -92,3 +92,9 @@ body {
     background-color: white;
     text-align: center;
 }
+
+.action {
+    margin: 5px;
+    background-color: slategrey;
+    color: white;
+}

@@ -22,7 +22,7 @@ public class GameStateRepository {
         return GAMESTATES.get(gameId);
     }
 
-    public void updateGameState(GameState state) {
+    public void changeGameState(GameState state) {
         GAMESTATES.put(state.getGameId(), state);
     }
 

@@ -22,6 +22,8 @@ class BiddingTest {
                         NORTH, PASS,
                         EAST, PASS,
                         SOUTH, PLAY));
+        baseBidding.setFinalTrump(SPADES);
+        baseBidding.setFinalBidBy(EAST);
     }
 
     @Test
@@ -30,6 +32,8 @@ class BiddingTest {
         Bidding rotatedBidding = baseBidding.rotateForSeat(SOUTH);
 
         assertThat(rotatedBidding.getProposedTrump(), is(HEARTS));
+        assertThat(rotatedBidding.getFinalTrump(), is(SPADES));
+        assertThat(rotatedBidding.getFinalBidBy(), is(EAST));
         assertThat(rotatedBidding.getBids().get(NORTH), is(baseBidding.getBids().get(NORTH)));
         assertThat(rotatedBidding.getBids().get(EAST), is(baseBidding.getBids().get(EAST)));
         assertThat(rotatedBidding.getBids().get(SOUTH), is(baseBidding.getBids().get(SOUTH)));
@@ -41,6 +45,8 @@ class BiddingTest {
         Bidding rotatedBidding = baseBidding.rotateForSeat(NORTH);
 
         assertThat(rotatedBidding.getProposedTrump(), is(HEARTS));
+        assertThat(rotatedBidding.getFinalTrump(), is(SPADES));
+        assertThat(rotatedBidding.getFinalBidBy(), is(WEST));
         assertThat(rotatedBidding.getBids().get(NORTH), is(baseBidding.getBids().get(SOUTH)));
         assertThat(rotatedBidding.getBids().get(EAST), is(baseBidding.getBids().get(WEST)));
         assertThat(rotatedBidding.getBids().get(SOUTH), is(baseBidding.getBids().get(NORTH)));
@@ -52,6 +58,8 @@ class BiddingTest {
         Bidding rotatedBidding = baseBidding.rotateForSeat(EAST);
 
         assertThat(rotatedBidding.getProposedTrump(), is(HEARTS));
+        assertThat(rotatedBidding.getFinalTrump(), is(SPADES));
+        assertThat(rotatedBidding.getFinalBidBy(), is(SOUTH));
         assertThat(rotatedBidding.getBids().get(NORTH), is(baseBidding.getBids().get(WEST)));
         assertThat(rotatedBidding.getBids().get(EAST), is(baseBidding.getBids().get(NORTH)));
         assertThat(rotatedBidding.getBids().get(SOUTH), is(baseBidding.getBids().get(EAST)));
@@ -62,6 +70,9 @@ class BiddingTest {
     public void rotateForWest() {
         Bidding rotatedBidding = baseBidding.rotateForSeat(WEST);
 
+        assertThat(rotatedBidding.getProposedTrump(), is(HEARTS));
+        assertThat(rotatedBidding.getFinalTrump(), is(SPADES));
+        assertThat(rotatedBidding.getFinalBidBy(), is(NORTH));
         assertThat(rotatedBidding.getBids().get(NORTH), is(baseBidding.getBids().get(EAST)));
         assertThat(rotatedBidding.getBids().get(EAST), is(baseBidding.getBids().get(SOUTH)));
         assertThat(rotatedBidding.getBids().get(SOUTH), is(baseBidding.getBids().get(WEST)));

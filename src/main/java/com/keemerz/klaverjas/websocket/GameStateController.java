@@ -5,20 +5,16 @@ import com.keemerz.klaverjas.domain.*;
 import com.keemerz.klaverjas.repository.ActiveGamesRepository;
 import com.keemerz.klaverjas.repository.GameStateRepository;
 import com.keemerz.klaverjas.repository.PlayerRepository;
-import com.keemerz.klaverjas.websocket.inbound.GameJoinMessage;
-import com.keemerz.klaverjas.websocket.inbound.GameLeaveMessage;
-import com.keemerz.klaverjas.websocket.inbound.GameStartMessage;
-import com.keemerz.klaverjas.websocket.inbound.PlayCardMessage;
+import com.keemerz.klaverjas.websocket.inbound.*;
 import com.keemerz.klaverjas.websocket.outbound.ActiveGamesMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
 import java.util.List;
-
-import static com.keemerz.klaverjas.domain.Suit.CLUBS;
 
 @Controller
 public class GameStateController {
@@ -34,32 +30,28 @@ public class GameStateController {
 
         GameState gameState = GameState.createNewGame();
         gameState.fillSeat(sendingPlayer);
-        gameStateRepository.updateGameState(gameState);
+        gameStateRepository.changeGameState(gameState);
 
-        updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
-
-        List<ActiveGame> activeGames = ActiveGamesRepository.getInstance().getActiveGames();
-        webSocket.convertAndSend("/topic/lobby", new ActiveGamesMessage(activeGames));
+        updateGameStateForAllPlayers(gameState);
+        updateLobby();
 
     }
 
     @MessageMapping("/game/join")
     public void joinGame(GameJoinMessage message, Principal principal) {
         Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
-
         GameState gameState = gameStateRepository.getGameState(message.getGameId());
+
         if (!gameState.determinePlayerIds().contains(sendingPlayer.getPlayerId())) {
             gameState.fillSeat(sendingPlayer);
-            if (gameState.getPlayers().size() > 1) { // if 4th player joins, deal first hand
+            if (gameState.getHands().isEmpty() && gameState.getPlayers().size() > 3) { // if 4th player joins, deal first hand
                 gameState.dealHands();
                 gameState.setBidding(Bidding.createFirstGameBidding()); // first game always clubs
             }
-            gameStateRepository.updateGameState(gameState);
+            gameStateRepository.changeGameState(gameState);
         }
-        updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
-
-        List<ActiveGame> activeGames = ActiveGamesRepository.getInstance().getActiveGames();
-        webSocket.convertAndSend("/topic/lobby", new ActiveGamesMessage(activeGames));
+        updateGameStateForAllPlayers(gameState);
+        updateLobby();
     }
 
     @MessageMapping("/game/leave")
@@ -71,68 +63,79 @@ public class GameStateController {
         if (gameState.determinePlayerIds().contains(sendingPlayerId)) {
             gameStateRepository.removePlayerFromGames(sendingPlayer);
 
-            updateGameStateForAllPlayers(sendingPlayerId, gameState);
+            updateGameStateForAllPlayers(gameState);
+            updateGameStateForLeavingPlayer(sendingPlayerId, gameState.getGameId());
 
-            List<ActiveGame> activeGames = ActiveGamesRepository.getInstance().getActiveGames();
-            webSocket.convertAndSend("/topic/lobby", new ActiveGamesMessage(activeGames));
+            updateLobby();
         }
+    }
+
+    private void updateLobby() {
+        List<ActiveGame> activeGames = ActiveGamesRepository.getInstance().getActiveGames();
+        webSocket.convertAndSend("/topic/lobby", new ActiveGamesMessage(activeGames));
+    }
+
+    private void updateGameStateForLeavingPlayer(String sendingPlayerId, String gameId) {
+        String userId = PlayerRepository.getInstance().getPlayerByPlayerId(sendingPlayerId).getUserId();
+        webSocket.convertAndSendToUser(userId, "/topic/game", PlayerGameState.playerLeftGameState(gameId));
     }
 
     @MessageMapping("/game/playcard")
     public void playCard(PlayCardMessage message, Principal principal) {
-        Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
-
-        // TODO only 1 card per turn for this player :)
-        // TODO render currentTrick
-        GameState gameState = gameStateRepository.getGameState(message.getGameId());
-        if (gameState.determinePlayerIds().contains(sendingPlayer.getPlayerId())) {
-            Seat seat = gameState.getAbsoluteSeatForPlayer(sendingPlayer.getPlayerId());
+        GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
+        if (gameState != null) {
+            Seat seat = gameState.getTurn(); // only player whose turn it is can play cards
             List<Card> cards = gameState.getHands().get(seat);
             cards.stream()
                     .filter(card -> card.getCardId().equals(message.getCardId()))
                     .findFirst()
                     .ifPresent(card -> {
                         gameState.playCard(seat, message.getCardId());
-                        gameStateRepository.updateGameState(gameState);
-
-                        updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
+                        gameStateRepository.changeGameState(gameState);
                     });
-
+            updateGameStateForAllPlayers(gameState);
         }
     }
-//
-//    @MessageMapping("/game/playcard")
-//    public void placeBid(PlaceBidMessage message, Principal principal) {
-//        Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
-//
-//        GameState gameState = gameStateRepository.getGameState(message.getGameId());
-//        if (gameState.determinePlayerIds().contains(sendingPlayer.getPlayerId())) {
-//            Seat seat = gameState.getAbsoluteSeatForPlayer(sendingPlayer.getPlayerId());
-//            List<Card> cards = gameState.getHands().get(seat);
-//            cards.stream()
-//                    .filter(card -> card.getCardId().equals(message.getCardId()))
-//                    .findFirst()
-//                    .ifPresent(card -> {
-//                        gameState.playCard(seat, message.getCardId());
-//                        gameStateRepository.updateGameState(gameState);
-//
-//                        updateGameStateForAllPlayers(sendingPlayer.getPlayerId(), gameState);
-//                    });
-//
-//        }
-//    }
 
-    private void updateGameStateForAllPlayers(String sendingPlayerId, GameState gameState) {
+    @MessageMapping("/game/makebid")
+    public void placeBid(PlaceBidMessage message, Principal principal) {
+        GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
+        if (gameState != null) {
+            Seat seat = gameState.getTurn();
+            Bidding bidding = gameState.getBidding();
+            if (bidding.getBids().size() < 4 && bidding.getBids().get(seat) == null) {
+                bidding.addBid(seat, message.getBid());
 
+                if (message.getBid() == Bid.PLAY) {
+                    bidding.setFinalTrump(bidding.getProposedTrump());
+                    bidding.setFinalBidBy(seat);
+                    gameState.setTurn(gameState.getDealer().getLeftHandPlayer());
+                }
+            }
+            gameState.setTurn(seat.getLeftHandPlayer());
+            gameStateRepository.changeGameState(gameState);
+            updateGameStateForAllPlayers(gameState);
+        }
+    }
+
+    private @Nullable GameState determineGameStateForPlayer(String userId, String gameId) {
+        Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(userId);
+        GameState gameState = gameStateRepository.getGameState(gameId);
+        if (gameState.determinePlayerIds().contains(sendingPlayer.getPlayerId())) {
+            Seat seat = gameState.getAbsoluteSeatForPlayer(sendingPlayer.getPlayerId());
+            if (gameState.getTurn() == seat) {
+                return gameState;
+            }
+        }
+        return null; // player is not in this game, or it's not their turn
+    }
+
+    private void updateGameStateForAllPlayers(GameState gameState) {
         for (String playerId : gameState.determinePlayerIds()) {
             String userId = PlayerRepository.getInstance().getPlayerByPlayerId(playerId).getUserId();
 
             PlayerGameState playerGameState = GameStateToPlayerGameStateConverter.toPlayerGameStateForPlayer(playerId, gameState);
             webSocket.convertAndSendToUser(userId, "/topic/game", playerGameState);
-        }
-        if (!gameState.determinePlayerIds().contains(sendingPlayerId)) {
-            String userId = PlayerRepository.getInstance().getPlayerByPlayerId(sendingPlayerId).getUserId();
-            webSocket.convertAndSendToUser(userId, "/topic/game", PlayerGameState.playerLeftGameState(gameState.getGameId()));
         }
     }
 }

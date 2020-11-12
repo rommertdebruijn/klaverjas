@@ -11,13 +11,12 @@ public class GameState {
 
     private String gameId;
     private Bidding bidding;
-    private Suit trump = CLUBS;
     private Map<Seat, List<Card>> hands = new HashMap<>();
     private Map<Seat, Player> players = new HashMap<>();
     private Seat dealer = WEST;
     private List<Trick> previousTricks = new ArrayList<>();
     private Seat turn = NORTH;
-    private Trick currentTrick = new Trick(trump, turn, new HashMap<>());
+    private Trick currentTrick;
 
     public GameState(String gameId) {
         this.gameId = gameId;
@@ -38,14 +37,6 @@ public class GameState {
     public GameState setBidding(Bidding bidding) {
         this.bidding = bidding;
         return this;
-    }
-
-    public Suit getTrump() {
-        return trump;
-    }
-
-    public void setTrump(Suit trump) {
-        this.trump = trump;
     }
 
     public Map<Seat, List<Card>> getHands() {

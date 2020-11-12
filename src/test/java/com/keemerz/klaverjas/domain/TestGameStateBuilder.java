@@ -3,6 +3,7 @@ package com.keemerz.klaverjas.domain;
 import java.util.*;
 
 import static com.keemerz.klaverjas.domain.Seat.*;
+import static com.keemerz.klaverjas.domain.Suit.CLUBS;
 
 public class TestGameStateBuilder {
 
@@ -11,10 +12,9 @@ public class TestGameStateBuilder {
     private Map<Seat, Player> players = new HashMap<>();
     private Seat dealer = WEST;
     private List<Trick> previousTricks = new ArrayList<>();
-    private Suit trump = Suit.CLUBS;
     private Seat turn = NORTH;
-    private Bidding bidding = new Bidding(trump, new HashMap<>());
-    private Trick currentTrick = new Trick(trump, turn, new HashMap<>());
+    private Bidding bidding = new TestBiddingBuilder().build();
+    private Trick currentTrick = new Trick(bidding.getFinalTrump(), turn, new HashMap<>());
 
     public GameState build() {
         GameState gameState = new GameState(gameId);
@@ -25,7 +25,6 @@ public class TestGameStateBuilder {
         gameState.setCurrentTrick(currentTrick);
         gameState.setPreviousTricks(previousTricks);
         gameState.setTurn(turn);
-        gameState.setTrump(trump);
         return gameState;
     }
 
@@ -66,11 +65,6 @@ public class TestGameStateBuilder {
 
     public TestGameStateBuilder withBidding(Bidding bidding) {
         this.bidding = bidding;
-        return this;
-    }
-
-    public TestGameStateBuilder withTrump(Suit trump) {
-        this.trump = trump;
         return this;
     }
 

@@ -7,35 +7,16 @@
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-    <script src="/app.js"></script>
+    <script src="/connection.js"></script>
+    <script src="/lobby.js"></script>
+    <script src="/gametable.js"></script>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
     enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
-   <div id="connections">
-        <div class="row">
-            <div class="col-md-6">
-                <form class="form-inline">
-                    <div class="form-group">
-                        <label for="connect">WebSocket connection:</label>
-                        <button id="connect" class="btn btn-default" type="submit">Connect</button>
-                        <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
     <div id="lobby">
-        <div class="row">
-            <div id="start" class="col-md-6">
-                <form class="form-inline">
-                    <button id="startGame" class="btn btn-default" type="submit">Start game!</button>
-                </form>
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-2">
                 <table id="players" class="table table-striped">
@@ -70,6 +51,13 @@
                         <tbody id="gamesInfo">
                         </tbody>
                     </table>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div id="start" class="col-md-6">
+                <form class="form-inline">
+                    <button id="startGame" class="btn btn-default" type="submit">Start game!</button>
                 </form>
             </div>
         </div>
@@ -126,16 +114,16 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-3">[spacer]</div>
+            <div class="col-md-3"></div>
             <div class="player col-md-6">
                 <div class="row">
                     <div id="player-south" class="player-name">[waiting for player]</div>
                 </div>
                 <div class="row">
-                    <div id="cards-south">[hand]</div>
+                    <div id="cards-south"></div>
                 </div>
                 <div class="row">
-                    <div id="bidding-box">[bidding box]</div>
+                    <div id="bidding-box"></div>
                 </div>
             </div>
             <div id="leave" class="col-md-3">

@@ -11,6 +11,15 @@ public class Bidding {
     private Suit proposedTrump;
     private List<Suit> availableSuits = new ArrayList<>();
     private Map<Seat, Bid> bids = new HashMap<>();
+    private Suit finalTrump;
+    private Seat finalBidBy;
+
+    private Bidding(Suit proposedTrump, Map<Seat, Bid> rotatedBids, Suit finalTrump, Seat finalBidBy) {
+        this.proposedTrump = proposedTrump;
+        bids = rotatedBids;
+        this.finalTrump = finalTrump;
+        this.finalBidBy = finalBidBy;
+    }
 
     public static Bidding createFirstGameBidding() {
         return createBidding(CLUBS, new HashMap<>());
@@ -50,9 +59,28 @@ public class Bidding {
         return this;
     }
 
-    public Bidding setAvailableSuits(List<Suit> availableSuits) {
+    public List<Suit> getAvailableSuits() {
+        return availableSuits;
+    }
+
+    public Suit getFinalTrump() {
+        return finalTrump;
+    }
+
+    public void setFinalTrump(Suit finalTrump) {
+        this.finalTrump = finalTrump;
+    }
+
+    public Seat getFinalBidBy() {
+        return finalBidBy;
+    }
+
+    public void setFinalBidBy(Seat finalBidBy) {
+        this.finalBidBy = finalBidBy;
+    }
+
+    public void setAvailableSuits(List<Suit> availableSuits) {
         this.availableSuits = availableSuits;
-        return this;
     }
 
     public Bidding rotateForSeat(Seat currentPlayerSeat) {
@@ -62,6 +90,12 @@ public class Bidding {
         rotatedBids.put(NORTH, bids.get(currentPlayerSeat.getPartner()));
         rotatedBids.put(EAST, bids.get(currentPlayerSeat.getRightHandPlayer()));
 
-        return new Bidding(this.proposedTrump, rotatedBids); // startingPlayer is only useful when calculating winner. No need to pass it to PlayerGameState
+        Seat rotatedFinalBidBy = finalBidBy != null ? finalBidBy.rotateForSeat(currentPlayerSeat) : null;
+
+        return new Bidding(this.proposedTrump, rotatedBids, finalTrump, rotatedFinalBidBy); // startingPlayer is only useful when calculating winner. No need to pass it to PlayerGameState
+    }
+
+    public void addBid(Seat seat, Bid bid) {
+        bids.put(seat, bid);
     }
 }
