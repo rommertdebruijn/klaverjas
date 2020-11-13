@@ -133,5 +133,12 @@ body {
     background-color: #005d8b;
     border: 2px solid white;
     border-radius: 0.2em;
-    float: left;
+}
+
+.red-suit {
+    color: red;
+}
+
+.black-suit {
+    color: black;
 }

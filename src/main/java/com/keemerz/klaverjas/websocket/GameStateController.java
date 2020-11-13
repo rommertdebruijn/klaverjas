@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -83,7 +85,7 @@ public class GameStateController {
     @MessageMapping("/game/playcard")
     public void playCard(PlayCardMessage message, Principal principal) {
         GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
-        if (gameState != null) {
+        if (gameState != null && gameState.getBidding().getFinalTrump() != null) {
             Seat seat = gameState.getTurn(); // only player whose turn it is can play cards
             List<Card> cards = gameState.getHands().get(seat);
             cards.stream()
@@ -98,7 +100,7 @@ public class GameStateController {
     }
 
     @MessageMapping("/game/makebid")
-    public void placeBid(PlaceBidMessage message, Principal principal) {
+    public void makeBid(PlaceBidMessage message, Principal principal) {
         GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
         if (gameState != null) {
             Seat seat = gameState.getTurn();
@@ -109,10 +111,34 @@ public class GameStateController {
                 if (message.getBid() == Bid.PLAY) {
                     bidding.setFinalTrump(bidding.getProposedTrump());
                     bidding.setFinalBidBy(seat);
-                    gameState.setTurn(gameState.getDealer().getLeftHandPlayer());
+                    gameState.setTurn(gameState.getDealer().getLeftHandPlayer()); // bidding ended, let's play
+                } else {
+                    if (bidding.getBids().size() == 4) { // Starting player is forced to play from the remaining 3 suits
+                        List<Suit> availableSuits = new ArrayList<>(Arrays.asList(Suit.values()));
+                        availableSuits.remove(bidding.getProposedTrump());
+                        bidding.setAvailableSuits(availableSuits);
+                    }
+                    gameState.setTurn(seat.getLeftHandPlayer()); // next bidder please
                 }
             }
-            gameState.setTurn(seat.getLeftHandPlayer());
+
+            gameStateRepository.changeGameState(gameState);
+            updateGameStateForAllPlayers(gameState);
+        }
+    }
+
+    @MessageMapping("/game/makeforcedbid")
+    public void makeForcedBid(PlaceForcedBidMessage message, Principal principal) {
+        GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
+        if (gameState != null) {
+            Seat seat = gameState.getTurn();
+            Bidding bidding = gameState.getBidding();
+            if (bidding.getBids().size() == 4 && !bidding.getAvailableSuits().isEmpty()) {
+                bidding.setFinalTrump(message.getForcedTrump());
+                bidding.setFinalBidBy(seat);
+                gameState.setTurn(gameState.getDealer().getLeftHandPlayer());
+            }
+
             gameStateRepository.changeGameState(gameState);
             updateGameStateForAllPlayers(gameState);
         }

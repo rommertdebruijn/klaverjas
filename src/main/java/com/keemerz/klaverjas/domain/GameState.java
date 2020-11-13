@@ -133,6 +133,10 @@ public class GameState {
     }
 
     public void playCard(Seat seat, String cardId) {
+        if (currentTrick == null || currentTrick.getCardsPlayed().size() == 4) {
+            currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>());
+        }
+
         Card card = getHands().get(seat).stream()
                 .filter(c -> c.getCardId().equals(cardId))
                 .findFirst()

@@ -28,17 +28,17 @@ function handleGameState(gameStateMessage) { // *player* game state!
 }
 
 function getSuitCharacter(suit) {
-    if (suit === "SPADES") {
-        return "&spades;";
+    if (suit === 'SPADES') {
+        return '<span class="black-suit">&spades;</span>';
     }
-    if (suit === "HEARTS") {
-        return "&hearts;";
+    if (suit === 'HEARTS') {
+        return '<span class="red-suit">&hearts;</span>';
     }
-    if (suit === "DIAMONDS") {
-        return "&diams;";
+    if (suit === 'DIAMONDS') {
+        return '<span class="red-suit">&diams;</span>';
     }
-    if (suit === "CLUBS") {
-        return "&clubs;";
+    if (suit === 'CLUBS') {
+        return '<span class="black-suit">&clubs;</span>';
     }
 }
 
@@ -104,11 +104,16 @@ function renderContract(bidding) {
 
 function renderBidding(bidding) {
     if (!bidding.finalTrump) {
-        renderProposedTrump(bidding.proposedTrump);
-        renderPlayerBidOnTable("#tableNorth", bidding.bids["NORTH"]);
-        renderPlayerBidOnTable("#tableEast", bidding.bids["EAST"]);
-        renderPlayerBidOnTable("#tableSouth", bidding.bids["SOUTH"]);
-        renderPlayerBidOnTable("#tableWest", bidding.bids["WEST"]);
+        if (bidding.availableSuits.length > 0) {
+            var playerName = gameState.players[gameState.turn];
+            $("#bidding").append('<div>' + playerName + ' kiest troef...</div>');
+        } else {
+            renderProposedTrump(bidding.proposedTrump);
+            renderPlayerBidOnTable("#tableNorth", bidding.bids["NORTH"]);
+            renderPlayerBidOnTable("#tableEast", bidding.bids["EAST"]);
+            renderPlayerBidOnTable("#tableSouth", bidding.bids["SOUTH"]);
+            renderPlayerBidOnTable("#tableWest", bidding.bids["WEST"]);
+        }
     } else {
         renderContract(bidding);
     }
@@ -140,10 +145,20 @@ function makeBid(bid) {
     stompQueueClient.send("/app/game/makebid", {}, JSON.stringify({ 'gameId' : gameState.gameId, 'bid' : bid }));
 }
 
+function makeForcedBid(forcedTrump) {
+    stompQueueClient.send("/app/game/makeforcedbid", {}, JSON.stringify({ 'gameId' : gameState.gameId, 'forcedTrump' : forcedTrump }));
+}
+
 function renderForcedPickOptions(availableSuits) {
-    alert("forced play for you!");
-    for (var i;i<availableSuits.length;i++) {
-        $("#bidding-box").append("<div>[PLAY " + getSuitCharacter(availableSuits[i]) + "]</div>");
+    var $bidding = $("#bidding-box");
+    for (var i=0;i<availableSuits.length;i++) {
+        var availableSuit = availableSuits[i];
+        var forcedBidButtonId = 'forced-' + availableSuit.toLowerCase();
+        $bidding.append('<div id="' + forcedBidButtonId + '" class="action">SPEEL OP ' + getSuitCharacter(availableSuits[i]) + '</div>');
+        $('#' + forcedBidButtonId).click(function() {
+            alert("poef!");
+            makeForcedBid(availableSuit);
+        });
     }
 }
 

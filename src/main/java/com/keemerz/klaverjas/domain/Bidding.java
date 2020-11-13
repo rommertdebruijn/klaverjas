@@ -14,8 +14,9 @@ public class Bidding {
     private Suit finalTrump;
     private Seat finalBidBy;
 
-    private Bidding(Suit proposedTrump, Map<Seat, Bid> rotatedBids, Suit finalTrump, Seat finalBidBy) {
+    private Bidding(Suit proposedTrump, List<Suit> availableSuits, Map<Seat, Bid> rotatedBids, Suit finalTrump, Seat finalBidBy) {
         this.proposedTrump = proposedTrump;
+        this.availableSuits = availableSuits;
         bids = rotatedBids;
         this.finalTrump = finalTrump;
         this.finalBidBy = finalBidBy;
@@ -92,7 +93,7 @@ public class Bidding {
 
         Seat rotatedFinalBidBy = finalBidBy != null ? finalBidBy.rotateForSeat(currentPlayerSeat) : null;
 
-        return new Bidding(this.proposedTrump, rotatedBids, finalTrump, rotatedFinalBidBy); // startingPlayer is only useful when calculating winner. No need to pass it to PlayerGameState
+        return new Bidding(this.proposedTrump, this.availableSuits, rotatedBids, finalTrump, rotatedFinalBidBy); // startingPlayer is only useful when calculating winner. No need to pass it to PlayerGameState
     }
 
     public void addBid(Seat seat, Bid bid) {
