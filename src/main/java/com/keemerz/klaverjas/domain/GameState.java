@@ -1,5 +1,7 @@
 package com.keemerz.klaverjas.domain;
 
+import com.keemerz.klaverjas.comparator.TrumpOrderComparator;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -155,7 +157,9 @@ public class GameState {
 
                         getHands().get(seat).remove(card);
                         currentTrick.getCardsPlayed().put(seat, card);
-                        turn = turn.getLeftHandPlayer(); // todo if trick ends, determine winner
+                        turn = currentTrick.isTrickFinished() // trick ended
+                                ? currentTrick.determineHighestCardSeat()
+                                : turn.getLeftHandPlayer();
                     });
         }
     }
@@ -203,19 +207,95 @@ public class GameState {
     }
 
     List<Card> determinePlayableCards(Trick currentTrick, List<Card> hand) {
-        if (getCurrentTrick() == null || currentTrick.getCardsPlayed().get(currentTrick.getStartingPlayer()) == null) {
+        if (currentTrick == null || currentTrick.determineOpeningCard() == null || currentTrick.isTrickFinished()) {
             return hand; // if no card on the table, then anything goes
         }
 
-        Suit openingSuit = currentTrick.getCardsPlayed().get(currentTrick.getStartingPlayer()).getSuit();
-
-        List<Card> allowedCards = new ArrayList<>();
-        if (hand.stream().anyMatch(card -> card.getSuit() == openingSuit)) {
-            // eerst bekennen
-            allowedCards = hand.stream()
-                    .filter(card -> card.getSuit() == openingSuit)
-                    .collect(Collectors.toList());
+        Suit openingSuit = currentTrick.determineOpeningCard().getSuit();
+        if (handContainsSuit(hand, openingSuit)) {
+            return followSuit(hand, currentTrick);
+        } else if (partnerLeadsTrick(currentTrick)) {
+            return hand; // maatslag
+        } else {
+            return playTrumpIfAllowed(hand,currentTrick);
         }
-        return allowedCards;
     }
+
+    private boolean partnerLeadsTrick(Trick currentTrick) {
+        Seat seatForHighestCard = currentTrick.determineHighestCardSeat();
+
+        Seat currentPlayer = getTurn();
+        Seat partnerSeat =
+               currentPlayer == NORTH ? SOUTH :
+               currentPlayer == EAST ? WEST :
+               currentPlayer == SOUTH ? NORTH :
+               EAST;
+        return partnerSeat == seatForHighestCard;
+    }
+
+    private List<Card> followSuit(List<Card> hand, Trick currentTrick) {
+        Suit trump = currentTrick.getTrump();
+        Suit openingSuit = currentTrick.determineOpeningCard().getSuit();
+
+        if (openingSuit == trump) {
+            if (handContainsHigherTrump(hand, trump, currentTrick.determineHighestCard())) {
+                return higherTrumpCards(hand, currentTrick);
+            } else {
+                return allCardsOfSuit(hand, trump);
+            }
+        } else {
+            return allCardsOfSuit(hand, openingSuit);
+        }
+    }
+
+    private List<Card> playTrumpIfAllowed(List<Card> hand, Trick currentTrick) {
+        Suit trump = currentTrick.getTrump();
+
+        if (currentTrick.determineHighestCard().getSuit() == trump) {
+            if (handContainsHigherTrump(hand, trump, currentTrick.determineHighestCard())) {
+                return higherTrumpCards(hand, currentTrick);
+            } else {
+                return allButTrumpCards(hand, trump);
+            }
+        } else if (handContainsSuit(hand, trump)) {
+            return allCardsOfSuit(hand, trump);
+        } else {
+            return hand;
+        }
+    }
+
+    private List<Card> higherTrumpCards(List<Card> hand, Trick currentTrick) {
+        return allCardsOfSuit(hand, currentTrick.getTrump()).stream()
+                .filter(card -> isHigherTrump(card, currentTrick.determineHighestCard()))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isHigherTrump(Card cardInHand, Card cardOnTable) {
+        return new TrumpOrderComparator().compare(cardInHand, cardOnTable) > 0;
+    }
+
+    private boolean handContainsHigherTrump(List<Card> hand, Suit trump, Card highestCardOnTable) {
+        List<Card> allTrumpsInHandPlusHighestCardOnTable = new ArrayList<>(allCardsOfSuit(hand, trump));
+        allTrumpsInHandPlusHighestCardOnTable.add(highestCardOnTable);
+
+        Card highestTrump = allTrumpsInHandPlusHighestCardOnTable.stream()
+                .max(new TrumpOrderComparator())
+                .orElseThrow(IllegalArgumentException::new);
+        return highestTrump != highestCardOnTable;
+    }
+
+    private List<Card> allCardsOfSuit(List<Card> hand, Suit suit) {
+        return hand.stream().filter(card -> card.getSuit() == suit).collect(Collectors.toList());
+    }
+
+    private boolean handContainsSuit(List<Card> hand, Suit suit) {
+        return hand.stream().anyMatch(card -> card.getSuit() == suit);
+    }
+
+    private List<Card> allButTrumpCards(List<Card> hand, Suit trump) {
+        List<Card> allButTrump = new ArrayList<>(hand);
+        allButTrump.removeAll(allCardsOfSuit(hand, trump));
+        return allButTrump; // "ondertroeven" not allowed
+    }
+
 }

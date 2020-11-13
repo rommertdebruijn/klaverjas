@@ -19,7 +19,9 @@ class GameStateCardsPlayableTest {
 
     @BeforeEach
     void setUp() {
-        gameState = new GameState("someGameId");
+        gameState = new TestGameStateBuilder()
+            .withTurn(SOUTH)
+            .build();
     }
 
     @Test
@@ -60,7 +62,7 @@ class GameStateCardsPlayableTest {
                 Card.of(DIAMONDS, ACE));
 
         List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
-        assertThat(expected, is(actual));
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -81,7 +83,7 @@ class GameStateCardsPlayableTest {
                 Card.of(CLUBS, JACK));
 
         List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
-        assertThat(expected, is(actual));
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -100,7 +102,7 @@ class GameStateCardsPlayableTest {
         List<Card> expected = Collections.singletonList(Card.of(CLUBS, JACK));
 
         List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
-        assertThat(expected, is(actual));
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -120,7 +122,7 @@ class GameStateCardsPlayableTest {
                 Card.of(CLUBS, EIGHT),  Card.of(CLUBS, QUEEN));
 
         List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
-        assertThat(expected, is(actual));
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -144,13 +146,14 @@ class GameStateCardsPlayableTest {
         );
 
         List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
-        assertThat(expected, is(actual));
+        assertThat(actual, is(expected));
     }
 
     @Test
     public void whenPartnerLeadsTrickWithTrumpAndRenonceInStartSuitThenAllCardsArePlayable() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
+                .withStartingPlayer(WEST)
                 .withCardPlayed(WEST, Card.of(DIAMONDS, EIGHT))
                 .withCardPlayed(NORTH, Card.of(CLUBS, SEVEN)) // plays trump, leads trick
                 .withCardPlayed(EAST, Card.of(DIAMONDS, KING))
@@ -169,7 +172,7 @@ class GameStateCardsPlayableTest {
         );
 
         List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
-        assertThat(expected, is(actual));
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -189,7 +192,7 @@ class GameStateCardsPlayableTest {
         List<Card> expected = Collections.singletonList(Card.of(CLUBS, JACK));
 
         List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
-        assertThat(expected, is(actual));
+        assertThat(actual, is(expected));
     }
 
     @Test
@@ -211,6 +214,6 @@ class GameStateCardsPlayableTest {
                 Card.of(HEARTS, TEN), Card.of(HEARTS, ACE));
 
         List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
-        assertThat(expected, is(actual));
+        assertThat(actual, is(expected));
     }
 }

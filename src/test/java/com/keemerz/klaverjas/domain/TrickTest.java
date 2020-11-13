@@ -70,4 +70,46 @@ class TrickTest {
         assertThat(rotatedTrick.getCardsPlayed().get(WEST), is(baseTrick.getCardsPlayed().get(NORTH)));
     }
 
+    @Test
+    public void highestCardInTrickIsTrump() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(HEARTS, ACE))
+                .withCardPlayed(EAST, Card.of(HEARTS, SEVEN))
+                .withCardPlayed(SOUTH, Card.of(SPADES, SEVEN)) //maatslag? :)
+                .withCardPlayed(WEST, Card.of(CLUBS, SEVEN))
+                .build();
+
+        assertThat(trick.determineHighestCard(), is(Card.of(CLUBS, SEVEN)));
+    }
+
+    @Test
+    public void checkTheTen() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(HEARTS, TEN))
+                .withCardPlayed(EAST, Card.of(HEARTS, KING))
+                .withCardPlayed(SOUTH, Card.of(SPADES, SEVEN)) //maatslag? :)
+                .withCardPlayed(WEST, Card.of(HEARTS, QUEEN))
+                .build();
+
+        assertThat(trick.determineHighestCard(), is(Card.of(HEARTS, TEN)));
+    }
+
+    @Test
+    public void openingCardWinsIfNoOneFollowsSuit() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(HEARTS, SEVEN))
+                .withCardPlayed(EAST, Card.of(DIAMONDS, KING))
+                .withCardPlayed(SOUTH, Card.of(SPADES, SEVEN)) //maatslag? :)
+                .withCardPlayed(WEST, Card.of(SPADES, QUEEN))
+                .build();
+
+        assertThat(trick.determineHighestCard(), is(Card.of(HEARTS, SEVEN)));
+    }
+
 }
