@@ -69,4 +69,10 @@ class GameStateTest {
         assertTrue(gameState.getPlayers().values().stream()
                 .noneMatch(player -> player.getPlayerId().equals(fifthPlayerId)));
     }
+
+    @Test
+    public void playCardShouldPassTurnToTrickWinner() {
+        GameState gameState = GameState.createNewGame();
+
+    }
 }

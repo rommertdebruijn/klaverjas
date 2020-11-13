@@ -1,28 +1,26 @@
 var gameState = null;
 
 function startGame() {
-    stompQueueClient.send("/app/game/start", {}, JSON.stringify({}));
+    stompQueueClient.send('/app/game/start', {}, JSON.stringify({}));
 }
 
 function joinGame(gameId) {
-    stompQueueClient.send("/app/game/join", {}, JSON.stringify({'gameId': gameId }));
+    stompQueueClient.send('/app/game/join', {}, JSON.stringify({'gameId': gameId }));
 }
 
 function leaveGame() {
-    stompQueueClient.send("/app/game/leave", {}, JSON.stringify({'gameId': gameState.gameId }));
+    stompQueueClient.send('/app/game/leave', {}, JSON.stringify({'gameId': gameState.gameId }));
 }
 
 function handleGameState(gameStateMessage) { // *player* game state!
     gameState = JSON.parse(gameStateMessage.body);
     if (gameState.playerStillPlaying) {
-        $("#connections").hide();
-        $("#lobby").hide();
-        $("#table").show();
+        $('#lobby').hide();
+        $('#table').show();
         showGameState(gameState);
     } else {
-        $("#connections").show();
-        $("#lobby").show();
-        $("#table").hide();
+        $('#lobby').show();
+        $('#table').hide();
         gameState = null;
     }
 }
@@ -43,24 +41,24 @@ function getSuitCharacter(suit) {
 }
 
 function playCard(gameId, cardId) {
-    stompQueueClient.send("/app/game/playcard", {}, JSON.stringify({ 'gameId' : gameId, 'cardId' : cardId }));
+    stompQueueClient.send('/app/game/playcard', {}, JSON.stringify({ 'gameId' : gameId, 'cardId' : cardId }));
 }
 
 function renderCardInHand(card) {
     var cardId = card.cardId;
-    var cardHtml = "" +
-        "<div id=\"card-" + cardId + "\" class=\"card-in-hand " + card.suit + "\">" +
-        "  <div class=\"suit\">" +
+    var cardHtml = '' +
+        '<div id="card-' + cardId + '" class="card-in-hand ' + card.suit.toLowerCase() + '">' +
+        '  <div class="suit">' +
             getSuitCharacter(card.suit) +
-        "  </div>" +
-        "  <div class=\"rank\">" +
+        '  </div>' +
+        '  <div class="rank">' +
             card.rank +
-        "  </div>" +
-        "</div>";
-    $("#cards-south").append(cardHtml);
+        '  </div>' +
+        '</div>';
+    $('#cards-south').append(cardHtml);
 
     if (isPlayerTurn() && cardId) {
-        $("#card-" + cardId).click(function() {
+        $('#card-' + cardId).click(function() {
             playCard(gameState.gameId, cardId);
         });
     }
@@ -68,51 +66,51 @@ function renderCardInHand(card) {
 
 function renderCardOnTable(containerId, card) {
     if (card) {
-        var cardHtml ="" +
-            "<div class=\"card-on-table " + card.suit + "\">" +
-            "  <div class=\"suit\">" +
+        var cardHtml ='' +
+            '<div class="card-on-table ' + card.suit.toLowerCase() + '">' +
+            '  <div class="suit">' +
             getSuitCharacter(card.suit) +
-            "  </div>" +
-            "  <div class=\"rank\">" +
+            '  </div>' +
+            '  <div class=\'rank\'>' +
             card.rank +
-            "  </div>" +
-            "</div>";
+            '  </div>' +
+            '</div>';
         $(containerId).append(cardHtml);
     }
 }
 
 function renderCurrentTrick(currentTrick) {
-    renderCardOnTable("#tableNorth", currentTrick.cardsPlayed['NORTH']);
-    renderCardOnTable("#tableEast", currentTrick.cardsPlayed['EAST']);
-    renderCardOnTable("#tableSouth", currentTrick.cardsPlayed['SOUTH']);
-    renderCardOnTable("#tableWest", currentTrick.cardsPlayed['WEST']);
+    renderCardOnTable('#tableNorth', currentTrick.cardsPlayed['NORTH']);
+    renderCardOnTable('#tableEast', currentTrick.cardsPlayed['EAST']);
+    renderCardOnTable('#tableSouth', currentTrick.cardsPlayed['SOUTH']);
+    renderCardOnTable('#tableWest', currentTrick.cardsPlayed['WEST']);
 }
 
 function renderPlayerBidOnTable(elementId, bid) {
     if (!!bid) {
-        $(elementId).append("<div class=\"bidOnTable\">" + bid + "</div>");
+        $(elementId).append('<div class="bidOnTable">' + bid + '</div>');
     }
 }
 
 function renderProposedTrump(proposedTrump) {
-    $("#bidding").append("<div>Spelen op deze troef?</div><div class=\"trump\">" + getSuitCharacter(proposedTrump) + "</div>");
+    $("#bidding").append('<div>Spelen op deze troef?</div><div class="trump">' + getSuitCharacter(proposedTrump) + '</div>');
 }
 
 function renderContract(bidding) {
-    $("#bidding").append("<div>" + gameState.players[bidding.finalBidBy] + " speelt op</div><div class=\"trump\">" + getSuitCharacter(bidding.finalTrump) + "</div>");
+    $('#bidding').append('<div>' + gameState.players[bidding.finalBidBy] + ' speelt op</div><div class="trump">' + getSuitCharacter(bidding.finalTrump) + '</div>');
 }
 
 function renderBidding(bidding) {
     if (!bidding.finalTrump) {
         if (bidding.availableSuits.length > 0) {
             var playerName = gameState.players[gameState.turn];
-            $("#bidding").append('<div>' + playerName + ' kiest troef...</div>');
+            $('#bidding').append('<div>' + playerName + ' kiest troef...</div>');
         } else {
             renderProposedTrump(bidding.proposedTrump);
-            renderPlayerBidOnTable("#tableNorth", bidding.bids["NORTH"]);
-            renderPlayerBidOnTable("#tableEast", bidding.bids["EAST"]);
-            renderPlayerBidOnTable("#tableSouth", bidding.bids["SOUTH"]);
-            renderPlayerBidOnTable("#tableWest", bidding.bids["WEST"]);
+            renderPlayerBidOnTable('#tableNorth', bidding.bids['NORTH']);
+            renderPlayerBidOnTable('#tableEast', bidding.bids['EAST']);
+            renderPlayerBidOnTable('#tableSouth', bidding.bids['SOUTH']);
+            renderPlayerBidOnTable('#tableWest', bidding.bids['WEST']);
         }
     } else {
         renderContract(bidding);
@@ -120,7 +118,7 @@ function renderBidding(bidding) {
 }
 
 function renderCurrentPlayerHand(hand) {
-    $("#cards-south").empty();
+    $('#cards-south').empty();
     if (!!hand && hand.length > 0) {
         for (var i = 0; i < hand.length; i++) {
             renderCardInHand(hand[i]);
@@ -129,60 +127,62 @@ function renderCurrentPlayerHand(hand) {
 }
 
 function renderPlayPassOptions() {
-    var $bidding = $("#bidding-box");
-    $bidding.append("<div id=\"bidPlay\" class=\"action\">[SPEEL]</div>");
-    $("#bidPlay").click(function() {
-       makeBid("PLAY");
+    var $bidding = $('#bidding-box');
+    $bidding.append('<div id="bidPlay" class="action">[SPEEL]</div>');
+    $('#bidPlay').click(function() {
+       makeBid('PLAY');
     });
 
-    $bidding.append("<div id=\"bidPass\" class=\"action\">[PAS]</div>");
-    $("#bidPass").click(function() {
-        makeBid("PASS");
+    $bidding.append('<div id="bidPass" class="action">[PAS]</div>');
+    $('#bidPass').click(function() {
+        makeBid('PASS');
     });
 }
 
 function makeBid(bid) {
-    stompQueueClient.send("/app/game/makebid", {}, JSON.stringify({ 'gameId' : gameState.gameId, 'bid' : bid }));
+    stompQueueClient.send('/app/game/makebid', {}, JSON.stringify({ 'gameId' : gameState.gameId, 'bid' : bid }));
 }
 
 function makeForcedBid(forcedTrump) {
-    stompQueueClient.send("/app/game/makeforcedbid", {}, JSON.stringify({ 'gameId' : gameState.gameId, 'forcedTrump' : forcedTrump }));
+    stompQueueClient.send('/app/game/makeforcedbid', {}, JSON.stringify({ 'gameId' : gameState.gameId, 'forcedTrump' : forcedTrump }));
 }
 
-function renderForcedPickOptions(availableSuits) {
-    var $bidding = $("#bidding-box");
+function renderForcedBidButton(availableSuit) {
+    var $bidding = $('#bidding-box');
+    var forcedBidButtonId = 'forced-' + availableSuit.toLowerCase();
+    $bidding.append('<div id="' + forcedBidButtonId + '" class="action">SPEEL OP ' + getSuitCharacter(availableSuit) + '</div>');
+    $('#' + forcedBidButtonId).click(function () {
+        makeForcedBid(availableSuit);
+    });
+}
+
+function renderForcedBidOptions(availableSuits) {
     for (var i=0;i<availableSuits.length;i++) {
-        var availableSuit = availableSuits[i];
-        var forcedBidButtonId = 'forced-' + availableSuit.toLowerCase();
-        $bidding.append('<div id="' + forcedBidButtonId + '" class="action">SPEEL OP ' + getSuitCharacter(availableSuits[i]) + '</div>');
-        $('#' + forcedBidButtonId).click(function() {
-            alert("poef!");
-            makeForcedBid(availableSuit);
-        });
+        renderForcedBidButton(availableSuits[i]);
     }
 }
 
 function renderBiddingBox(bidding) {
-    $("#bidding-box").empty();
+    $('#bidding-box').empty();
     if (!bidding.finalTrump && isPlayerTurn()) {
-        if (bidding.bids["SOUTH"] == null) { // we haven't placed a bid yet
+        if (bidding.bids['SOUTH'] == null) { // we haven't placed a bid yet
             renderPlayPassOptions();
         } else {
-            renderForcedPickOptions(bidding.availableSuits); // south is on the curb ;)
+            renderForcedBidOptions(bidding.availableSuits); // south is on the curb ;)
         }
     }
 }
 
 function isPlayerTurn() {
-    return !!gameState && !!gameState.turn && gameState.turn === "SOUTH";
+    return !!gameState && !!gameState.turn && gameState.turn === 'SOUTH';
 }
 
 function cleanTable() {
-    $("#tableNorth").empty();
-    $("#tableEast").empty();
-    $("#tableSouth").empty();
-    $("#tableWest").empty();
-    $("#bidding").empty();
+    $('#tableNorth').empty();
+    $('#tableEast').empty();
+    $('#tableSouth').empty();
+    $('#tableWest').empty();
+    $('#bidding').empty();
 }
 
 function renderHiddenCards(state, seat, $element) {
@@ -206,12 +206,12 @@ function renderHiddenCards(state, seat, $element) {
 }
 
 function renderPlayer(state, seat) {
-    var $player = $("#player-" + seat.toLowerCase());
+    var $player = $('#player-' + seat.toLowerCase());
     $player.empty();
 
-    var nameClass = "player-name";
+    var nameClass = 'player-name';
     if (state.turn === seat) {
-        nameClass = "player-name-highlight";
+        nameClass = 'player-name-highlight';
     }
 
     var nameHtml = '<div class="' + nameClass + '">' + state.players[seat] + '</div>';

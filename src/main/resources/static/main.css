@@ -49,14 +49,14 @@ body {
     padding-left: 0;
     padding-right: 0;
 }
-.DIAMONDS,
-.HEARTS {
+.diamonds,
+.hearts {
     color: red;
     border: 2px solid red;
 }
 
-.SPADES,
-.CLUBS {
+.spades,
+.clubs {
     color: black;
     border: 2px solid black;
 }
@@ -87,7 +87,7 @@ body {
     margin-left: 0.1em;
 }
 .rank {
-    margin-left: 0.1em;
+    text-align: center;
 }
 
 .trump {
@@ -123,8 +123,8 @@ body {
     border-bottom: 2px solid white;
     background-color: #005d8b;
     float: left;
-    -moz-border-radius-topleft:  0.2em;
-    -moz-border-radius-bottomleft:  0.2em;
+    border-bottom-left-radius: 0.2em;
+    border-top-left-radius: 0.2em;
 }
 
 .full-card {
@@ -133,12 +133,15 @@ body {
     background-color: #005d8b;
     border: 2px solid white;
     border-radius: 0.2em;
+    float: left
 }
 
 .red-suit {
     color: red;
+    font-size: 1.2em;
 }
 
 .black-suit {
     color: black;
+    font-size: 1.2em;
 }

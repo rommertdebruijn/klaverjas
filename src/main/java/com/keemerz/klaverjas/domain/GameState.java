@@ -132,17 +132,64 @@ public class GameState {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public void playCard(Seat seat, String cardId) {
-        if (currentTrick == null || currentTrick.getCardsPlayed().size() == 4) {
-            currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>());
+    public void joinGame(Player player) {
+        if (!determinePlayerIds().contains(player.getPlayerId())) {
+            fillSeat(player);
+            if (getHands().isEmpty() && getPlayers().size() > 3) { // if 4th player joins, deal first hand
+                dealHands();
+                setBidding(Bidding.createFirstGameBidding()); // first game always clubs
+            }
         }
+    }
 
-        Card card = getHands().get(seat).stream()
-                .filter(c -> c.getCardId().equals(cardId))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
-        getHands().get(seat).remove(card);
-        currentTrick.getCardsPlayed().put(seat, card);
-        turn = turn.getLeftHandPlayer(); // todo if trick ends, determine winner
+    public void playCard(String cardId) {
+        if (getBidding().getFinalTrump() != null) {
+            Seat seat = getTurn(); // only player whose turn it is can play cards
+            List<Card> cards = getHands().get(seat);
+            cards.stream()
+                    .filter(card -> card.getCardId().equals(cardId))
+                    .findFirst()
+                    .ifPresent(card -> {
+                        if (currentTrick == null || currentTrick.getCardsPlayed().size() == 4) {
+                            // copy current trick to previousTricks
+                            currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>());
+                        }
+
+                        getHands().get(seat).remove(card);
+                        currentTrick.getCardsPlayed().put(seat, card);
+                        turn = turn.getLeftHandPlayer(); // todo if trick ends, determine winner
+                    });
+        }
+    }
+
+    public void makeBid(Bid bid) {
+        Seat seat = getTurn();
+        Bidding bidding = getBidding();
+        if (bidding.getBids().size() < 4 && bidding.getBids().get(seat) == null) {
+            bidding.addBid(seat, bid);
+
+            if (bid == Bid.PLAY) {
+                bidding.setFinalTrump(bidding.getProposedTrump());
+                bidding.setFinalBidBy(seat);
+                setTurn(getDealer().getLeftHandPlayer()); // bidding ended, let's play
+            } else {
+                if (bidding.getBids().size() == 4) { // Starting player is forced to play from the remaining 3 suits
+                    List<Suit> availableSuits = new ArrayList<>(Arrays.asList(Suit.values()));
+                    availableSuits.remove(bidding.getProposedTrump());
+                    bidding.setAvailableSuits(availableSuits);
+                }
+                setTurn(seat.getLeftHandPlayer()); // next bidder please
+            }
+        }
+    }
+
+    public void makeForcedBid(Suit forcedTrump) {
+        Seat seat = getTurn();
+        Bidding bidding = getBidding();
+        if (bidding.getBids().size() == 4 && !bidding.getAvailableSuits().isEmpty()) {
+            bidding.setFinalTrump(forcedTrump);
+            bidding.setFinalBidBy(seat);
+            setTurn(getDealer().getLeftHandPlayer());
+        }
     }
 }

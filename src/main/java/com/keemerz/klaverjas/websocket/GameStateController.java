@@ -44,14 +44,8 @@ public class GameStateController {
         Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
         GameState gameState = gameStateRepository.getGameState(message.getGameId());
 
-        if (!gameState.determinePlayerIds().contains(sendingPlayer.getPlayerId())) {
-            gameState.fillSeat(sendingPlayer);
-            if (gameState.getHands().isEmpty() && gameState.getPlayers().size() > 3) { // if 4th player joins, deal first hand
-                gameState.dealHands();
-                gameState.setBidding(Bidding.createFirstGameBidding()); // first game always clubs
-            }
-            gameStateRepository.changeGameState(gameState);
-        }
+        gameState.joinGame(sendingPlayer);
+        gameStateRepository.changeGameState(gameState);
         updateGameStateForAllPlayers(gameState);
         updateLobby();
     }
@@ -85,16 +79,9 @@ public class GameStateController {
     @MessageMapping("/game/playcard")
     public void playCard(PlayCardMessage message, Principal principal) {
         GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
-        if (gameState != null && gameState.getBidding().getFinalTrump() != null) {
-            Seat seat = gameState.getTurn(); // only player whose turn it is can play cards
-            List<Card> cards = gameState.getHands().get(seat);
-            cards.stream()
-                    .filter(card -> card.getCardId().equals(message.getCardId()))
-                    .findFirst()
-                    .ifPresent(card -> {
-                        gameState.playCard(seat, message.getCardId());
-                        gameStateRepository.changeGameState(gameState);
-                    });
+        if (gameState != null) {
+            gameState.playCard(message.getCardId());
+            gameStateRepository.changeGameState(gameState);
             updateGameStateForAllPlayers(gameState);
         }
     }
@@ -103,25 +90,7 @@ public class GameStateController {
     public void makeBid(PlaceBidMessage message, Principal principal) {
         GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
         if (gameState != null) {
-            Seat seat = gameState.getTurn();
-            Bidding bidding = gameState.getBidding();
-            if (bidding.getBids().size() < 4 && bidding.getBids().get(seat) == null) {
-                bidding.addBid(seat, message.getBid());
-
-                if (message.getBid() == Bid.PLAY) {
-                    bidding.setFinalTrump(bidding.getProposedTrump());
-                    bidding.setFinalBidBy(seat);
-                    gameState.setTurn(gameState.getDealer().getLeftHandPlayer()); // bidding ended, let's play
-                } else {
-                    if (bidding.getBids().size() == 4) { // Starting player is forced to play from the remaining 3 suits
-                        List<Suit> availableSuits = new ArrayList<>(Arrays.asList(Suit.values()));
-                        availableSuits.remove(bidding.getProposedTrump());
-                        bidding.setAvailableSuits(availableSuits);
-                    }
-                    gameState.setTurn(seat.getLeftHandPlayer()); // next bidder please
-                }
-            }
-
+            gameState.makeBid(message.getBid());
             gameStateRepository.changeGameState(gameState);
             updateGameStateForAllPlayers(gameState);
         }
@@ -131,14 +100,7 @@ public class GameStateController {
     public void makeForcedBid(PlaceForcedBidMessage message, Principal principal) {
         GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
         if (gameState != null) {
-            Seat seat = gameState.getTurn();
-            Bidding bidding = gameState.getBidding();
-            if (bidding.getBids().size() == 4 && !bidding.getAvailableSuits().isEmpty()) {
-                bidding.setFinalTrump(message.getForcedTrump());
-                bidding.setFinalBidBy(seat);
-                gameState.setTurn(gameState.getDealer().getLeftHandPlayer());
-            }
-
+            gameState.makeForcedBid(message.getForcedTrump());
             gameStateRepository.changeGameState(gameState);
             updateGameStateForAllPlayers(gameState);
         }
