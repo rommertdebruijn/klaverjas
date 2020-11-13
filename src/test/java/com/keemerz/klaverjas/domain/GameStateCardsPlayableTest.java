@@ -7,14 +7,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.keemerz.klaverjas.domain.Bid.*;
 import static com.keemerz.klaverjas.domain.Rank.*;
 import static com.keemerz.klaverjas.domain.Seat.*;
 import static com.keemerz.klaverjas.domain.Suit.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class GameStateCardsAvailableTest {
+class GameStateCardsPlayableTest {
 
     private GameState gameState;
 
@@ -24,7 +23,27 @@ class GameStateCardsAvailableTest {
     }
 
     @Test
-    public void requestedSuitShouldBeOnlySuitAvailable() {
+    public void firstCardCanBeAnything() {
+        Trick currentTrick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .build();
+
+        List<Card> hand = Arrays.asList(
+                Card.of(SPADES, SEVEN), Card.of(SPADES, TEN),
+                Card.of(DIAMONDS, TEN), Card.of(DIAMONDS, ACE),
+                Card.of(CLUBS, QUEEN),  Card.of(CLUBS, JACK));
+
+        List<Card> expected = Arrays.asList(
+                Card.of(SPADES, SEVEN), Card.of(SPADES, TEN),
+                Card.of(DIAMONDS, TEN), Card.of(DIAMONDS, ACE),
+                Card.of(CLUBS, QUEEN),  Card.of(CLUBS, JACK));
+
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
+        assertThat(expected, is(actual));
+    }
+
+    @Test
+    public void requestedSuitShouldBeOnlySuitPlayable() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
                 .withCardPlayed(NORTH, Card.of(DIAMONDS, SEVEN))
@@ -40,12 +59,12 @@ class GameStateCardsAvailableTest {
                 Card.of(DIAMONDS, TEN),
                 Card.of(DIAMONDS, ACE));
 
-        List<Card> actual = gameState.determineAllowedCards(currentTrick, hand);
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
         assertThat(expected, is(actual));
     }
 
     @Test
-    public void trumpShouldBeOnlyAvailableWhenRenonceInRequestedSuit() {
+    public void trumpShouldBeOnlyPlayableSuitWhenRenonceInStartSuit() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
                 .withCardPlayed(NORTH, Card.of(DIAMONDS, SEVEN))
@@ -61,12 +80,12 @@ class GameStateCardsAvailableTest {
                 Card.of(CLUBS, QUEEN),
                 Card.of(CLUBS, JACK));
 
-        List<Card> actual = gameState.determineAllowedCards(currentTrick, hand);
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
         assertThat(expected, is(actual));
     }
 
     @Test
-    public void onlyHigherTrumpCardAvailableWhenTrumpIsRequested() {
+    public void onlyHigherTrumpCardPlayableWhenTrumpIsRequested() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
                 .withCardPlayed(NORTH, Card.of(CLUBS, SEVEN))
@@ -80,12 +99,12 @@ class GameStateCardsAvailableTest {
 
         List<Card> expected = Collections.singletonList(Card.of(CLUBS, JACK));
 
-        List<Card> actual = gameState.determineAllowedCards(currentTrick, hand);
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
         assertThat(expected, is(actual));
     }
 
     @Test
-    public void whenNoHigherTrumpCardInHandThenOtherTrumpCardsAvailableWhenTrumpIsRequested() {
+    public void whenNoHigherTrumpCardInHandThenOtherTrumpCardsArePlayableWhenTrumpIsRequested() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
                 .withCardPlayed(NORTH, Card.of(CLUBS, SEVEN))
@@ -100,12 +119,12 @@ class GameStateCardsAvailableTest {
         List<Card> expected = Arrays.asList(
                 Card.of(CLUBS, EIGHT),  Card.of(CLUBS, QUEEN));
 
-        List<Card> actual = gameState.determineAllowedCards(currentTrick, hand);
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
         assertThat(expected, is(actual));
     }
 
     @Test
-    public void whenPartnerLeadsTrickOtherCardsAreAllowed() {
+    public void whenPartnerLeadsTrickAndRenonceInStartColorThenAllCardsArePlayable() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
                 .withCardPlayed(NORTH, Card.of(DIAMONDS, ACE))
@@ -124,12 +143,12 @@ class GameStateCardsAvailableTest {
                 Card.of(CLUBS, QUEEN),  Card.of(CLUBS, JACK)
         );
 
-        List<Card> actual = gameState.determineAllowedCards(currentTrick, hand);
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
         assertThat(expected, is(actual));
     }
 
     @Test
-    public void whenPartnerLeadsTrickWithTrumpOtherCardsAreAllowed() {
+    public void whenPartnerLeadsTrickWithTrumpAndRenonceInStartSuitThenAllCardsArePlayable() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
                 .withCardPlayed(WEST, Card.of(DIAMONDS, EIGHT))
@@ -149,12 +168,12 @@ class GameStateCardsAvailableTest {
                 Card.of(CLUBS, QUEEN),  Card.of(CLUBS, JACK)
         );
 
-        List<Card> actual = gameState.determineAllowedCards(currentTrick, hand);
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
         assertThat(expected, is(actual));
     }
 
     @Test
-    public void whenOpponentLeadsTrickWithTrumpOnlyHigherTrumpCardsAreAllowed() {
+    public void whenOpponentLeadsTrickWithTrumpOnlyHigherTrumpCardsArePlayable() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
                 .withCardPlayed(NORTH, Card.of(DIAMONDS, SEVEN)) // plays trump, leads trick
@@ -169,12 +188,12 @@ class GameStateCardsAvailableTest {
         // only higher trump allowed
         List<Card> expected = Collections.singletonList(Card.of(CLUBS, JACK));
 
-        List<Card> actual = gameState.determineAllowedCards(currentTrick, hand);
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
         assertThat(expected, is(actual));
     }
 
     @Test
-    public void whenOpponentLeadsTrickWithTrumpButOnlyLowerTrumpCardsInHandThenAllNonTrumpCardsAreAllowed() {
+    public void whenOpponentLeadsTrickWithTrumpButOnlyLowerTrumpCardsInHandThenAllNonTrumpCardsArePlayable() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
                 .withCardPlayed(NORTH, Card.of(DIAMONDS, SEVEN)) // plays trump, leads trick
@@ -191,7 +210,7 @@ class GameStateCardsAvailableTest {
                 Card.of(SPADES, SEVEN), Card.of(SPADES, TEN),
                 Card.of(HEARTS, TEN), Card.of(HEARTS, ACE));
 
-        List<Card> actual = gameState.determineAllowedCards(currentTrick, hand);
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
         assertThat(expected, is(actual));
     }
 }

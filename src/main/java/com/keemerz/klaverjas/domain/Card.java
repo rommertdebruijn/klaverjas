@@ -14,6 +14,10 @@ public class Card {
         return new Card(UUID.randomUUID().toString(), suit, rank);
     }
 
+    public static Card unplayableCopyOf(Suit suit, Rank rank) {
+        return new Card(null, suit, rank);
+    }
+
     private Card(String cardId, Suit suit, Rank rank) {
         this.cardId = cardId;
         this.suit = suit;

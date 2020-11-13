@@ -1,7 +1,9 @@
 package com.keemerz.klaverjas.converter;
 
+import com.keemerz.klaverjas.comparator.CardInHandComparator;
 import com.keemerz.klaverjas.domain.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +25,16 @@ public class GameStateToPlayerGameStateConverter {
             rotatedTrick = gameState.getCurrentTrick().rotateForSeat(currentPlayerSeat);
         }
 
+        List<Card> modifiedHand = null;
+        if (gameState.getHands().get(currentPlayerSeat) != null) {
+            modifiedHand = modifyCardsForPlayer(currentPlayerSeat, gameState);
+        }
+
         return new PlayerGameState(
                 gameState.getGameId(),
                 rotatedBidding,
                 true,
-                gameState.getHands().get(currentPlayerSeat),
+                modifiedHand,
                 rotatedTrick,
                 buildPlayerNamesMap(gameState, currentPlayerSeat),
                 buildCardsInHandMap(gameState, currentPlayerSeat),
@@ -35,12 +42,30 @@ public class GameStateToPlayerGameStateConverter {
         );
     }
 
+    private static List<Card> modifyCardsForPlayer(Seat currentPlayerSeat, GameState gameState) {
+        List<Card> modifiedHand;
+        List<Card> hand = gameState.getHands().get(currentPlayerSeat);
+        List<Card> playableCards = gameState.determinePlayableCards(currentPlayerSeat);
+        modifiedHand = new ArrayList<>();
+        for (Card card : hand) {
+            if (playableCards.contains(card)) {
+                modifiedHand.add(card); // including cardID
+            } else {
+                modifiedHand.add(Card.unplayableCopyOf(card.getSuit(), card.getRank()));
+            }
+        }
+
+        Suit trumpForSorting = gameState.getBidding().getFinalTrump() != null ? gameState.getBidding().getFinalTrump() : gameState.getBidding().getProposedTrump();
+        modifiedHand.sort(new CardInHandComparator(trumpForSorting));
+        return modifiedHand;
+    }
+
     private static Map<Seat, Integer> buildCardsInHandMap(GameState gameState, Seat currentPlayerSeat) {
         Map<Seat, Integer> cardsPerPlayer = new HashMap<>();
-        cardsPerPlayer.put(SOUTH, getCardsInHand(gameState, currentPlayerSeat));
-        cardsPerPlayer.put(WEST, getCardsInHand(gameState, currentPlayerSeat.getLeftHandPlayer()));
-        cardsPerPlayer.put(NORTH, getCardsInHand(gameState, currentPlayerSeat.getPartner()));
-        cardsPerPlayer.put(EAST, getCardsInHand(gameState, currentPlayerSeat.getRightHandPlayer()));
+        cardsPerPlayer.put(SOUTH, getNumberOfCardsInHand(gameState, currentPlayerSeat));
+        cardsPerPlayer.put(WEST, getNumberOfCardsInHand(gameState, currentPlayerSeat.getLeftHandPlayer()));
+        cardsPerPlayer.put(NORTH, getNumberOfCardsInHand(gameState, currentPlayerSeat.getPartner()));
+        cardsPerPlayer.put(EAST, getNumberOfCardsInHand(gameState, currentPlayerSeat.getRightHandPlayer()));
         return cardsPerPlayer;
     }
 
@@ -62,7 +87,7 @@ public class GameStateToPlayerGameStateConverter {
                 .orElse("");
     }
 
-    private static int getCardsInHand(GameState gameState, Seat seat) {
+    private static int getNumberOfCardsInHand(GameState gameState, Seat seat) {
         return gameState.getHands().entrySet().stream()
                 .filter(entry -> entry.getKey().equals(seat))
                 .map(Map.Entry::getValue)

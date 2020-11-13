@@ -29,35 +29,48 @@ class HighestCardComparatorTest {
                 Card.of(HEARTS, ACE),
                 Card.of(CLUBS, SEVEN));
 
-        actual.sort(new HighestCardInTrickComparator(CLUBS));
+        actual.sort(new HighestCardInTrickComparator(CLUBS, HEARTS));
         assertThat(actual, is(expected));
     }
 
     @Test
     public void trumpCardsShouldHaveDifferentOrder() {
         List<Card> actual = Arrays.asList(
-                Card.of(HEARTS, NINE),
-                Card.of(CLUBS, NINE),
-                Card.of(HEARTS, JACK),
                 Card.of(CLUBS, JACK),
-                Card.of(HEARTS, TEN),
-                Card.of(CLUBS, TEN),
-                Card.of(HEARTS, ACE),
+                Card.of(HEARTS, NINE),
+                Card.of(DIAMONDS, ACE),
                 Card.of(CLUBS, ACE)
         );
 
         List<Card> expected = Arrays.asList(
+                Card.of(DIAMONDS, ACE),
                 Card.of(HEARTS, NINE),
-                Card.of(HEARTS, JACK),
-                Card.of(HEARTS, TEN),
-                Card.of(HEARTS, ACE),
-                Card.of(CLUBS, TEN),
                 Card.of(CLUBS, ACE),
-                Card.of(CLUBS, NINE),
                 Card.of(CLUBS, JACK)
         );
 
-        actual.sort(new HighestCardInTrickComparator(CLUBS));
+        actual.sort(new HighestCardInTrickComparator(CLUBS, HEARTS));
+        assertThat(actual, is(expected));
+    }
+
+
+    @Test
+    public void startColorShouldWinFromOtherCards() {
+        List<Card> actual = Arrays.asList(
+                Card.of(HEARTS, SEVEN),
+                Card.of(SPADES, ACE),
+                Card.of(DIAMONDS, ACE),
+                Card.of(DIAMONDS, TEN)
+        );
+
+        List<Card> expected = Arrays.asList(
+                Card.of(DIAMONDS, TEN),
+                Card.of(DIAMONDS, ACE),
+                Card.of(SPADES, ACE),
+                Card.of(HEARTS, SEVEN)
+        );
+
+        actual.sort(new HighestCardInTrickComparator(CLUBS, HEARTS));
         assertThat(actual, is(expected));
     }
 

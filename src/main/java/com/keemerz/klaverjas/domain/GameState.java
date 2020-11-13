@@ -2,10 +2,8 @@ package com.keemerz.klaverjas.domain;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.keemerz.klaverjas.domain.Seat.*;
-import static com.keemerz.klaverjas.domain.Suit.CLUBS;
 
 public class GameState {
 
@@ -197,14 +195,18 @@ public class GameState {
         }
     }
 
-    public List<Card> getAllowedCards(Seat player) {
+    public List<Card> determinePlayableCards(Seat player) {
         if (getTurn() != player) {
             return new ArrayList<>();
         }
-        return determineAllowedCards(currentTrick, hands.get(player));
+        return determinePlayableCards(currentTrick, hands.get(player));
     }
 
-    List<Card> determineAllowedCards(Trick currentTrick, List<Card> hand) {
+    List<Card> determinePlayableCards(Trick currentTrick, List<Card> hand) {
+        if (getCurrentTrick() == null || currentTrick.getCardsPlayed().get(currentTrick.getStartingPlayer()) == null) {
+            return hand; // if no card on the table, then anything goes
+        }
+
         Suit openingSuit = currentTrick.getCardsPlayed().get(currentTrick.getStartingPlayer()).getSuit();
 
         List<Card> allowedCards = new ArrayList<>();

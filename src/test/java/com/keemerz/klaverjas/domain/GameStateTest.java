@@ -48,8 +48,8 @@ class GameStateTest {
         gameState.fillSeat(new TestPlayerBuilder().withPlayerId(testId2).build()); // East
 
         assertThat(gameState.determinePlayerIds().size(), is(2));
-        assertThat(gameState.determinePlayerIds().get(0), is(testId1));
-        assertThat(gameState.determinePlayerIds().get(1), is(testId2));
+        assertTrue(gameState.determinePlayerIds().contains(testId1));
+        assertTrue(gameState.determinePlayerIds().contains(testId2));
 
         assertThat(gameState.getPlayers().size(), is(2));
         assertThat(gameState.getPlayers().get(NORTH).getPlayerId(), is(testId1));

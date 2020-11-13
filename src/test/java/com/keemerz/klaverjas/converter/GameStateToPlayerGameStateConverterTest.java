@@ -1,5 +1,8 @@
 package com.keemerz.klaverjas.converter;
 
+import com.keemerz.klaverjas.comparator.HighestCardInTrickComparator;
+import com.keemerz.klaverjas.comparator.NonTrumpOrderComparator;
+import com.keemerz.klaverjas.comparator.TrumpOrderComparator;
 import com.keemerz.klaverjas.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class GameStateToPlayerGameStateConverterTest {
 
-    private List<Card> ALL_SPADES = filterSuit(SPADES);
-    private List<Card> ALL_HEARTS = filterSuit(HEARTS);
-    private List<Card> ALL_DIAMONDS = filterSuit(DIAMONDS);
-    private List<Card> ALL_CLUBS = filterSuit(CLUBS);
+    private List<Card> ALL_SPADES = filterSuit(SPADES).stream().sorted(new NonTrumpOrderComparator()).collect(Collectors.toList());;
+    private List<Card> ALL_HEARTS = filterSuit(HEARTS).stream().sorted(new TrumpOrderComparator()).collect(Collectors.toList());
+    private List<Card> ALL_DIAMONDS = filterSuit(DIAMONDS).stream().sorted(new NonTrumpOrderComparator()).collect(Collectors.toList());;
+    private List<Card> ALL_CLUBS = filterSuit(CLUBS).stream().sorted(new NonTrumpOrderComparator()).collect(Collectors.toList());;
 
     private GameState inputGameState;
 

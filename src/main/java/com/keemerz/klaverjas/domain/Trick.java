@@ -10,7 +10,7 @@ public class Trick {
 
     private Suit trump;
     private Seat startingPlayer;
-    private Map<Seat, Card> cardsPlayed;
+    private Map<Seat, Card> cardsPlayed = new HashMap<>();
 
     public Trick(Suit trump, Seat startingPlayer, Map<Seat, Card> cardsPlayed) {
         this.trump = trump;
