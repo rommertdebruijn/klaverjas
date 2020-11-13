@@ -14,7 +14,7 @@ public class Bidding {
     private Suit finalTrump;
     private Seat finalBidBy;
 
-    private Bidding(Suit proposedTrump, List<Suit> availableSuits, Map<Seat, Bid> rotatedBids, Suit finalTrump, Seat finalBidBy) {
+    Bidding(Suit proposedTrump, List<Suit> availableSuits, Map<Seat, Bid> rotatedBids, Suit finalTrump, Seat finalBidBy) {
         this.proposedTrump = proposedTrump;
         this.availableSuits = availableSuits;
         bids = rotatedBids;
@@ -23,23 +23,22 @@ public class Bidding {
     }
 
     public static Bidding createFirstGameBidding() {
-        return createBidding(CLUBS, new HashMap<>());
+        return createBidding(CLUBS);
     }
 
     public static Bidding createBidding() {
         List<Suit> randomList = Arrays.asList(Suit.values());
         Collections.shuffle(randomList);
         Suit randomTrump = randomList.get(0);
-        return createBidding(randomTrump, new HashMap<>());
+        return createBidding(randomTrump);
     }
 
-    private static Bidding createBidding(Suit proposedTrump, HashMap<Seat, Bid> bids) {
-        return new Bidding(proposedTrump, bids);
+    private static Bidding createBidding(Suit proposedTrump) {
+        return new Bidding(proposedTrump);
     }
 
-    Bidding(Suit proposedTrump, Map<Seat, Bid> bids) {
+    Bidding(Suit proposedTrump) {
         this.proposedTrump = proposedTrump;
-        this.bids = bids;
     }
 
     public Suit getProposedTrump() {

@@ -186,10 +186,34 @@ public class GameState {
     public void makeForcedBid(Suit forcedTrump) {
         Seat seat = getTurn();
         Bidding bidding = getBidding();
-        if (bidding.getBids().size() == 4 && !bidding.getAvailableSuits().isEmpty()) {
+        if (bidding.getBids().size() == 4 &&
+            !bidding.getAvailableSuits().isEmpty() &&
+            bidding.getAvailableSuits().contains(forcedTrump)
+        ) {
             bidding.setFinalTrump(forcedTrump);
             bidding.setFinalBidBy(seat);
+            bidding.setAvailableSuits(new ArrayList<>());
             setTurn(getDealer().getLeftHandPlayer());
         }
+    }
+
+    public List<Card> getAllowedCards(Seat player) {
+        if (getTurn() != player) {
+            return new ArrayList<>();
+        }
+        return determineAllowedCards(currentTrick, hands.get(player));
+    }
+
+    List<Card> determineAllowedCards(Trick currentTrick, List<Card> hand) {
+        Suit openingSuit = currentTrick.getCardsPlayed().get(currentTrick.getStartingPlayer()).getSuit();
+
+        List<Card> allowedCards = new ArrayList<>();
+        if (hand.stream().anyMatch(card -> card.getSuit() == openingSuit)) {
+            // eerst bekennen
+            allowedCards = hand.stream()
+                    .filter(card -> card.getSuit() == openingSuit)
+                    .collect(Collectors.toList());
+        }
+        return allowedCards;
     }
 }

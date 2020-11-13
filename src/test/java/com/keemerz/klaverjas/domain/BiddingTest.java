@@ -19,14 +19,16 @@ class BiddingTest {
 
     @BeforeEach
     void setUp() {
-        baseBidding = new Bidding(HEARTS,
-                Map.of(
+        baseBidding = new TestBiddingBuilder()
+                .withProposedTrump(HEARTS)
+                .withAvailableSuits(CLUBS, DIAMONDS, SPADES)
+                .withBids(Map.of(
                         NORTH, PASS,
                         EAST, PASS,
-                        SOUTH, PLAY));
-        baseBidding.setAvailableSuits(Arrays.asList(CLUBS, DIAMONDS, SPADES));
-        baseBidding.setFinalTrump(SPADES);
-        baseBidding.setFinalBidBy(EAST);
+                        SOUTH, PLAY))
+                .withFinalTrump(SPADES)
+                .withFinalBidBy(EAST)
+                .build();
     }
 
     @Test

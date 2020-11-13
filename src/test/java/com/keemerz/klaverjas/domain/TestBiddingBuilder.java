@@ -1,7 +1,8 @@
 package com.keemerz.klaverjas.domain;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.*;
 
 import static com.keemerz.klaverjas.domain.Seat.EAST;
 import static com.keemerz.klaverjas.domain.Suit.CLUBS;
@@ -11,11 +12,12 @@ public class TestBiddingBuilder {
 
     private Suit proposedTrump = CLUBS;
     private Map<Seat, Bid> bids = new HashMap<>();
-    private Suit finalTrump = HEARTS;
-    private Seat finalBidBy = EAST;
+    private List<Suit> availableSuits = new ArrayList<>();
+    private Suit finalTrump = null;
+    private Seat finalBidBy = null;
 
     public Bidding build() {
-        return new Bidding(proposedTrump, bids);
+        return new Bidding(proposedTrump, availableSuits, bids, finalTrump, finalBidBy);
     }
 
     public TestBiddingBuilder withProposedTrump(Suit trump) {
@@ -30,6 +32,11 @@ public class TestBiddingBuilder {
 
     public TestBiddingBuilder withBid(Seat seat, Bid bid) {
         this.bids.put(seat, bid);
+        return this;
+    }
+
+    public TestBiddingBuilder withAvailableSuits(Suit... availableSuits) {
+        this.availableSuits = Arrays.asList(availableSuits);
         return this;
     }
 

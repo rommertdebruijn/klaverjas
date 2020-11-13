@@ -1,9 +1,11 @@
 package com.keemerz.klaverjas.domain;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Card {
+
     private String cardId;
     private Suit suit;
     private Rank rank;
@@ -52,4 +54,5 @@ public class Card {
                 ", rank=" + rank +
                 '}';
     }
+
 }
