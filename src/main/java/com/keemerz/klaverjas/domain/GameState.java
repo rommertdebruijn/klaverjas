@@ -332,9 +332,14 @@ public class GameState {
     }
 
     public void claimCombo() {
-        if (currentTrick.nrOfComboPoints() > 0 && !currentTrick.isComboClaimed()) {
+        int nrOfComboPoints = currentTrick.nrOfComboPoints();
+        if (!currentTrick.isComboClaimed()) {
             currentTrick.claimCombo();
-            comboPoints.claimFor(getTurn(), currentTrick.nrOfComboPoints());
+            if (nrOfComboPoints == 0) { // invalid combo call!
+                comboPoints.claimFor(getTurn().getLeftHandPlayer(), 20); //opponents get 20 combopoints >:)
+            } else {
+                comboPoints.claimFor(getTurn(), nrOfComboPoints);
+            }
         }
     }
 
