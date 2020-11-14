@@ -114,6 +114,16 @@ public class GameStateController {
         }
     }
 
+    @MessageMapping("/game/claimCombo")
+    public void claimCombo(ClaimComboMessage message, Principal principal) {
+        GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
+        if (gameState != null) {
+            gameState.claimCombo();
+            gameStateRepository.changeGameState(gameState);
+            updateGameStateForAllPlayers(gameState);
+        }
+    }
+
     private @Nullable GameState determineGameStateForPlayer(String userId, String gameId) {
         Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(userId);
         GameState gameState = gameStateRepository.getGameState(gameId);

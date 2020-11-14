@@ -23,7 +23,8 @@ class TrickTest {
                 Map.of(
                 NORTH, Card.of(SPADES, ACE),
                 EAST, Card.of(SPADES, SEVEN),
-                SOUTH, Card.of(CLUBS, EIGHT)));
+                SOUTH, Card.of(CLUBS, EIGHT)),
+                null);
     }
 
     @Test
@@ -110,6 +111,132 @@ class TrickTest {
                 .build();
 
         assertThat(trick.determineHighestCard(), is(Card.of(HEARTS, SEVEN)));
+    }
+
+    @Test
+    public void threeCardComboFromLowestCard() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(HEARTS, NINE))
+                .withCardPlayed(EAST, Card.of(HEARTS, TEN))
+                .withCardPlayed(SOUTH, Card.of(HEARTS, JACK))
+                .withCardPlayed(WEST, Card.of(HEARTS, ACE))
+                .build();
+
+        assertThat(trick.nrOfComboPoints(), is(20));
+    }
+
+    @Test
+    public void threeCardComboNotFromLowestCard() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(HEARTS, SEVEN))
+                .withCardPlayed(EAST, Card.of(HEARTS, TEN))
+                .withCardPlayed(SOUTH, Card.of(HEARTS, JACK))
+                .withCardPlayed(WEST, Card.of(HEARTS, NINE))
+                .build();
+
+        assertThat(trick.nrOfComboPoints(), is(20));
+    }
+
+    @Test
+    public void fourCardCombo() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(HEARTS, EIGHT))
+                .withCardPlayed(EAST, Card.of(HEARTS, TEN))
+                .withCardPlayed(SOUTH, Card.of(HEARTS, JACK))
+                .withCardPlayed(WEST, Card.of(HEARTS, NINE))
+                .build();
+
+        assertThat(trick.nrOfComboPoints(), is(50));
+    }
+
+    @Test
+    public void noCombo() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(HEARTS, EIGHT))
+                .withCardPlayed(EAST, Card.of(HEARTS, TEN))
+                .withCardPlayed(SOUTH, Card.of(SPADES, JACK))
+                .withCardPlayed(WEST, Card.of(SPADES, NINE))
+                .build();
+
+        assertThat(trick.nrOfComboPoints(), is(0));
+    }
+
+    @Test
+    public void allCardsSameRankCombo() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(HEARTS, TEN))
+                .withCardPlayed(EAST, Card.of(DIAMONDS, TEN))
+                .withCardPlayed(SOUTH, Card.of(SPADES, TEN))
+                .withCardPlayed(WEST, Card.of(CLUBS, TEN))
+                .build();
+
+        assertThat(trick.nrOfComboPoints(), is(100));
+    }
+
+    @Test
+    public void allCardsJacks() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(HEARTS, JACK))
+                .withCardPlayed(EAST, Card.of(DIAMONDS, JACK))
+                .withCardPlayed(SOUTH, Card.of(SPADES, JACK))
+                .withCardPlayed(WEST, Card.of(CLUBS, JACK))
+                .build();
+
+        assertThat(trick.nrOfComboPoints(), is(200));
+    }
+
+    @Test
+    public void honorsCombo() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(CLUBS, KING))
+                .withCardPlayed(EAST, Card.of(DIAMONDS, SEVEN))
+                .withCardPlayed(SOUTH, Card.of(SPADES, SEVEN))
+                .withCardPlayed(WEST, Card.of(CLUBS, QUEEN))
+                .build();
+
+        assertThat(trick.nrOfComboPoints(), is(20));
+    }
+
+    @Test
+    public void honorsAndThreeCardCombo() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(CLUBS, KING))
+                .withCardPlayed(EAST, Card.of(CLUBS, JACK))
+                .withCardPlayed(SOUTH, Card.of(SPADES, SEVEN))
+                .withCardPlayed(WEST, Card.of(CLUBS, QUEEN))
+                .build();
+
+        assertThat(trick.nrOfComboPoints(), is(40));
+    }
+
+    @Test
+    public void honorsAndFourCardCombo() {
+        Trick trick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withStartingPlayer(NORTH)
+                .withCardPlayed(NORTH, Card.of(CLUBS, KING))
+                .withCardPlayed(EAST, Card.of(CLUBS, JACK))
+                .withCardPlayed(SOUTH, Card.of(CLUBS, ACE))
+                .withCardPlayed(WEST, Card.of(CLUBS, QUEEN))
+                .build();
+
+        assertThat(trick.nrOfComboPoints(), is(70));
     }
 
 }

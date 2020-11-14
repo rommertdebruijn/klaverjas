@@ -13,7 +13,7 @@ import static com.keemerz.klaverjas.domain.Rank.JACK;
 import static com.keemerz.klaverjas.domain.Suit.*;
 
 public class NaturalOrderCardComparator implements Comparator<Card> {
-    private static final List<Rank> RANK_NATURAL_ORDER = Arrays.asList(
+    public static final List<Rank> RANK_NATURAL_ORDER = Arrays.asList(
             SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE);
 
     private static final List<Suit> SUIT_NATURAL_ORDER = Arrays.asList(

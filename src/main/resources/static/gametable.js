@@ -55,7 +55,7 @@ function renderCardInHand(card) {
 
     if (isPlayerTurn() && cardId) {
         $('#card-' + cardId).click(function() {
-            playCard(gameState.gameId, cardId);
+            playCard(cardId);
         });
     }
 }
@@ -199,15 +199,31 @@ function renderPlayer(state, seat) {
 }
 
 function renderDealerButton(state) {
-    var $dealer = $('#dealer');
+    var playerAction = $('#playerAction');
 
-    $dealer.empty();
     if (isPlayerTurn() && state.dealer === 'SOUTH' && (!state.hand || state.hand.length === 0)) {
-        $dealer.append('<div id="dealer-button" class="action">DELEN</div>');
+        playerAction.append('<div id="dealer-button" class="action">DELEN</div>');
         $('#dealer-button').click(function() {
             dealHand();
         });
     }
+}
+
+function renderClaimComboButton(state) {
+    var playerAction = $('#playerAction');
+
+    if (isPlayerTurn() && state.currentTrick && state.currentTrick.trickWinner === 'SOUTH') {
+        playerAction.append('<div id="claim-button" class="action">ROEM MELDEN</div>');
+        $('#claim-button').click(function() {
+            claimCombo();
+        });
+    }
+}
+
+function renderPlayerActionBox(state) {
+    $('#playerAction').empty();
+    renderDealerButton(state);
+    renderClaimComboButton(state);
 }
 
 function showGameState(state) {
@@ -224,7 +240,7 @@ function showGameState(state) {
     if (state.currentTrick) {
         renderCurrentTrick(state.currentTrick);
     }
-    renderDealerButton(state);
+    renderPlayerActionBox(state);
     renderCurrentPlayerHand(state.hand);
 }
 
@@ -252,6 +268,10 @@ function makeForcedBid(forcedTrump) {
     stompQueueClient.send('/app/game/makeforcedbid', {}, JSON.stringify({ 'gameId' : gameState.gameId, 'forcedTrump' : forcedTrump }));
 }
 
-function playCard(gameId, cardId) {
-    stompQueueClient.send('/app/game/playcard', {}, JSON.stringify({ 'gameId' : gameId, 'cardId' : cardId }));
+function playCard(cardId) {
+    stompQueueClient.send('/app/game/playcard', {}, JSON.stringify({ 'gameId' : gameState.gameId, 'cardId' : cardId }));
+}
+
+function claimCombo() {
+    stompQueueClient.send('/app/game/claimCombo', {}, JSON.stringify({ 'gameId' :  gameState.gameId }));
 }

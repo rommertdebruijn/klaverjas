@@ -2,9 +2,11 @@ package com.keemerz.klaverjas.domain;
 
 import com.keemerz.klaverjas.comparator.HighestCardInTrickComparator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static com.keemerz.klaverjas.comparator.NaturalOrderCardComparator.RANK_NATURAL_ORDER;
+import static com.keemerz.klaverjas.domain.Rank.*;
 import static com.keemerz.klaverjas.domain.Seat.*;
 
 public class Trick {
@@ -12,11 +14,14 @@ public class Trick {
     private Suit trump;
     private Seat startingPlayer;
     private Map<Seat, Card> cardsPlayed = new HashMap<>();
+    private boolean comboClaimed = false;
+    private Seat trickWinner;
 
-    public Trick(Suit trump, Seat startingPlayer, Map<Seat, Card> cardsPlayed) {
+    public Trick(Suit trump, Seat startingPlayer, Map<Seat, Card> cardsPlayed, Seat trickWinner) {
         this.trump = trump;
         this.startingPlayer = startingPlayer;
         this.cardsPlayed = cardsPlayed;
+        this.trickWinner = trickWinner;
     }
 
     public Suit getTrump() {
@@ -31,6 +36,22 @@ public class Trick {
         return cardsPlayed;
     }
 
+    public boolean isComboClaimed() {
+        return comboClaimed;
+    }
+
+    public void claimCombo() {
+        this.comboClaimed = true;
+    }
+
+    public Seat getTrickWinner() {
+        return trickWinner;
+    }
+
+    public void setTrickWinner(Seat trickWinner) {
+        this.trickWinner = trickWinner;
+    }
+
     public Trick rotateForSeat(Seat currentPlayerSeat) {
         Map<Seat, Card> rotatedCardsPlayed = new HashMap<>();
         rotatedCardsPlayed.put(SOUTH, cardsPlayed.get(currentPlayerSeat));
@@ -38,7 +59,9 @@ public class Trick {
         rotatedCardsPlayed.put(NORTH, cardsPlayed.get(currentPlayerSeat.getPartner()));
         rotatedCardsPlayed.put(EAST, cardsPlayed.get(currentPlayerSeat.getRightHandPlayer()));
 
-        return new Trick(this.trump, null, rotatedCardsPlayed); // startingPlayer is only useful when calculating winner. No need to pass it to PlayerGameState
+
+        Seat trickWinner = this.trickWinner != null ? this.trickWinner.rotateForSeat(currentPlayerSeat) : null;
+        return new Trick(this.trump, null, rotatedCardsPlayed, trickWinner);
     }
 
     public Card determineHighestCard() {
@@ -69,5 +92,63 @@ public class Trick {
     public boolean isTrickFinished() {
         return cardsPlayed.values().size() == 4 &&
                 !cardsPlayed.containsValue(null);
+    }
+
+    public int nrOfComboPoints() {
+        List<Card> allCards = new ArrayList<>(cardsPlayed.values());
+        if (allCardsHaveSameRank(allCards)) { // rather exotic
+            if (allCards.get(0).getRank() == JACK) {
+                return 200;
+            }
+            return 100;
+        }
+
+        int nrOfRoemPoints = 0;
+        for (Suit suit : Suit.values()) {
+            List<Card> cardsForSuit = allCards.stream()
+                    .filter(card -> card.getSuit() == suit)
+                    .collect(Collectors.toList());
+
+            nrOfRoemPoints += nrOfComboPoints(cardsForSuit); // 3-kaart or 4-kaart roem
+        }
+
+        if (allCards.contains(Card.of(trump, QUEEN)) &&
+            allCards.contains(Card.of(trump, KING))) {
+            nrOfRoemPoints += 20; // stuk
+        }
+
+        return nrOfRoemPoints;
+    }
+
+    private boolean allCardsHaveSameRank(Collection<Card> allCards) {
+        return allCards.stream().map(Card::getRank).collect(Collectors.toSet()).size() == 1;
+    }
+
+    private int nrOfComboPoints(List<Card> cardsForSuit) {
+        if (cardsForSuit.size() < 3) {
+            return 0; // cant have roem in 2 cards or less
+        }
+
+        List<Integer> cardIndices = cardsForSuit.stream()
+                .map(card -> RANK_NATURAL_ORDER.indexOf(card.getRank()))
+                .sorted(Integer::compareTo)
+                .collect(Collectors.toList());
+
+        if (cardIndices.size() == 3 &&
+               cardIndices.get(2) - cardIndices.get(0) == 2) {
+            return 20;
+        }
+
+        if (cardIndices.size() == 4) {
+            if (cardIndices.get(3) - cardIndices.get(0) == 3) {
+                return 50;
+            }
+
+            if (cardIndices.get(2) - cardIndices.get(0) == 2 ||
+                cardIndices.get(3) - cardIndices.get(1) == 2) {
+                return 20;
+            }
+        }
+        return 0;
     }
 }

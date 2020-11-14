@@ -17,6 +17,8 @@ public class GameState {
     private List<Trick> previousTricks = new ArrayList<>();
     private Seat turn = NORTH;
     private Trick currentTrick;
+    private List<Score> gameScores = new ArrayList<>();
+    private ComboPoints comboPoints = new ComboPoints();
 
     public GameState(String gameId) {
         this.gameId = gameId;
@@ -85,6 +87,14 @@ public class GameState {
 
     public void setCurrentTrick(Trick currentTrick) {
         this.currentTrick = currentTrick;
+    }
+
+    public List<Score> getGameScores() {
+        return gameScores;
+    }
+
+    public void setGameScores(List<Score> gameScores) {
+        this.gameScores = gameScores;
     }
 
     public void dealHands() {
@@ -157,14 +167,19 @@ public class GameState {
                     .findFirst()
                     .ifPresent(card -> {
                         if (currentTrick == null || currentTrick.getCardsPlayed().size() == 4) {
-                            // copy current trick to previousTricks
-                            currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>());
+                            // TODO copy current trick to previousTricks
+                            currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>(), null);
                         }
 
                         getHands().get(seat).remove(card);
                         currentTrick.getCardsPlayed().put(seat, card);
+
+                        Seat trickWinner = currentTrick.determineHighestCardSeat();
+                        if (currentTrick.isTrickFinished()) {
+                            currentTrick.setTrickWinner(trickWinner);
+                        }
                         turn = currentTrick.isTrickFinished() // trick ended
-                                ? currentTrick.determineHighestCardSeat()
+                                ? trickWinner
                                 : turn.getLeftHandPlayer();
                     });
         }
@@ -306,6 +321,13 @@ public class GameState {
         List<Card> allButTrump = new ArrayList<>(hand);
         allButTrump.removeAll(allCardsOfSuit(hand, trump));
         return allButTrump;
+    }
+
+    public void claimCombo() {
+        if (currentTrick.nrOfComboPoints() > 0) {
+            currentTrick.claimCombo();
+            comboPoints.claimFor(getTurn(), currentTrick.nrOfComboPoints());
+        }
     }
 
 }
