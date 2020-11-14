@@ -17,7 +17,6 @@ public class GameStateToActiveGameConverter {
         }
         playerNames.sort(Comparator.naturalOrder());
 
-        String gameId = playerNames.size() < 4 ? gameState.getGameId() : null; // fully populated games should not be joinable. Hide the gameId
-        return new ActiveGame(gameId, playerNames);
+        return new ActiveGame(gameState.getGameId(), playerNames);
     }
 }

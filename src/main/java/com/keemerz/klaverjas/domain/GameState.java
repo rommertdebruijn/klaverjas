@@ -133,7 +133,8 @@ public class GameState {
     }
 
     public void joinGame(Player player) {
-        if (!determinePlayerIds().contains(player.getPlayerId())) {
+        if (!determinePlayerIds().contains(player.getPlayerId()) &&
+            determinePlayerIds().size() < 4) {
             fillSeat(player);
         }
     }

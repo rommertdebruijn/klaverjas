@@ -16,6 +16,7 @@ public class CredentialsRepository {
         CREDENTIALS.add(new Credentials("user2", encoder.encode("pass2")));
         CREDENTIALS.add(new Credentials("user3", encoder.encode("pass3")));
         CREDENTIALS.add(new Credentials("user4", encoder.encode("pass4")));
+        CREDENTIALS.add(new Credentials("user5", encoder.encode("pass5")));
     }
 
     private CredentialsRepository() {}

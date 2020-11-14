@@ -233,7 +233,6 @@ function startGame() {
 }
 
 function joinGame(gameId) {
-    alert("joining game");
     stompQueueClient.send('/app/game/join', {}, JSON.stringify({'gameId': gameId }));
 }
 
