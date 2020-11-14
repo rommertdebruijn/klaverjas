@@ -260,7 +260,11 @@ public class GameState {
             if (handContainsHigherTrump(hand, trump, currentTrick.determineHighestCard())) {
                 return higherTrumpCards(hand, currentTrick);
             } else {
-                return allButTrumpCards(hand, trump);
+                List<Card> allButTrumpCards = allButTrumpCards(hand, trump);
+                if (allButTrumpCards.isEmpty()) {
+                    return hand; // apparently, all cards in hand are trump cards? Not bad... not bad at all...
+                }
+                return allButTrumpCards; // "ondertroeven" not allowed, return all non-trump cards
             }
         } else if (handContainsSuit(hand, trump)) {
             return allCardsOfSuit(hand, trump);
@@ -300,7 +304,7 @@ public class GameState {
     private List<Card> allButTrumpCards(List<Card> hand, Suit trump) {
         List<Card> allButTrump = new ArrayList<>(hand);
         allButTrump.removeAll(allCardsOfSuit(hand, trump));
-        return allButTrump; // "ondertroeven" not allowed
+        return allButTrump;
     }
 
 }

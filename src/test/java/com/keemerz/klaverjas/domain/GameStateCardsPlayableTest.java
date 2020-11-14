@@ -216,4 +216,23 @@ class GameStateCardsPlayableTest {
         List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
         assertThat(actual, is(expected));
     }
+
+    @Test
+    public void ifOnlyTrumpCardsLeftThenTrumpIsAlwaysAllowed() {
+        Trick currentTrick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withCardPlayed(NORTH, Card.of(DIAMONDS, SEVEN))
+                .withCardPlayed(EAST, Card.of(CLUBS, KING))
+                .build();
+
+        List<Card> hand = Arrays.asList(
+                Card.of(CLUBS, SEVEN),  Card.of(CLUBS, QUEEN));
+
+        List<Card> expected = Arrays.asList(
+                Card.of(CLUBS, SEVEN),
+                Card.of(CLUBS, QUEEN));
+
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
+        assertThat(actual, is(expected));
+    }
 }

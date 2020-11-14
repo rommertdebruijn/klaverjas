@@ -124,12 +124,12 @@ function renderCurrentPlayerHand(hand) {
 
 function renderPlayPassOptions() {
     var $bidding = $('#bidding-box');
-    $bidding.append('<div id="bidPlay" class="action">[SPEEL]</div>');
+    $bidding.append('<div id="bidPlay" class="action">SPEEL</div>');
     $('#bidPlay').click(function() {
        makeBid('PLAY');
     });
 
-    $bidding.append('<div id="bidPass" class="action">[PAS]</div>');
+    $bidding.append('<div id="bidPass" class="action">PAS</div>');
     $('#bidPass').click(function() {
         makeBid('PASS');
     });
@@ -202,7 +202,7 @@ function renderDealerButton(state) {
     var $dealer = $('#dealer');
 
     $dealer.empty();
-    if (isPlayerTurn() && state.dealer === 'SOUTH' && (!state.hand || hand.length === 0)) {
+    if (isPlayerTurn() && state.dealer === 'SOUTH' && (!state.hand || state.hand.length === 0)) {
         $dealer.append('<div id="dealer-button" class="action">DELEN</div>');
         $('#dealer-button').click(function() {
             dealHand();
@@ -233,6 +233,7 @@ function startGame() {
 }
 
 function joinGame(gameId) {
+    alert("joining game");
     stompQueueClient.send('/app/game/join', {}, JSON.stringify({'gameId': gameId }));
 }
 
