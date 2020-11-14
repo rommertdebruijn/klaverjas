@@ -24,7 +24,8 @@ class TrickTest {
                 NORTH, Card.of(SPADES, ACE),
                 EAST, Card.of(SPADES, SEVEN),
                 SOUTH, Card.of(CLUBS, EIGHT)),
-                null);
+                null,
+                false);
     }
 
     @Test

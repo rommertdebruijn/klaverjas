@@ -18,7 +18,7 @@ public class GameState {
     private Seat turn = NORTH;
     private Trick currentTrick;
     private List<Score> gameScores = new ArrayList<>();
-    private ComboPoints comboPoints = new ComboPoints();
+    private ComboPoints comboPoints = new ComboPoints(0, 0);
 
     public GameState(String gameId) {
         this.gameId = gameId;
@@ -97,6 +97,14 @@ public class GameState {
         this.gameScores = gameScores;
     }
 
+    public ComboPoints getComboPoints() {
+        return comboPoints;
+    }
+
+    public void setComboPoints(ComboPoints comboPoints) {
+        this.comboPoints = comboPoints;
+    }
+
     public void dealHands() {
         ShuffledDeck deck = new ShuffledDeck();
         List<Card> cards = deck.getCards();
@@ -168,7 +176,7 @@ public class GameState {
                     .ifPresent(card -> {
                         if (currentTrick == null || currentTrick.getCardsPlayed().size() == 4) {
                             // TODO copy current trick to previousTricks
-                            currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>(), null);
+                            currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>(), null, false);
                         }
 
                         getHands().get(seat).remove(card);
@@ -324,7 +332,7 @@ public class GameState {
     }
 
     public void claimCombo() {
-        if (currentTrick.nrOfComboPoints() > 0) {
+        if (currentTrick.nrOfComboPoints() > 0 && !currentTrick.isComboClaimed()) {
             currentTrick.claimCombo();
             comboPoints.claimFor(getTurn(), currentTrick.nrOfComboPoints());
         }

@@ -15,6 +15,7 @@ public class PlayerGameState {
     private Map<Seat, Integer> nrOfCardsInHand;
     private Seat turn;
     private Seat dealer;
+    private ComboPoints comboPoints;
 
     public static PlayerGameState playerLeftGameState(String gameId) {
         return new PlayerGameState(gameId, false);
@@ -26,7 +27,7 @@ public class PlayerGameState {
     }
 
     public PlayerGameState(String gameId, Bidding bidding, boolean playerStillPlaying, List<Card> hand, Trick currentTrick,
-                           Map<Seat, String> players, Map<Seat, Integer> nrOfCardsInHand, Seat turn, Seat dealer) {
+                           Map<Seat, String> players, Map<Seat, Integer> nrOfCardsInHand, Seat turn, Seat dealer, ComboPoints comboPoints) {
         this.gameId = gameId;
         this.playerStillPlaying = playerStillPlaying;
         this.bidding = bidding;
@@ -36,6 +37,7 @@ public class PlayerGameState {
         this.nrOfCardsInHand = nrOfCardsInHand;
         this.turn = turn;
         this.dealer = dealer;
+        this.comboPoints = comboPoints;
     }
 
     public String getGameId() {
@@ -72,5 +74,9 @@ public class PlayerGameState {
 
     public Seat getDealer() {
         return dealer;
+    }
+
+    public ComboPoints getComboPoints() {
+        return comboPoints;
     }
 }

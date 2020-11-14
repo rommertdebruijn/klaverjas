@@ -14,13 +14,14 @@ public class Trick {
     private Suit trump;
     private Seat startingPlayer;
     private Map<Seat, Card> cardsPlayed = new HashMap<>();
-    private boolean comboClaimed = false;
+    private boolean comboClaimed;
     private Seat trickWinner;
 
-    public Trick(Suit trump, Seat startingPlayer, Map<Seat, Card> cardsPlayed, Seat trickWinner) {
+    public Trick(Suit trump, Seat startingPlayer, Map<Seat, Card> cardsPlayed, Seat trickWinner, boolean comboClaimed) {
         this.trump = trump;
         this.startingPlayer = startingPlayer;
         this.cardsPlayed = cardsPlayed;
+        this.comboClaimed = comboClaimed;
         this.trickWinner = trickWinner;
     }
 
@@ -61,7 +62,7 @@ public class Trick {
 
 
         Seat trickWinner = this.trickWinner != null ? this.trickWinner.rotateForSeat(currentPlayerSeat) : null;
-        return new Trick(this.trump, null, rotatedCardsPlayed, trickWinner);
+        return new Trick(this.trump, null, rotatedCardsPlayed, trickWinner, comboClaimed);
     }
 
     public Card determineHighestCard() {

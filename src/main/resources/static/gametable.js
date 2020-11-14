@@ -212,8 +212,8 @@ function renderDealerButton(state) {
 function renderClaimComboButton(state) {
     var playerAction = $('#playerAction');
 
-    if (isPlayerTurn() && state.currentTrick && state.currentTrick.trickWinner === 'SOUTH') {
-        playerAction.append('<div id="claim-button" class="action">ROEM MELDEN</div>');
+    if (isPlayerTurn() && state.currentTrick && state.currentTrick.trickWinner === 'SOUTH' && !state.currentTrick.comboClaimed) {
+        playerAction.append('<div id="claim-button" class="action">ROEM</div>');
         $('#claim-button').click(function() {
             claimCombo();
         });
@@ -224,6 +224,27 @@ function renderPlayerActionBox(state) {
     $('#playerAction').empty();
     renderDealerButton(state);
     renderClaimComboButton(state);
+}
+
+function renderComboScore(state) {
+    var $comboScore = $('#comboScore');
+
+    $comboScore.empty();
+    if (state.comboPoints.comboPointsNS > 0 ||
+        state.comboPoints.comboPointsEW > 0) {
+        var comboScoreHtml = '' +
+            '<div class="row">' +
+            '  <div class="col-md-12">ROEM:</div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">Wij</div><div class="col-md-6">Zij</div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' + state.comboPoints.comboPointsNS + '</div><div class="col-md-6">' + state.comboPoints.comboPointsEW + '</div>' +
+            '</div>';
+        $comboScore.append(comboScoreHtml);
+
+    }
 }
 
 function showGameState(state) {
@@ -240,6 +261,7 @@ function showGameState(state) {
     if (state.currentTrick) {
         renderCurrentTrick(state.currentTrick);
     }
+    renderComboScore(state);
     renderPlayerActionBox(state);
     renderCurrentPlayerHand(state.hand);
 }

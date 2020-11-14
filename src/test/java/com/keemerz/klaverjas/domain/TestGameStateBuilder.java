@@ -14,7 +14,7 @@ public class TestGameStateBuilder {
     private List<Trick> previousTricks = new ArrayList<>();
     private Seat turn = NORTH;
     private Bidding bidding = new TestBiddingBuilder().build();
-    private Trick currentTrick = new Trick(bidding.getFinalTrump(), turn, new HashMap<>(), null);
+    private Trick currentTrick = new Trick(bidding.getFinalTrump(), turn, new HashMap<>(), null, false);
 
     public GameState build() {
         GameState gameState = new GameState(gameId);

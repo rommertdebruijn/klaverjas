@@ -30,6 +30,8 @@ public class GameStateToPlayerGameStateConverter {
             modifiedHand = modifyCardsForPlayer(currentPlayerSeat, gameState);
         }
 
+        ComboPoints rotatedComboPoints = gameState.getComboPoints().rotateForSeat(currentPlayerSeat);
+
         return new PlayerGameState(
                 gameState.getGameId(),
                 rotatedBidding,
@@ -39,7 +41,8 @@ public class GameStateToPlayerGameStateConverter {
                 buildPlayerNamesMap(gameState, currentPlayerSeat),
                 buildCardsInHandMap(gameState, currentPlayerSeat),
                 gameState.getTurn().rotateForSeat(currentPlayerSeat),
-                gameState.getDealer().rotateForSeat(currentPlayerSeat)
+                gameState.getDealer().rotateForSeat(currentPlayerSeat),
+                rotatedComboPoints
         );
     }
 

@@ -13,7 +13,7 @@ public class TestTrickBuilder {
     private Map<Seat, Card> cardsPlayed = new HashMap<>();
 
     public Trick build() {
-        return new Trick(trump, startingPlayer, cardsPlayed, null);
+        return new Trick(trump, startingPlayer, cardsPlayed, null, false);
     }
 
     public TestTrickBuilder withTrump(Suit trump) {
