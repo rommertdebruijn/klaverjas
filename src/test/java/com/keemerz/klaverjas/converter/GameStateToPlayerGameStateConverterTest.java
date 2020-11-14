@@ -1,6 +1,5 @@
 package com.keemerz.klaverjas.converter;
 
-import com.keemerz.klaverjas.comparator.HighestCardInTrickComparator;
 import com.keemerz.klaverjas.comparator.NonTrumpOrderComparator;
 import com.keemerz.klaverjas.comparator.TrumpOrderComparator;
 import com.keemerz.klaverjas.domain.*;
@@ -52,6 +51,7 @@ class GameStateToPlayerGameStateConverterTest {
                 .withHand(SOUTH, ALL_DIAMONDS)
                 .withHand(WEST, ALL_CLUBS)
                 .withTurn(SOUTH)
+                .withDealer(NORTH)
                 .build();
     }
 
@@ -83,6 +83,8 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getPlayers().get(WEST), is("Eddy"));
 
         assertThat(output.getTurn(), is(NORTH));
+
+        assertThat(output.getDealer(), is(SOUTH));
     }
 
     @Test
@@ -113,6 +115,8 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getPlayers().get(WEST), is("Simone"));
 
         assertThat(output.getTurn(), is(WEST));
+
+        assertThat(output.getDealer(), is(EAST));
     }
 
     @Test
@@ -143,6 +147,8 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getPlayers().get(WEST), is("Wendy"));
 
         assertThat(output.getTurn(), is(SOUTH));
+
+        assertThat(output.getDealer(), is(NORTH));
     }
 
     @Test
@@ -173,6 +179,8 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getPlayers().get(WEST), is("Nico"));
 
         assertThat(output.getTurn(), is(EAST));
+
+        assertThat(output.getDealer(), is(WEST));
     }
 
     private List<Card> removeCardPlayed(List<Card> allCards, Card... cardsPlayed) {

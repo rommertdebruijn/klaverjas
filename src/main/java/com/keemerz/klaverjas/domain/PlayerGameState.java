@@ -14,6 +14,7 @@ public class PlayerGameState {
     private Map<Seat, String> players;
     private Map<Seat, Integer> nrOfCardsInHand;
     private Seat turn;
+    private Seat dealer;
 
     public static PlayerGameState playerLeftGameState(String gameId) {
         return new PlayerGameState(gameId, false);
@@ -24,7 +25,8 @@ public class PlayerGameState {
         this.playerStillPlaying = playerStillPlaying; // ok not too pretty
     }
 
-    public PlayerGameState(String gameId, Bidding bidding, boolean playerStillPlaying, List<Card> hand, Trick currentTrick, Map<Seat, String> players, Map<Seat, Integer> nrOfCardsInHand, Seat turn) {
+    public PlayerGameState(String gameId, Bidding bidding, boolean playerStillPlaying, List<Card> hand, Trick currentTrick,
+                           Map<Seat, String> players, Map<Seat, Integer> nrOfCardsInHand, Seat turn, Seat dealer) {
         this.gameId = gameId;
         this.playerStillPlaying = playerStillPlaying;
         this.bidding = bidding;
@@ -33,6 +35,7 @@ public class PlayerGameState {
         this.players = players;
         this.nrOfCardsInHand = nrOfCardsInHand;
         this.turn = turn;
+        this.dealer = dealer;
     }
 
     public String getGameId() {
@@ -65,5 +68,9 @@ public class PlayerGameState {
 
     public Seat getTurn() {
         return turn;
+    }
+
+    public Seat getDealer() {
+        return dealer;
     }
 }

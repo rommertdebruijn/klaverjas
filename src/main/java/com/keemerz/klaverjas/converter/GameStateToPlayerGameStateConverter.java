@@ -38,7 +38,8 @@ public class GameStateToPlayerGameStateConverter {
                 rotatedTrick,
                 buildPlayerNamesMap(gameState, currentPlayerSeat),
                 buildCardsInHandMap(gameState, currentPlayerSeat),
-                gameState.getTurn().rotateForSeat(currentPlayerSeat)
+                gameState.getTurn().rotateForSeat(currentPlayerSeat),
+                gameState.getDealer().rotateForSeat(currentPlayerSeat)
         );
     }
 

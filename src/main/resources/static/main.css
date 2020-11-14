@@ -75,9 +75,9 @@ body {
     height: 90px;
     background-color: white;
     border-width: 2px;
-    border-radius: 0.2em;
+    border-radius: 0.4em;
     float: left;
-    margin-right: 5px;
+    margin-left: 4px;
     margin-bottom: 5px;
     font-size: 0.8em;
 }
@@ -97,21 +97,27 @@ body {
 #bidding {
     background-color: white;
     text-align: center;
+    border-radius: 0.4em;
 }
 
 .action {
-    margin: 5px;
-    background-color: goldenrod;
-    color: white;
+    background-color: white;
+    color: black;
     width: 100px;
+    border-radius: 0.4em;
+    padding-left: 5px;
+    margin: 10px;
 }
 
 .bidOnTable {
     width: 50px;
     background-color: white;
+    border-radius: 0.4em;
+    padding-left: 5px;
+    margin: 10px;
 }
 
-.hidden-cards {
+.other-player-cards {
     padding-left: 20px;
 }
 

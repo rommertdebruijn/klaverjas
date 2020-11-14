@@ -14,8 +14,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -48,6 +46,16 @@ public class GameStateController {
         gameStateRepository.changeGameState(gameState);
         updateGameStateForAllPlayers(gameState);
         updateLobby();
+    }
+
+    @MessageMapping("/game/deal")
+    public void dealNewHand(DealHandMessage message, Principal principal) {
+        GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
+        if (gameState != null) {
+            gameState.dealNewHand();
+            gameStateRepository.changeGameState(gameState);
+            updateGameStateForAllPlayers(gameState);
+        }
     }
 
     @MessageMapping("/game/leave")

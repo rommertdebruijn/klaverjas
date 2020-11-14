@@ -1,17 +1,5 @@
 var gameState = null;
 
-function startGame() {
-    stompQueueClient.send('/app/game/start', {}, JSON.stringify({}));
-}
-
-function joinGame(gameId) {
-    stompQueueClient.send('/app/game/join', {}, JSON.stringify({'gameId': gameId }));
-}
-
-function leaveGame() {
-    stompQueueClient.send('/app/game/leave', {}, JSON.stringify({'gameId': gameState.gameId }));
-}
-
 function handleGameState(gameStateMessage) { // *player* game state!
     gameState = JSON.parse(gameStateMessage.body);
     if (gameState.playerStillPlaying) {
@@ -23,6 +11,18 @@ function handleGameState(gameStateMessage) { // *player* game state!
         $('#table').hide();
         gameState = null;
     }
+}
+
+function isPlayerTurn() {
+    return !!gameState && !!gameState.turn && gameState.turn === 'SOUTH';
+}
+
+function cleanTable() {
+    $('#tableNorth').empty();
+    $('#tableEast').empty();
+    $('#tableSouth').empty();
+    $('#tableWest').empty();
+    $('#bidding').empty();
 }
 
 function getSuitCharacter(suit) {
@@ -38,10 +38,6 @@ function getSuitCharacter(suit) {
     if (suit === 'CLUBS') {
         return '<span class="black-suit">&clubs;</span>';
     }
-}
-
-function playCard(gameId, cardId) {
-    stompQueueClient.send('/app/game/playcard', {}, JSON.stringify({ 'gameId' : gameId, 'cardId' : cardId }));
 }
 
 function renderCardInHand(card) {
@@ -139,14 +135,6 @@ function renderPlayPassOptions() {
     });
 }
 
-function makeBid(bid) {
-    stompQueueClient.send('/app/game/makebid', {}, JSON.stringify({ 'gameId' : gameState.gameId, 'bid' : bid }));
-}
-
-function makeForcedBid(forcedTrump) {
-    stompQueueClient.send('/app/game/makeforcedbid', {}, JSON.stringify({ 'gameId' : gameState.gameId, 'forcedTrump' : forcedTrump }));
-}
-
 function renderForcedBidButton(availableSuit) {
     var $bidding = $('#bidding-box');
     var forcedBidButtonId = 'forced-' + availableSuit.toLowerCase();
@@ -173,23 +161,11 @@ function renderBiddingBox(bidding) {
     }
 }
 
-function isPlayerTurn() {
-    return !!gameState && !!gameState.turn && gameState.turn === 'SOUTH';
-}
-
-function cleanTable() {
-    $('#tableNorth').empty();
-    $('#tableEast').empty();
-    $('#tableSouth').empty();
-    $('#tableWest').empty();
-    $('#bidding').empty();
-}
-
-function renderHiddenCards(state, seat, $element) {
+function renderOtherPlayerCards(state, seat, $element) {
     var nrOfCardsInHand = state.nrOfCardsInHand[seat];
     var handHtml = '' +
         '<div class="row">' +
-        '  <div class="hidden-cards">';
+        '  <div class="other-player-cards">';
 
     for (var i = 0; i < nrOfCardsInHand - 1; i++) {
         handHtml += '<div class="half-card" />';
@@ -218,7 +194,19 @@ function renderPlayer(state, seat) {
     $player.append(nameHtml);
 
     if ('SOUTH' !== seat) {
-        renderHiddenCards(state, seat, $player);
+        renderOtherPlayerCards(state, seat, $player);
+    }
+}
+
+function renderDealerButton(state) {
+    var $dealer = $('#dealer');
+
+    $dealer.empty();
+    if (isPlayerTurn() && state.dealer === 'SOUTH' && (!state.hand || hand.length === 0)) {
+        $dealer.append('<div id="dealer-button" class="action">DELEN</div>');
+        $('#dealer-button').click(function() {
+            dealHand();
+        });
     }
 }
 
@@ -236,5 +224,34 @@ function showGameState(state) {
     if (state.currentTrick) {
         renderCurrentTrick(state.currentTrick);
     }
+    renderDealerButton(state);
     renderCurrentPlayerHand(state.hand);
+}
+
+function startGame() {
+    stompQueueClient.send('/app/game/start', {}, JSON.stringify({}));
+}
+
+function joinGame(gameId) {
+    stompQueueClient.send('/app/game/join', {}, JSON.stringify({'gameId': gameId }));
+}
+
+function leaveGame() {
+    stompQueueClient.send('/app/game/leave', {}, JSON.stringify({'gameId': gameState.gameId }));
+}
+
+function dealHand() {
+    stompQueueClient.send('/app/game/deal', {}, JSON.stringify({'gameId': gameState.gameId }));
+}
+
+function makeBid(bid) {
+    stompQueueClient.send('/app/game/makebid', {}, JSON.stringify({ 'gameId' : gameState.gameId, 'bid' : bid }));
+}
+
+function makeForcedBid(forcedTrump) {
+    stompQueueClient.send('/app/game/makeforcedbid', {}, JSON.stringify({ 'gameId' : gameState.gameId, 'forcedTrump' : forcedTrump }));
+}
+
+function playCard(gameId, cardId) {
+    stompQueueClient.send('/app/game/playcard', {}, JSON.stringify({ 'gameId' : gameId, 'cardId' : cardId }));
 }

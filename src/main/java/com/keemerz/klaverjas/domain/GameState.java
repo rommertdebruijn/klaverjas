@@ -13,7 +13,7 @@ public class GameState {
     private Bidding bidding;
     private Map<Seat, List<Card>> hands = new HashMap<>();
     private Map<Seat, Player> players = new HashMap<>();
-    private Seat dealer = WEST;
+    private Seat dealer = NORTH;
     private List<Trick> previousTricks = new ArrayList<>();
     private Seat turn = NORTH;
     private Trick currentTrick;
@@ -135,10 +135,15 @@ public class GameState {
     public void joinGame(Player player) {
         if (!determinePlayerIds().contains(player.getPlayerId())) {
             fillSeat(player);
-            if (getHands().isEmpty() && getPlayers().size() > 3) { // if 4th player joins, deal first hand
-                dealHands();
-                setBidding(Bidding.createFirstGameBidding()); // first game always clubs
-            }
+        }
+    }
+
+    public void dealNewHand() {
+        if (getTurn() == getDealer() && getHands().isEmpty() && getPlayers().size() == 4) {
+            dealHands();
+            // TODO if score has no entries, then start with CLUBS, else start with random trump
+            setBidding(Bidding.createFirstGameBidding()); // first game always clubs
+            turn = getDealer().getLeftHandPlayer();
         }
     }
 
