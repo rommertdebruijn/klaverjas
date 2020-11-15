@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.keemerz.klaverjas.domain.Rank.*;
@@ -19,11 +20,13 @@ class TrickTest {
 
     @BeforeEach
     void setUp() {
+        Map<Seat, Card> cards = new HashMap<>();
+        cards.put(NORTH,  Card.of(SPADES, ACE));
+        cards.put(EAST,  Card.of(SPADES, SEVEN));
+        cards.put(SOUTH,  Card.of(SPADES, EIGHT));
+
         baseTrick = new Trick(HEARTS, NORTH,
-                Map.of(
-                NORTH, Card.of(SPADES, ACE),
-                EAST, Card.of(SPADES, SEVEN),
-                SOUTH, Card.of(CLUBS, EIGHT)),
+                cards,
                 null,
                 false);
     }
