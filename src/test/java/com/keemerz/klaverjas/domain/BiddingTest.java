@@ -3,11 +3,8 @@ package com.keemerz.klaverjas.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-
-import static com.keemerz.klaverjas.domain.Bid.*;
+import static com.keemerz.klaverjas.domain.Bid.PASS;
+import static com.keemerz.klaverjas.domain.Bid.PLAY;
 import static com.keemerz.klaverjas.domain.Seat.*;
 import static com.keemerz.klaverjas.domain.Suit.*;
 import static org.hamcrest.CoreMatchers.is;
@@ -22,10 +19,9 @@ class BiddingTest {
         baseBidding = new TestBiddingBuilder()
                 .withProposedTrump(HEARTS)
                 .withAvailableSuits(CLUBS, DIAMONDS, SPADES)
-                .withBids(Map.of(
-                        NORTH, PASS,
-                        EAST, PASS,
-                        SOUTH, PLAY))
+                .withBid(NORTH, PASS)
+                .withBid(EAST, PASS)
+                .withBid(SOUTH, PLAY)
                 .withFinalTrump(SPADES)
                 .withFinalBidBy(EAST)
                 .build();
