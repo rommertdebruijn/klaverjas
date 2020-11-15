@@ -5,7 +5,7 @@ function handleGameState(gameStateMessage) { // *player* game state!
     if (gameState.playerStillPlaying) {
         $('#lobby').hide();
         $('#table').show();
-        showGameState(gameState);
+        renderGameState(gameState);
     } else {
         $('#lobby').show();
         $('#table').hide();
@@ -190,7 +190,8 @@ function renderPlayer(state, seat) {
         nameClass = 'player-name-highlight';
     }
 
-    var nameHtml = '<div class="' + nameClass + '">' + state.players[seat] + '</div>';
+    var name = state.players[seat] ? state.players[seat] : '[wachten op speler]';
+    var nameHtml = '<div class="' + nameClass + '">' + name + '</div>';
     $player.append(nameHtml);
 
     if ('SOUTH' !== seat) {
@@ -198,10 +199,17 @@ function renderPlayer(state, seat) {
     }
 }
 
+function allSeatsTaken(state) {
+    return state.players['NORTH'] &&
+        state.players['EAST'] &&
+        state.players['SOUTH'] &&
+        state.players['WEST'];
+}
+
 function renderDealerButton(state) {
     var playerAction = $('#playerAction');
 
-    if (isPlayerTurn() && state.dealer === 'SOUTH' && (!state.hand || state.hand.length === 0)) {
+    if (allSeatsTaken(state) && isPlayerTurn() && state.dealer === 'SOUTH' && (!state.hand || state.hand.length === 0)) {
         playerAction.append('<div id="dealer-button" class="action">DELEN</div>');
         $('#dealer-button').click(function() {
             dealHand();
@@ -213,6 +221,7 @@ function renderClaimComboButton(state) {
     var playerAction = $('#playerAction');
 
     if (isPlayerTurn() && state.currentTrick && state.currentTrick.trickWinner === 'SOUTH' && !state.currentTrick.comboClaimed) {
+        alert("blaaa");
         playerAction.append('<div id="claim-button" class="action">ROEM</div>');
         $('#claim-button').click(function() {
             claimCombo();
@@ -246,7 +255,55 @@ function renderComboScore(state) {
     }
 }
 
-function showGameState(state) {
+function renderScore(state) {
+    var $score = $('#score');
+
+    $score.empty();
+    if (state.totalScore) {
+        var totalScoreHtml = '' +
+            '<div class="row">' +
+            '  <div class="col-md-12">Totaalscore:</div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">Wij</div><div class="col-md-6">Zij</div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">' + state.totalScore.scores['NS'] + '</div><div class="col-md-6">' + state.totalScore.scores['EW'] + '</div>' +
+            '</div>';
+        $score.append(totalScoreHtml);
+    }
+
+    if (state.gameScores.length > 0) {
+        var gameScoresHtml = '' +
+            '<div class="row">' +
+            '  <div class="col-md-12">Alle scores:</div>' +
+            '</div>' +
+            '<div class="row">' +
+            '  <div class="col-md-6">Wij</div><div class="col-md-6">Zij</div>' +
+            '</div>';
+        for (var i=0;i<state.gameScores.length;i++) {
+            var score = state.gameScores[i];
+
+            var scoreNS = score.scores['NS'];
+            if (score.remarks['NS']) {
+                scoreNS = score.remarks['NS'];
+            }
+
+            var scoreEW = score.scores['EW'];
+            if (score.remarks['EW']) {
+                scoreNS = score.remarks['NS'];
+            }
+
+            gameScoresHtml += '<div class="row">' +
+                '  <div class="col-md-6">' + scoreNS + '</div><div class="col-md-6">' + scoreEW + '</div>' +
+                '</div>'
+        }
+
+        $score.append(gameScoresHtml);
+    }
+}
+
+function renderGameState(state) {
     renderPlayer(state, 'NORTH');
     renderPlayer(state, 'EAST');
     renderPlayer(state, 'SOUTH');
@@ -261,6 +318,7 @@ function showGameState(state) {
         renderCurrentTrick(state.currentTrick);
     }
     renderComboScore(state);
+    renderScore(state);
     renderPlayerActionBox(state);
     renderCurrentPlayerHand(state.hand);
 }
