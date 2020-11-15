@@ -112,13 +112,14 @@ class GameStateTest {
         assertThat(gameState.getGameScores().size(), is(0));
         assertThat(gameState.getDealer(), is(NORTH));
         assertThat(gameState.getTurn(), is(SOUTH));
-        assertNull(gameState.getCurrentTrick());
+        assertThat(gameState.getCurrentTrick().getTrickWinner(), is(SOUTH));
 
         gameState.processCard(SOUTH, Card.of(SPADES, SEVEN));
 
         assertThat(gameState.getTurn(), is(WEST));
         assertThat(gameState.getCurrentTrick().getStartingPlayer(), is(SOUTH));
         assertThat(gameState.getCurrentTrick().getCardsPlayed().get(SOUTH), is(Card.of(SPADES, SEVEN)));
+        assertNull(gameState.getCurrentTrick().getTrickWinner());
     }
 
     @Test

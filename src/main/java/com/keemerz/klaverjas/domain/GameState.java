@@ -173,8 +173,11 @@ public class GameState {
     public void dealNewHand() {
         if (getTurn() == getDealer() && getHands().isEmpty() && getPlayers().size() == 4) {
             dealHands();
-            // TODO if score has no entries, then start with CLUBS, else start with random trump
-            setBidding(Bidding.createFirstGameBidding()); // first game always clubs
+            if (gameScores.isEmpty()) {
+                setBidding(Bidding.createFirstGameBidding()); // first game always clubs
+            } else {
+                setBidding(Bidding.createBidding());
+            }
             turn = getDealer().getLeftHandPlayer();
         }
     }
@@ -194,7 +197,7 @@ public class GameState {
     }
 
     void processCard(Seat seat, Card card) {
-        if (currentTrick == null) {
+        if (currentTrick == null || currentTrick.isTrickFinished()) {
             currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>(), null, false);
         }
         currentTrick.getCardsPlayed().put(seat, card);
@@ -207,7 +210,6 @@ public class GameState {
         if (currentTrick.isTrickFinished()) {
             currentTrick.setTrickWinner(trickWinner);
             previousTricks.add(currentTrick);
-            currentTrick = null;
             if (previousTricks.size() == 8) {
                 Score score = ScoreCalculator.calculateGameScore(bidding, previousTricks, comboPoints);
                 gameScores.add(score);
