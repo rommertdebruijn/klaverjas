@@ -182,28 +182,6 @@ public class GameState {
     }
 
     private void processCard(Seat seat, Card card) {
-        Seat trickWinner = currentTrick.determineHighestCardSeat();
-
-        if (currentTrick.isTrickFinished() && allHandsEmpty()) {
-            currentTrick.setTrickWinner(trickWinner);
-            previousTricks.add(currentTrick);
-            // calculate score
-            gameScores.add(ScoreCalculator.calculateGameScore(bidding, previousTricks, comboPoints));
-            if (gameScores.size() > MAX_NR_OF_GAMES) {
-                // reset game:
-                // - empty hands
-                // - empty currentTrick
-                // - empty ComboPoints
-                // - empty Bidding
-                // - pass turn to new dealer so they can deal
-            } else {
-                // set dealer to null (will NPE?)
-                // clean table, players should leave game
-                // show final score
-            }
-        }
-
-        // if no trick exists, or the current trick has four cards, then start a new trick
         if (currentTrick == null || currentTrick.getCardsPlayed().size() == 4) {
             // TODO copy current trick to previousTricks
             currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>(), null, false);
@@ -212,7 +190,10 @@ public class GameState {
         getHands().get(seat).remove(card);
         currentTrick.getCardsPlayed().put(seat, card);
 
-
+        Seat trickWinner = currentTrick.determineHighestCardSeat();
+        if (currentTrick.isTrickFinished()) {
+            currentTrick.setTrickWinner(trickWinner);
+        }
         turn = currentTrick.isTrickFinished() // trick ended
                 ? trickWinner
                 : turn.getLeftHandPlayer();
