@@ -11,9 +11,10 @@ public class TestTrickBuilder {
     private Suit trump = CLUBS;
     private Seat startingPlayer = NORTH;
     private Map<Seat, Card> cardsPlayed = new HashMap<>();
+    private Seat trickWinner;
 
     public Trick build() {
-        return new Trick(trump, startingPlayer, cardsPlayed, null, false);
+        return new Trick(trump, startingPlayer, cardsPlayed, trickWinner, false);
     }
 
     public TestTrickBuilder withTrump(Suit trump) {
@@ -26,13 +27,13 @@ public class TestTrickBuilder {
         return this;
     }
 
-    public TestTrickBuilder withCardsPlayed(Map<Seat, Card> cardsPlayed) {
-        this.cardsPlayed = cardsPlayed;
+    public TestTrickBuilder withCardPlayed(Seat seat, Card card) {
+        this.cardsPlayed.put(seat, card);
         return this;
     }
 
-    public TestTrickBuilder withCardPlayed(Seat seat, Card card) {
-        this.cardsPlayed.put(seat, card);
+    public TestTrickBuilder withTrickWinner(Seat trickWinner) {
+        this.trickWinner = trickWinner;
         return this;
     }
 }

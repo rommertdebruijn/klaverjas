@@ -1,41 +1,34 @@
 package com.keemerz.klaverjas.domain;
 
-import static com.keemerz.klaverjas.domain.Seat.EAST;
-import static com.keemerz.klaverjas.domain.Seat.WEST;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.keemerz.klaverjas.domain.Team.EW;
+import static com.keemerz.klaverjas.domain.Team.NS;
 
 public class ComboPoints {
 
-    private int comboPointsNS = 0;
-    private int comboPointsEW = 0;
+    Map<Team, Integer> comboPoints = new HashMap<>();
 
     public ComboPoints(int comboPointsNS, int comboPointsEW) {
-        this.comboPointsNS = comboPointsNS;
-        this.comboPointsEW = comboPointsEW;
+        comboPoints.put(NS, comboPointsNS);
+        comboPoints.put(EW, comboPointsEW);
     }
 
-    public void claimFor(Seat seat, int nrOfComboPoints) {
-        switch (seat) {
-            case NORTH:
-            case SOUTH:
-                comboPointsNS += nrOfComboPoints;
-                break;
-            case EAST:
-            case WEST:
-                comboPointsEW += nrOfComboPoints;
+    public void claimFor(Team team, int nrOfComboPoints) {
+        if (team == NS) {
+            comboPoints.put(NS, comboPoints.get(NS) + nrOfComboPoints);
         }
+        comboPoints.put(EW, comboPoints.get(EW) + nrOfComboPoints);
     }
 
-    public int getComboPointsNS() {
-        return comboPointsNS;
-    }
-
-    public int getComboPointsEW() {
-        return comboPointsEW;
+    public Map<Team, Integer> getComboPoints() {
+        return comboPoints;
     }
 
     public ComboPoints rotateForSeat(Seat seat) {
-        if (seat == EAST || seat == WEST) {
-            return new ComboPoints(comboPointsEW, comboPointsNS);
+        if (Team.forSeat(seat) == EW) {
+            return new ComboPoints(comboPoints.get(EW), comboPoints.get(NS));
         }
         return this;
     }

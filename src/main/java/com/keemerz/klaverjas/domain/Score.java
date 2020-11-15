@@ -1,46 +1,53 @@
 package com.keemerz.klaverjas.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import static com.keemerz.klaverjas.domain.Team.*;
+
 public class Score {
 
-    private int scoreNS = 0;
-    private int scoreEW = 0;
-    private String remarkNS;
-    private String remarkEW;
+    Map<Team, Integer> scores = new HashMap<>();
+    Map<Team, String> remarks = new HashMap<>();
 
-    public Score(int scoreNS, int scoreEW) {
-        this.scoreNS = scoreNS;
-        this.scoreEW = scoreEW;
+    public Score() {
     }
 
-    public int getScoreNS() {
-        return scoreNS;
+    public Score(int scoreNS, int scoreEW, String remarkNS, String remarkEW) {
+        scores.put(NS, scoreNS);
+        scores.put(EW, scoreEW);
+        remarks.put(NS, remarkNS);
+        remarks.put(EW, remarkEW);
     }
 
-    public void setScoreNS(int scoreNS) {
-        this.scoreNS = scoreNS;
+    public Map<Team, Integer> getScores() {
+        return scores;
     }
 
-    public int getScoreEW() {
-        return scoreEW;
+    public Map<Team, String> getRemarks() {
+        return remarks;
     }
 
-    public void setScoreEW(int scoreEW) {
-        this.scoreEW = scoreEW;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Score score = (Score) o;
+        return Objects.equals(scores, score.scores) &&
+                Objects.equals(remarks, score.remarks);
     }
 
-    public String getRemarkNS() {
-        return remarkNS;
+    @Override
+    public int hashCode() {
+        return Objects.hash(scores, remarks);
     }
 
-    public void setRemarkNS(String remarkNS) {
-        this.remarkNS = remarkNS;
-    }
-
-    public String getRemarkEW() {
-        return remarkEW;
-    }
-
-    public void setRemarkEW(String remarkEW) {
-        this.remarkEW = remarkEW;
+    @Override
+    public String toString() {
+        return "Score{" +
+                "scores=" + scores +
+                ", remarks=" + remarks +
+                '}';
     }
 }
