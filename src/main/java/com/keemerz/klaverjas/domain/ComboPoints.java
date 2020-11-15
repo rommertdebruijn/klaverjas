@@ -18,8 +18,9 @@ public class ComboPoints {
     public void claimFor(Team team, int nrOfComboPoints) {
         if (team == NS) {
             comboPoints.put(NS, comboPoints.get(NS) + nrOfComboPoints);
+        } else {
+            comboPoints.put(EW, comboPoints.get(EW) + nrOfComboPoints);
         }
-        comboPoints.put(EW, comboPoints.get(EW) + nrOfComboPoints);
     }
 
     public Map<Team, Integer> getComboPoints() {

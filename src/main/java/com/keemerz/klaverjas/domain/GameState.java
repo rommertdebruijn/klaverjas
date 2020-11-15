@@ -1,7 +1,6 @@
 package com.keemerz.klaverjas.domain;
 
 import com.keemerz.klaverjas.comparator.TrumpOrderComparator;
-import com.keemerz.klaverjas.websocket.ScoreCalculator;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -230,8 +230,8 @@ function renderComboScore(state) {
     var $comboScore = $('#comboScore');
 
     $comboScore.empty();
-    if (state.comboPoints.comboPointsNS > 0 ||
-        state.comboPoints.comboPointsEW > 0) {
+    if (state.comboPoints.comboPoints['NS'] > 0 ||
+        state.comboPoints.comboPoints['EW'] > 0) {
         var comboScoreHtml = '' +
             '<div class="row">' +
             '  <div class="col-md-12">ROEM:</div>' +
@@ -240,7 +240,7 @@ function renderComboScore(state) {
             '  <div class="col-md-6">Wij</div><div class="col-md-6">Zij</div>' +
             '</div>' +
             '<div class="row">' +
-            '  <div class="col-md-6">' + state.comboPoints.comboPointsNS + '</div><div class="col-md-6">' + state.comboPoints.comboPointsEW + '</div>' +
+            '  <div class="col-md-6">' + state.comboPoints.comboPoints['NS'] + '</div><div class="col-md-6">' + state.comboPoints.comboPoints['EW'] + '</div>' +
             '</div>';
         $comboScore.append(comboScoreHtml);
 
