@@ -18,6 +18,27 @@ public class PlayerRepository {
         PLAYERS.add(new Player("user3", UUID.randomUUID().toString(), "Ernst"));
         PLAYERS.add(new Player("user4", UUID.randomUUID().toString(), "Luigi"));
         PLAYERS.add(new Player("user5", UUID.randomUUID().toString(), "Gregor"));
+
+        PLAYERS.add(new Player("martin", UUID.randomUUID().toString(), "Martin"));
+        PLAYERS.add(new Player("alex", UUID.randomUUID().toString(), "Alex"));
+        PLAYERS.add(new Player("ronald", UUID.randomUUID().toString(), "Ronald"));
+        PLAYERS.add(new Player("eelco", UUID.randomUUID().toString(), "Eelco"));
+        PLAYERS.add(new Player("robert", UUID.randomUUID().toString(), "Robert"));
+        PLAYERS.add(new Player("rommert", UUID.randomUUID().toString(), "Rommert"));
+        PLAYERS.add(new Player("toon", UUID.randomUUID().toString(), "Toon"));
+        PLAYERS.add(new Player("jasper", UUID.randomUUID().toString(), "Jasper"));
+        PLAYERS.add(new Player("yoran", UUID.randomUUID().toString(), "Yoran"));
+        PLAYERS.add(new Player("paul", UUID.randomUUID().toString(), "Paul"));
+        PLAYERS.add(new Player("joris", UUID.randomUUID().toString(), "Joris"));
+        PLAYERS.add(new Player("frank", UUID.randomUUID().toString(), "Frank"));
+        PLAYERS.add(new Player("janthijs", UUID.randomUUID().toString(), "Jan-Thijs"));
+        PLAYERS.add(new Player("anton", UUID.randomUUID().toString(), "Anton"));
+        PLAYERS.add(new Player("edzo", UUID.randomUUID().toString(), "Edzo"));
+        PLAYERS.add(new Player("marc", UUID.randomUUID().toString(), "Marc"));
+        PLAYERS.add(new Player("sander", UUID.randomUUID().toString(), "Sander"));
+        PLAYERS.add(new Player("michell", UUID.randomUUID().toString(), "Michell"));
+        PLAYERS.add(new Player("jonathan", UUID.randomUUID().toString(), "Jonathan"));
+        PLAYERS.add(new Player("niek", UUID.randomUUID().toString(), "Niek"));
     }
 
     private PlayerRepository() {}
