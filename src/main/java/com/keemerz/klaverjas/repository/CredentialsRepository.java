@@ -62,6 +62,7 @@ Niek
         CREDENTIALS.add(new Credentials("michell", encoder.encode("Michell")));
         CREDENTIALS.add(new Credentials("jonathan", encoder.encode("Jonathan")));
         CREDENTIALS.add(new Credentials("niek", encoder.encode("Niek")));
+        CREDENTIALS.add(new Credentials("stefan", encoder.encode("Stefan")));
 
     }
 
