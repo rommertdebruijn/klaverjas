@@ -91,8 +91,8 @@ public class ScoreCalculator {
                 .map(score -> score.getScores().get(EW))
                 .reduce(0, Integer::sum);
 
-        String remarkNS = totalScoreNS > totalScoreEW ? "WINNAAR" : "";
-        String remarkEW = totalScoreEW > totalScoreNS ? "WINNAAR" : "";
+        String remarkNS = totalScoreNS > totalScoreEW ? "" : "";
+        String remarkEW = totalScoreEW > totalScoreNS ? "" : "";
 
         return new Score(totalScoreNS, totalScoreEW, remarkNS, remarkEW);
     }

@@ -243,7 +243,6 @@ function renderComboScore(state) {
             '  <div class="col-md-6">' + state.comboPoints.comboPoints['NS'] + '</div><div class="col-md-6">' + state.comboPoints.comboPoints['EW'] + '</div>' +
             '</div>';
         $comboScore.append(comboScoreHtml);
-
     }
 }
 

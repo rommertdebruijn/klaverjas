@@ -52,6 +52,8 @@ class GameStateToPlayerGameStateConverterTest {
                 .withHand(WEST, ALL_CLUBS)
                 .withTurn(SOUTH)
                 .withDealer(NORTH)
+                .withGameScore(new Score(121, 41, "", ""))
+                .withGameScore(new Score(0, 162, "NAT", ""))
                 .build();
     }
 
@@ -85,6 +87,10 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getTurn(), is(NORTH));
 
         assertThat(output.getDealer(), is(SOUTH));
+
+        assertThat(output.getGameScores().get(0), is(new Score(121, 41, "", "")));
+        assertThat(output.getGameScores().get(1), is(new Score(0, 162, "NAT", "")));
+        assertThat(output.getTotalScore(), is(new Score(121, 203, "", "")));
     }
 
     @Test
@@ -117,6 +123,10 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getTurn(), is(WEST));
 
         assertThat(output.getDealer(), is(EAST));
+
+        assertThat(output.getGameScores().get(0), is(new Score(41, 121, "", "")));
+        assertThat(output.getGameScores().get(1), is(new Score(162, 0, "", "NAT")));
+        assertThat(output.getTotalScore(), is(new Score(203, 121 , "", "")));
     }
 
     @Test
@@ -149,6 +159,10 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getTurn(), is(SOUTH));
 
         assertThat(output.getDealer(), is(NORTH));
+
+        assertThat(output.getGameScores().get(0), is(new Score(121, 41, "", "")));
+        assertThat(output.getGameScores().get(1), is(new Score(0, 162, "NAT", "")));
+        assertThat(output.getTotalScore(), is(new Score(121, 203, "", "")));
     }
 
     @Test
@@ -181,6 +195,10 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getTurn(), is(EAST));
 
         assertThat(output.getDealer(), is(WEST));
+
+        assertThat(output.getGameScores().get(0), is(new Score(41, 121, "", "")));
+        assertThat(output.getGameScores().get(1), is(new Score(162, 0, "", "NAT")));
+        assertThat(output.getTotalScore(), is(new Score(203, 121 , "", "")));
     }
 
     private List<Card> removeCardPlayed(List<Card> allCards, Card... cardsPlayed) {

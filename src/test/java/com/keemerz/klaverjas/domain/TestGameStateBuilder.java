@@ -15,6 +15,7 @@ public class TestGameStateBuilder {
     private Seat turn = NORTH;
     private Bidding bidding = new TestBiddingBuilder().build();
     private Trick currentTrick = new Trick(bidding.getFinalTrump(), turn, new HashMap<>(), null, false);
+    private List<Score> gameScores = new ArrayList<>();
 
     public GameState build() {
         GameState gameState = new GameState(gameId);
@@ -25,6 +26,7 @@ public class TestGameStateBuilder {
         gameState.setCurrentTrick(currentTrick);
         gameState.setPreviousTricks(previousTricks);
         gameState.setTurn(turn);
+        gameState.setGameScores(gameScores);
         return gameState;
     }
 
@@ -77,4 +79,11 @@ public class TestGameStateBuilder {
         this.currentTrick = currentTrick;
         return this;
     }
+
+    public TestGameStateBuilder withGameScore(Score score) {
+        gameScores.add(score);
+        return this;
+    }
+
+
 }

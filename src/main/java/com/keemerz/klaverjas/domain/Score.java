@@ -29,6 +29,13 @@ public class Score {
         return remarks;
     }
 
+    public Score rotateForSeat(Seat seat) {
+        if (Team.forSeat(seat) == EW) {
+            return new Score(this.getScores().get(EW), this.getScores().get(NS), this.getRemarks().get(EW), this.getRemarks().get(NS));
+        }
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

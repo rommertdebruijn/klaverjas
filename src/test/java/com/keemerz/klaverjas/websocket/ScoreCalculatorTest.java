@@ -206,7 +206,7 @@ class ScoreCalculatorTest {
         scores.add(new Score(0, 162, "NAT", ""));
         scores.add(new Score(56, 126, "", ""));
 
-        assertThat(ScoreCalculator.calculateMatchScore(scores), is(new Score(309, 399, "", "WINNAAR")));
+        assertThat(ScoreCalculator.calculateMatchScore(scores), is(new Score(309, 399, "", "")));
     }
 
     @Test

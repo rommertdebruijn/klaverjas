@@ -2,11 +2,10 @@ package com.keemerz.klaverjas.converter;
 
 import com.keemerz.klaverjas.comparator.CardInHandComparator;
 import com.keemerz.klaverjas.domain.*;
+import com.keemerz.klaverjas.websocket.ScoreCalculator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.keemerz.klaverjas.domain.Seat.*;
 
@@ -32,6 +31,13 @@ public class GameStateToPlayerGameStateConverter {
 
         ComboPoints rotatedComboPoints = gameState.getComboPoints().rotateForSeat(currentPlayerSeat);
 
+
+        List<Score> rotatedGameScores = gameState.getGameScores().stream()
+                .map(gameScore -> gameScore.rotateForSeat(currentPlayerSeat))
+                .collect(Collectors.toList());
+
+        Score totalScore = ScoreCalculator.calculateMatchScore(gameState.getGameScores()).rotateForSeat(currentPlayerSeat);
+
         return new PlayerGameState(
                 gameState.getGameId(),
                 rotatedBidding,
@@ -42,7 +48,9 @@ public class GameStateToPlayerGameStateConverter {
                 buildCardsInHandMap(gameState, currentPlayerSeat),
                 gameState.getTurn().rotateForSeat(currentPlayerSeat),
                 gameState.getDealer().rotateForSeat(currentPlayerSeat),
-                rotatedComboPoints
+                rotatedComboPoints,
+                rotatedGameScores,
+                totalScore
         );
     }
 

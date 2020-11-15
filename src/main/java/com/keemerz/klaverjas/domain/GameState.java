@@ -1,6 +1,7 @@
 package com.keemerz.klaverjas.domain;
 
 import com.keemerz.klaverjas.comparator.TrumpOrderComparator;
+import com.keemerz.klaverjas.websocket.ScoreCalculator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import static com.keemerz.klaverjas.domain.Seat.*;
 public class GameState {
 
     public static final int MAX_NR_OF_GAMES = 16;
+
     private String gameId;
     private Bidding bidding;
     private Map<Seat, List<Card>> hands = new HashMap<>();
@@ -27,6 +29,16 @@ public class GameState {
 
     public static GameState createNewGame() {
         return new GameState(UUID.randomUUID().toString());
+    }
+
+    public void setUpNextGame() {
+        bidding = null;
+        hands = new HashMap<>();
+        dealer = dealer.getLeftHandPlayer();
+        turn = dealer;
+        previousTricks = new ArrayList<>();
+        currentTrick = null;
+        comboPoints = new ComboPoints(0, 0);
     }
 
     public String getGameId() {
@@ -175,32 +187,34 @@ public class GameState {
                     .filter(card -> card.getCardId().equals(cardId))
                     .findFirst()
                     .ifPresent(card -> {
+                        getHands().get(seat).remove(card);
                         processCard(seat, card);
                     });
         }
     }
 
-    private void processCard(Seat seat, Card card) {
-        if (currentTrick == null || currentTrick.getCardsPlayed().size() == 4) {
-            // TODO copy current trick to previousTricks
+    void processCard(Seat seat, Card card) {
+        if (currentTrick == null) {
             currentTrick = new Trick(bidding.getFinalTrump(), seat, new HashMap<>(), null, false);
         }
-
-        getHands().get(seat).remove(card);
         currentTrick.getCardsPlayed().put(seat, card);
 
         Seat trickWinner = currentTrick.determineHighestCardSeat();
-        if (currentTrick.isTrickFinished()) {
-            currentTrick.setTrickWinner(trickWinner);
-        }
         turn = currentTrick.isTrickFinished() // trick ended
                 ? trickWinner
                 : turn.getLeftHandPlayer();
-    }
 
-    private boolean allHandsEmpty() {
-        return hands.values().stream()
-                .allMatch(List::isEmpty);
+        if (currentTrick.isTrickFinished()) {
+            currentTrick.setTrickWinner(trickWinner);
+            previousTricks.add(currentTrick);
+            currentTrick = null;
+            if (previousTricks.size() == 8) {
+                Score score = ScoreCalculator.calculateGameScore(bidding, previousTricks, comboPoints);
+                gameScores.add(score);
+                setUpNextGame();
+            }
+        }
+
     }
 
     public void makeBid(Bid bid) {
