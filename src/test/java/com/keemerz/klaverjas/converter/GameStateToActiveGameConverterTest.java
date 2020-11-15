@@ -25,7 +25,7 @@ class GameStateToActiveGameConverterTest {
 
         ActiveGame output = GameStateToActiveGameConverter.toActiveGame(input);
 
-        assertNull(output.getGameId());
+        assertThat(output.getGameId(), is("someGameId"));
         assertThat(output.getPlayerNames(), is(Arrays.asList("Name1", "Name2", "Name3", "Name4")));
     }
 
@@ -40,7 +40,5 @@ class GameStateToActiveGameConverterTest {
         assertThat(output.getGameId(), is("someGameId"));
         assertThat(output.getPlayerNames(), is(Arrays.asList("Name1", "Name2")));
     }
-
-
 
 }
