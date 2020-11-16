@@ -64,10 +64,9 @@ function showActiveGame(activeGame) {
     for (var i=0;i<activeGame.playerNames.length;i++) {
         playerString = playerString + activeGame.playerNames[i] + ' '
     }
-    var gameFull = activeGame.playerNames.length === 4;
     var elementId = 'join-' + activeGame.gameId;
 
-    var joinButtonHtml = gameFull ? '' : '<button id="' + elementId + '" class="btn btn-default" type="submit">Join</button>';
+    var joinButtonHtml = '<button id="' + elementId + '" class="btn btn-default" type="submit">Join</button>';
     var activeGameHtml = '' +
         '<tr>' +
         '  <td>' + playerString + '</td>' +
@@ -75,11 +74,10 @@ function showActiveGame(activeGame) {
         '</tr>';
     $('#gamesInfo').append(activeGameHtml);
 
-    if (!gameFull) {
-        $('#' + elementId).click(function () {
-            joinGame(activeGame.gameId);
-        });
-    }
+
+    $('#' + elementId).click(function () {
+        joinGame(activeGame.gameId);
+    });
 }
 
 function showPlayer(playerName) {

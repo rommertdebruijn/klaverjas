@@ -48,7 +48,7 @@ function renderCardInHand(card) {
             getSuitCharacter(card.suit) +
         '  </div>' +
         '  <div class="rank">' +
-            card.rank +
+            getRankName(card) +
         '  </div>' +
         '</div>';
     $('#cards-south').append(cardHtml);
@@ -58,6 +58,42 @@ function renderCardInHand(card) {
             playCard(cardId);
         });
     }
+}
+
+function getImageNameSuitPart(card) {
+    if (card.suit === 'HEARTS') {
+        return 'H';
+    } else if (card.suit === 'SPADES') {
+        return 'S';
+    } else if (card.suit === 'DIAMONDS') {
+        return 'D';
+    } else if (card.suit === 'CLUBS') {
+        return 'C';
+    }
+}
+
+function getRankName(card) {
+    if (card.rank === 'SEVEN') {
+        return '7';
+    } else if (card.rank === 'EIGHT') {
+        return '8';
+    } else if (card.rank === 'NINE') {
+        return '9';
+    } else if (card.rank === 'TEN') {
+        return '10';
+    } else if (card.rank === 'JACK') {
+        return 'J';
+    } else if (card.rank === 'QUEEN') {
+        return 'Q';
+    } else if (card.rank === 'KING') {
+        return 'K';
+    } else if (card.rank === 'ACE') {
+        return 'A';
+    }
+}
+
+function determineCardImage(card) {
+    return getRankName(card) + getImageNameSuitPart(card) + '.jpg';
 }
 
 function renderCardOnTable(containerId, card) {
@@ -221,7 +257,6 @@ function renderClaimComboButton(state) {
     var playerAction = $('#playerAction');
 
     if (isPlayerTurn() && state.currentTrick && state.currentTrick.trickWinner === 'SOUTH' && !state.currentTrick.comboClaimed) {
-        alert("blaaa");
         playerAction.append('<div id="claim-button" class="action">ROEM</div>');
         $('#claim-button').click(function() {
             claimCombo();

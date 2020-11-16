@@ -88,6 +88,7 @@ body {
 }
 .rank {
     text-align: center;
+    font-size: 1.5em;
 }
 
 .trump {
@@ -145,10 +146,10 @@ body {
 
 .red-suit {
     color: red;
-    font-size: 1.2em;
+    font-size: 1.5em;
 }
 
 .black-suit {
     color: black;
-    font-size: 1.2em;
+    font-size: 1.5em;
 }
