@@ -6,5 +6,5 @@ COPY ./src/ /root/src/
 RUN mvn package
 
 FROM tomcat:jdk8-openjdk-slim
-COPY --from=builder /root/target/klaverjas-0.0.1-SNAPSHOT.war /root
+COPY --from=builder /root/target/klaverjas-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
