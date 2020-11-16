@@ -92,10 +92,6 @@ function getRankName(card) {
     }
 }
 
-function determineCardImage(card) {
-    return getRankName(card) + getImageNameSuitPart(card) + '.jpg';
-}
-
 function renderCardOnTable(containerId, card) {
     if (card) {
         var cardHtml ='' +
@@ -104,7 +100,7 @@ function renderCardOnTable(containerId, card) {
             getSuitCharacter(card.suit) +
             '  </div>' +
             '  <div class=\'rank\'>' +
-            card.rank +
+                getRankName(card) +
             '  </div>' +
             '</div>';
         $(containerId).append(cardHtml);
@@ -296,6 +292,7 @@ function renderScore(state) {
     $score.empty();
     if (state.totalScore) {
         var totalScoreHtml = '' +
+            '<div class="totalScore">' +
             '<div class="row">' +
             '  <div class="col-md-12">Totaalscore:</div>' +
             '</div>' +
@@ -304,12 +301,14 @@ function renderScore(state) {
             '</div>' +
             '<div class="row">' +
             '  <div class="col-md-6">' + state.totalScore.scores['NS'] + '</div><div class="col-md-6">' + state.totalScore.scores['EW'] + '</div>' +
+            '</div>' +
             '</div>';
         $score.append(totalScoreHtml);
     }
 
     if (state.gameScores.length > 0) {
         var gameScoresHtml = '' +
+            '<div class="allScores">' +
             '<div class="row">' +
             '  <div class="col-md-12">Alle scores:</div>' +
             '</div>' +
@@ -326,13 +325,14 @@ function renderScore(state) {
 
             var scoreEW = score.scores['EW'];
             if (score.remarks['EW']) {
-                scoreNS = score.remarks['NS'];
+                scoreNS = score.remarks['EW'];
             }
 
             gameScoresHtml += '<div class="row">' +
                 '  <div class="col-md-6">' + scoreNS + '</div><div class="col-md-6">' + scoreEW + '</div>' +
                 '</div>'
         }
+        gameScoresHtml += '</div>';
 
         $score.append(gameScoresHtml);
     }
