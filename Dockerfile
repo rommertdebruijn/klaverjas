@@ -1,7 +1,7 @@
 FROM openjdk:8-alpine as builder
 RUN apk add --no-cache maven
 WORKDIR /root
-COPY ./pom.xml klaverjas.iml /root/
+COPY ./pom.xml /root/
 COPY ./src/ /root/src/
 RUN mvn package
 
