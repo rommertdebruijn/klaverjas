@@ -23,6 +23,8 @@ function cleanTable() {
     $('#tableSouth').empty();
     $('#tableWest').empty();
     $('#bidding').empty();
+    $('#combo').empty();
+
 }
 
 function getSuitCharacter(suit) {
@@ -121,11 +123,11 @@ function renderPlayerBidOnTable(elementId, bid) {
 }
 
 function renderProposedTrump(proposedTrump) {
-    $("#bidding").append('<div>Spelen op deze troef?</div><div class="trump">' + getSuitCharacter(proposedTrump) + '</div>');
+    $("#bidding").append('<div class="trump">' + getSuitCharacter(proposedTrump) + '</div>');
 }
 
 function renderContract(bidding) {
-    $('#bidding').append('<div>' + gameState.players[bidding.finalBidBy] + ' speelt op</div><div class="trump">' + getSuitCharacter(bidding.finalTrump) + '</div>');
+    $('#bidding').append('<div class="trump">' + getSuitCharacter(bidding.finalTrump) + '</div>');
 }
 
 function renderBidding(bidding) {
@@ -223,6 +225,10 @@ function renderPlayer(state, seat) {
     }
 
     var name = state.players[seat] ? state.players[seat] : '[wachten op speler]';
+
+    if (!!state.bidding && state.bidding.finalBidBy === seat) {
+        name += ' (speelt)';
+    }
     var nameHtml = '<div class="' + nameClass + '">' + name + '</div>';
     $player.append(nameHtml);
 
@@ -241,7 +247,11 @@ function allSeatsTaken(state) {
 function renderDealerButton(state) {
     var playerAction = $('#playerAction');
 
-    if (allSeatsTaken(state) && isPlayerTurn() && state.dealer === 'SOUTH' && (!state.hand || state.hand.length === 0)) {
+    if (allSeatsTaken(state)
+        && isPlayerTurn()
+        && state.dealer === 'SOUTH'
+        && (!state.hand || state.hand.length === 0)
+        && state.gameScores.length < 16) { // we play 16 games at most
         playerAction.append('<div id="dealer-button" class="action">DELEN</div>');
         $('#dealer-button').click(function() {
             dealHand();
@@ -249,11 +259,31 @@ function renderDealerButton(state) {
     }
 }
 
-function renderClaimComboButton(state) {
+
+function allCardsHaveBeenPlayed(state) {
+    return state.nrOfCardsInHand['NORTH'] === 0 &&
+           state.nrOfCardsInHand['EAST'] === 0 &&
+           state.nrOfCardsInHand['SOUTH'] === 0 &&
+           state.nrOfCardsInHand['WEST'] === 0;
+}
+
+function renderCalculateScoreButton(state) {
     var playerAction = $('#playerAction');
 
+    // game is finished
+    if (isPlayerTurn() && !!state.currentTrick && state.currentTrick.trickWinner === 'SOUTH' && allCardsHaveBeenPlayed(state)) {
+        playerAction.append('<div id="calculate-score-button" class="action">TEL PUNTEN</div>');
+        $('#calculate-score-button').click(function() {
+            calculateScore();
+        });
+    }
+}
+
+function renderClaimComboButton(state) {
+    var combo = $('#combo');
+
     if (isPlayerTurn() && state.currentTrick && state.currentTrick.trickWinner === 'SOUTH' && !state.currentTrick.comboClaimed) {
-        playerAction.append('<div id="claim-button" class="action">ROEM</div>');
+        combo.append('<div id="claim-button">ROEM</div>');
         $('#claim-button').click(function() {
             claimCombo();
         });
@@ -263,7 +293,7 @@ function renderClaimComboButton(state) {
 function renderPlayerActionBox(state) {
     $('#playerAction').empty();
     renderDealerButton(state);
-    renderClaimComboButton(state);
+    renderCalculateScoreButton(state);
 }
 
 function renderComboScore(state) {
@@ -354,6 +384,7 @@ function renderGameState(state) {
     }
     renderComboScore(state);
     renderScore(state);
+    renderClaimComboButton(state);
     renderPlayerActionBox(state);
     renderCurrentPlayerHand(state.hand);
 }
@@ -372,6 +403,10 @@ function leaveGame() {
 
 function dealHand() {
     stompQueueClient.send('/app/game/deal', {}, JSON.stringify({'gameId': gameState.gameId }));
+}
+
+function calculateScore() {
+    stompQueueClient.send('/app/game/calculateScore', {}, JSON.stringify({'gameId': gameState.gameId }));
 }
 
 function makeBid(bid) {
