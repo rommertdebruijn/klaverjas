@@ -124,6 +124,16 @@ public class GameStateController {
         }
     }
 
+    @MessageMapping("/game/calculateScore")
+    public void calculateScore(CalculateScoreMessage message, Principal principal) {
+        GameState gameState = determineGameStateForPlayer(principal.getName(), message.getGameId());
+        if (gameState != null) {
+            gameState.calculateScore();
+            gameStateRepository.changeGameState(gameState);
+            updateGameStateForAllPlayers(gameState);
+        }
+    }
+
     private @Nullable GameState determineGameStateForPlayer(String userId, String gameId) {
         Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(userId);
         GameState gameState = gameStateRepository.getGameState(gameId);

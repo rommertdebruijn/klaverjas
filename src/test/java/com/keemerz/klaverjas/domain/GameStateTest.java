@@ -123,7 +123,7 @@ class GameStateTest {
     }
 
     @Test
-    public void lastCardInLastTrickShouldStartFreshGame() {
+    public void lastCardInLastTrickShouldAllowComboToBeClaimed() {
        GameState gameState = new TestGameStateBuilder()
                .withGameId("someGameId")
                .withDealer(NORTH)
@@ -148,14 +148,56 @@ class GameStateTest {
        gameState.processCard(SOUTH, Card.of(HEARTS, KING));
 
        // score should be scored, game should be fresh
-       assertThat(gameState.getGameScores().size(), is(1));
-       assertThat(gameState.getGameScores().get(0).getScores().get(NS), is(7));
-       assertThat(gameState.getDealer(), is(EAST));
-       assertThat(gameState.getTurn(), is(EAST));
-       assertNull(gameState.getBidding());
-       assertNull(gameState.getCurrentTrick());
-       assertTrue(gameState.getHands().values().stream().allMatch(Objects::isNull));
-       assertThat(gameState.getGameId(), is("someGameId"));
+       assertThat(gameState.getGameScores().size(), is(0));
+       assertThat(gameState.getDealer(), is(NORTH));
+       assertThat(gameState.getTurn(), is(SOUTH));
+       assertThat(gameState.getComboPoints(), is(new ComboPoints(0, 0)));
+       assertThat(gameState.getPreviousTricks().size(), is(8));
+
+       gameState.claimCombo();
+
+       assertThat(gameState.getComboPoints(), is(new ComboPoints(20, 0)));
+       assertThat(gameState.getTurn(), is(SOUTH));
+    }
+
+    @Test
+    public void calculateScoreShouldStartFreshGame() {
+        List<Trick> previousTricks = buildSevenPreviousTricks();
+        previousTricks.add(new TestTrickBuilder()
+                .withTrump(HEARTS)
+                .withCardPlayed(WEST, Card.of(HEARTS, SEVEN))
+                .withCardPlayed(NORTH, Card.of(HEARTS, EIGHT))
+                .withCardPlayed(EAST, Card.of(HEARTS, QUEEN))
+                .withCardPlayed(SOUTH, Card.of(HEARTS, KING))
+                .withStartingPlayer(EAST)
+                .withTrickWinner(SOUTH)
+                .build()); // quickest way to get 8 tricks :S
+
+        GameState gameState = new TestGameStateBuilder()
+                .withGameId("someGameId")
+                .withDealer(NORTH)
+                .withBidding(new TestBiddingBuilder()
+                        .withFinalTrump(HEARTS)
+                        .withFinalBidBy(EAST)
+                        .build())
+                .withPreviousTricks(previousTricks)
+                .withHand(WEST, new ArrayList<>())
+                .withHand(NORTH, new ArrayList<>())
+                .withHand(EAST, new ArrayList<>())
+                .withHand(SOUTH, new ArrayList<>())
+                .build();
+
+        gameState.calculateScore();
+
+        // score should be scored, game should be fresh
+        assertThat(gameState.getGameScores().size(), is(1));
+        assertThat(gameState.getGameScores().get(0).getScores().get(NS), is(17));
+        assertThat(gameState.getDealer(), is(EAST));
+        assertThat(gameState.getTurn(), is(EAST));
+        assertNull(gameState.getBidding());
+        assertNull(gameState.getCurrentTrick());
+        assertTrue(gameState.getHands().values().stream().allMatch(Objects::isNull));
+        assertThat(gameState.getGameId(), is("someGameId"));
     }
 
     private List<Trick> buildSevenPreviousTricks() {

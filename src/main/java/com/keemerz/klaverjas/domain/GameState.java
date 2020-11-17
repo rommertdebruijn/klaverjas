@@ -210,13 +210,7 @@ public class GameState {
         if (currentTrick.isTrickFinished()) {
             currentTrick.setTrickWinner(trickWinner);
             previousTricks.add(currentTrick);
-            if (previousTricks.size() == 8) {
-                Score score = ScoreCalculator.calculateGameScore(bidding, previousTricks, comboPoints);
-                gameScores.add(score);
-                setUpNextGame();
-            }
         }
-
     }
 
     public void makeBid(Bid bid) {
@@ -273,6 +267,14 @@ public class GameState {
             return hand; // maatslag
         } else {
             return playTrumpIfAllowed(hand,currentTrick);
+        }
+    }
+
+    public void calculateScore() {
+        if (previousTricks.size() == 8) {
+            Score score = ScoreCalculator.calculateGameScore(bidding, previousTricks, comboPoints);
+            gameScores.add(score);
+            setUpNextGame();
         }
     }
 

@@ -62,9 +62,17 @@ public class ScoreCalculator {
     }
 
     private static int getGameScoreForTeam(Team team, List<Trick> tricks, Suit trump, ComboPoints comboPoints) {
-        List<Trick> tricksForTeam = getTricksForTeam(team, tricks);
+        int gameScoreForTeam = 0;
 
-        Integer cardPoints = tricksForTeam.stream()
+        // last trick is worth 10 points!
+        Seat lastTrickWinner = tricks.get(tricks.size()-1).getTrickWinner();
+        if (team == Team.forSeat(lastTrickWinner)) {
+            gameScoreForTeam += 10;
+        }
+
+        // All cards in tricks are worth points
+        List<Trick> tricksForTeam = getTricksForTeam(team, tricks);
+        gameScoreForTeam += tricksForTeam.stream()
                 .map(trick -> trick.getCardsPlayed().values())
                 .flatMap(Collection::stream)
                 .map(card -> {
@@ -72,8 +80,9 @@ public class ScoreCalculator {
                 })
                 .reduce(0, Integer::sum);
 
-        Integer comboBonus = comboPoints.getComboPoints().get(team) == null ? 0 : comboPoints.getComboPoints().get(team);
-        return cardPoints + comboBonus;
+        // add comboPoints
+        gameScoreForTeam += comboPoints.getComboPoints().get(team) == null ? 0 : comboPoints.getComboPoints().get(team);
+        return gameScoreForTeam;
     }
 
     private static List<Trick> getTricksForTeam(Team team, List<Trick> tricks) {
