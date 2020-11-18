@@ -41,6 +41,8 @@ public class PlayerRepository {
         PLAYERS.add(new Player("niek", UUID.randomUUID().toString(), "Niek"));
         PLAYERS.add(new Player("stefan", UUID.randomUUID().toString(), "Stefan"));
         PLAYERS.add(new Player("ties", UUID.randomUUID().toString(), "Ties"));
+        PLAYERS.add(new Player("hans", UUID.randomUUID().toString(), "Hans"));
+        PLAYERS.add(new Player("mark", UUID.randomUUID().toString(), "Mark"));
     }
 
     private PlayerRepository() {}
