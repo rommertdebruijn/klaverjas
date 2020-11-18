@@ -5,6 +5,19 @@ function setConnected(connected) {
     $('#generalInfo').html('');
 }
 
+function leaveLobby() {
+    stompTopicClient.send('/app/lobby/goodbye', {},  JSON.stringify({}));
+
+    if (stompTopicClient !== null) {
+        stompTopicClient.disconnect();
+    }
+    if (stompQueueClient !== null) {
+        stompQueueClient.disconnect();
+    }
+    console.log("Disconnected");
+    window.location.replace("logout.html")
+}
+
 function connectToLobby() {
     $('#lobby').show();
     $('#table').hide();
@@ -66,7 +79,7 @@ function showActiveGame(activeGame) {
     }
     var elementId = 'join-' + activeGame.gameId;
 
-    var joinButtonHtml = '<button id="' + elementId + '" class="btn btn-default" type="submit">Join</button>';
+    var joinButtonHtml = '<div id="' + elementId + '" class="lobbyButtonLight">Join</div>';
     var activeGameHtml = '' +
         '<tr>' +
         '  <td>' + playerString + '</td>' +

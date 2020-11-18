@@ -2,6 +2,35 @@ body {
     background-color: #f5f5f5;
 }
 
+.lobbyheader {
+    background-color: cadetblue;
+}
+
+.lobbyButtonDark {
+    background: darkslategrey;
+    color: white;
+    font-size: 1.0em;
+    border: 2px solid white;
+    border-radius: 0.2em;
+    margin: 5px;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    padding: 2px 12px;
+}
+
+.lobbyButtonLight {
+    background: cadetblue;
+    color: white;
+    font-size: 1.0em;
+    border-radius: 0.2em;
+    margin-left: 5px;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    padding: 2px 12px;
+}
+
 #main-content {
     max-width: 940px;
     padding: 2em 3em;
@@ -190,4 +219,18 @@ body {
 
 #leaveGame {
     margin-top: 250px;
+}
+
+.comboScores,
+.totalScore,
+.allScores {
+    border: 1px solid black;
+    margin: 5px -8px;
+    padding: 3px;
+    background-color: blanchedalmond;
+}
+
+.team {
+    border-bottom: 1px solid black;
+    margin-bottom: 3px;
 }

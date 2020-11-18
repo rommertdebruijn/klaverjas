@@ -147,7 +147,8 @@ function renderBidding(bidding) {
     }
 }
 
-function renderCurrentPlayerHand(hand) {
+function renderCurrentPlayerHand(state) {
+    var hand = state.hand;
     $('#cards-south').empty();
     if (!!hand && hand.length > 0) {
         for (var i = 0; i < hand.length; i++) {
@@ -303,15 +304,17 @@ function renderComboScore(state) {
     if (state.comboPoints.comboPoints['NS'] > 0 ||
         state.comboPoints.comboPoints['EW'] > 0) {
         var comboScoreHtml = '' +
+           '<div class="comboScores">' +
             '<div class="row">' +
             '  <div class="col-md-12">ROEM:</div>' +
             '</div>' +
             '<div class="row">' +
-            '  <div class="col-md-6">Wij</div><div class="col-md-6">Zij</div>' +
+            '  <div class="col-md-6"><div class="team">Wij</div></div><div class="col-md-6"><div class="team">Zij</div></div>' +
             '</div>' +
             '<div class="row">' +
             '  <div class="col-md-6">' + state.comboPoints.comboPoints['NS'] + '</div><div class="col-md-6">' + state.comboPoints.comboPoints['EW'] + '</div>' +
-            '</div>';
+            '</div>' +
+           '</div>';
         $comboScore.append(comboScoreHtml);
     }
 }
@@ -327,7 +330,7 @@ function renderScore(state) {
             '  <div class="col-md-12">Totaalscore:</div>' +
             '</div>' +
             '<div class="row">' +
-            '  <div class="col-md-6">Wij</div><div class="col-md-6">Zij</div>' +
+            '  <div class="col-md-6"><div class="team">Wij</div></div><div class="col-md-6"><div class="team">Zij</div></div>' +
             '</div>' +
             '<div class="row">' +
             '  <div class="col-md-6">' + state.totalScore.scores['NS'] + '</div><div class="col-md-6">' + state.totalScore.scores['EW'] + '</div>' +
@@ -343,7 +346,7 @@ function renderScore(state) {
             '  <div class="col-md-12">Alle scores:</div>' +
             '</div>' +
             '<div class="row">' +
-            '  <div class="col-md-6">Wij</div><div class="col-md-6">Zij</div>' +
+            '  <div class="col-md-6"><div class="team">Wij</div></div><div class="col-md-6"><div class="team">Zij</div></div>' +
             '</div>';
         for (var i=0;i<state.gameScores.length;i++) {
             var score = state.gameScores[i];
@@ -386,7 +389,7 @@ function renderGameState(state) {
     renderScore(state);
     renderClaimComboButton(state);
     renderPlayerActionBox(state);
-    renderCurrentPlayerHand(state.hand);
+    renderCurrentPlayerHand(state);
 }
 
 function startGame() {
