@@ -158,6 +158,7 @@ class GameStateTest {
 
        assertThat(gameState.getComboPoints(), is(new ComboPoints(20, 0)));
        assertThat(gameState.getTurn(), is(SOUTH));
+       assertThat(gameState.isPointsCounted(), is(false));
     }
 
     @Test
@@ -186,6 +187,7 @@ class GameStateTest {
                 .withHand(EAST, new ArrayList<>())
                 .withHand(SOUTH, new ArrayList<>())
                 .build();
+        assertThat(gameState.isPointsCounted(), is(false));
 
         gameState.calculateScore();
 
@@ -198,6 +200,7 @@ class GameStateTest {
         assertNull(gameState.getCurrentTrick());
         assertTrue(gameState.getHands().values().stream().allMatch(Objects::isNull));
         assertThat(gameState.getGameId(), is("someGameId"));
+        assertThat(gameState.isPointsCounted(), is(true));
     }
 
     private List<Trick> buildSevenPreviousTricks() {

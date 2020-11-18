@@ -251,6 +251,7 @@ function renderDealerButton(state) {
     if (allSeatsTaken(state)
         && isPlayerTurn()
         && state.dealer === 'SOUTH'
+        && (state.gameScores.length === 0 || state.pointsCounted) // either this is the very first game, or the previous game was counted
         && (!state.hand || state.hand.length === 0)
         && state.gameScores.length < 16) { // we play 16 games at most
         playerAction.append('<div id="dealer-button" class="action">DELEN</div>');

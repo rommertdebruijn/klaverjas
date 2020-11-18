@@ -50,7 +50,8 @@ public class GameStateToPlayerGameStateConverter {
                 gameState.getDealer().rotateForSeat(currentPlayerSeat),
                 rotatedComboPoints,
                 rotatedGameScores,
-                totalScore
+                totalScore,
+                gameState.isPointsCounted()
         );
     }
 

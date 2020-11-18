@@ -10,8 +10,6 @@ import static com.keemerz.klaverjas.domain.Seat.*;
 
 public class GameState {
 
-    public static final int MAX_NR_OF_GAMES = 16;
-
     private String gameId;
     private Bidding bidding;
     private Map<Seat, List<Card>> hands = new HashMap<>();
@@ -22,6 +20,7 @@ public class GameState {
     private Trick currentTrick;
     private List<Score> gameScores = new ArrayList<>();
     private ComboPoints comboPoints = new ComboPoints(0, 0);
+    private boolean pointsCounted = false;
 
     public GameState(String gameId) {
         this.gameId = gameId;
@@ -118,6 +117,14 @@ public class GameState {
         this.comboPoints = comboPoints;
     }
 
+    public boolean isPointsCounted() {
+        return pointsCounted;
+    }
+
+    public void setPointsCounted(boolean pointsCounted) {
+        this.pointsCounted = pointsCounted;
+    }
+
     public void dealHands() {
         ShuffledDeck deck = new ShuffledDeck();
         List<Card> cards = deck.getCards();
@@ -172,6 +179,7 @@ public class GameState {
 
     public void dealNewHand() {
         if (getTurn() == getDealer() && getHands().isEmpty() && getPlayers().size() == 4) {
+            pointsCounted = false;
             dealHands();
             if (gameScores.isEmpty()) {
                 setBidding(Bidding.createFirstGameBidding()); // first game always clubs
@@ -274,6 +282,7 @@ public class GameState {
         if (previousTricks.size() == 8) {
             Score score = ScoreCalculator.calculateGameScore(bidding, previousTricks, comboPoints);
             gameScores.add(score);
+            pointsCounted = true;
             setUpNextGame();
         }
     }

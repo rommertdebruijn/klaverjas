@@ -6,7 +6,7 @@ body {
     background-color: cadetblue;
 }
 
-.lobbyButtonDark {
+.buttonDark {
     background: darkslategrey;
     color: white;
     font-size: 1.0em;
@@ -19,7 +19,7 @@ body {
     padding: 2px 12px;
 }
 
-.lobbyButtonLight {
+.buttonLight {
     background: cadetblue;
     color: white;
     font-size: 1.0em;
