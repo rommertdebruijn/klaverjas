@@ -17,7 +17,7 @@ public class NaturalOrderCardComparator implements Comparator<Card> {
             SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE);
 
     private static final List<Suit> SUIT_NATURAL_ORDER = Arrays.asList(
-            CLUBS, DIAMONDS, SPADES, HEARTS);
+            HEARTS, SPADES, DIAMONDS, CLUBS);
 
     @Override
     public int compare(Card c1, Card c2) {

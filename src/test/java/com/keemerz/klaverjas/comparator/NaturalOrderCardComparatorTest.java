@@ -61,14 +61,6 @@ class NaturalOrderCardComparatorTest {
                 Card.of(CLUBS, KING));
 
         List<Card> expected = Arrays.asList(
-                Card.of(CLUBS, SEVEN),
-                Card.of(CLUBS, EIGHT),
-                Card.of(CLUBS, NINE),
-                Card.of(CLUBS, TEN),
-                Card.of(CLUBS, JACK),
-                Card.of(CLUBS, QUEEN),
-                Card.of(CLUBS, KING),
-                Card.of(CLUBS, ACE),
                 Card.of(HEARTS, SEVEN),
                 Card.of(HEARTS, EIGHT),
                 Card.of(HEARTS, NINE),
@@ -76,7 +68,15 @@ class NaturalOrderCardComparatorTest {
                 Card.of(HEARTS, JACK),
                 Card.of(HEARTS, QUEEN),
                 Card.of(HEARTS, KING),
-                Card.of(HEARTS, ACE));
+                Card.of(HEARTS, ACE),
+                Card.of(CLUBS, SEVEN),
+                Card.of(CLUBS, EIGHT),
+                Card.of(CLUBS, NINE),
+                Card.of(CLUBS, TEN),
+                Card.of(CLUBS, JACK),
+                Card.of(CLUBS, QUEEN),
+                Card.of(CLUBS, KING),
+                Card.of(CLUBS, ACE));
 
         actual.sort(new NaturalOrderCardComparator());
         assertThat(actual, is(expected));
