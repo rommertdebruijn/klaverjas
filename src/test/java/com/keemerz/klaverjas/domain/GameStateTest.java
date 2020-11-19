@@ -20,11 +20,14 @@ class GameStateTest {
     @Test
     public void shuffleShouldDeal8CardsToEachSeat() {
         GameState gameState = GameState.createNewGame();
+
+        assertTrue(gameState.isDealerButtonAvailable());
         gameState.dealHands();
 
         for (Seat seat : Seat.values()) {
             assertThat(gameState.getHands().get(seat).size(), is(8));
         }
+        assertFalse(gameState.isDealerButtonAvailable());
     }
 
     @Test
@@ -158,7 +161,7 @@ class GameStateTest {
 
        assertThat(gameState.getComboPoints(), is(new ComboPoints(20, 0)));
        assertThat(gameState.getTurn(), is(SOUTH));
-       assertThat(gameState.isPointsCounted(), is(false));
+       assertThat(gameState.isDealerButtonAvailable(), is(false));
     }
 
     @Test
@@ -187,7 +190,7 @@ class GameStateTest {
                 .withHand(EAST, new ArrayList<>())
                 .withHand(SOUTH, new ArrayList<>())
                 .build();
-        assertThat(gameState.isPointsCounted(), is(false));
+        assertThat(gameState.isDealerButtonAvailable(), is(false));
 
         gameState.calculateScore();
 
@@ -200,7 +203,7 @@ class GameStateTest {
         assertNull(gameState.getCurrentTrick());
         assertTrue(gameState.getHands().values().stream().allMatch(Objects::isNull));
         assertThat(gameState.getGameId(), is("someGameId"));
-        assertThat(gameState.isPointsCounted(), is(true));
+        assertThat(gameState.isDealerButtonAvailable(), is(true));
     }
 
     private List<Trick> buildSevenPreviousTricks() {

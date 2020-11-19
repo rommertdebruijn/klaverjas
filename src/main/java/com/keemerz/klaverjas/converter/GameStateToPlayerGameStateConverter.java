@@ -52,7 +52,7 @@ public class GameStateToPlayerGameStateConverter {
                 rotatedComboPoints,
                 rotatedGameScores,
                 totalScore,
-                gameState.isPointsCounted()
+                gameState.isDealerButtonAvailable()
         );
     }
 

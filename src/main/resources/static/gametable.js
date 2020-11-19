@@ -259,7 +259,7 @@ function renderDealerButton(state) {
     if (allSeatsTaken(state)
         && isPlayerTurn()
         && state.dealer === 'SOUTH'
-        && state.pointsCounted
+        && state.dealerButtonAvailable
         && (!state.hand || state.hand.length === 0)
         && state.gameScores.length < 16) { // we play 16 games at most
         playerAction.append('<div id="dealer-button" class="action">DELEN</div>');

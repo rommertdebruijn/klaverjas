@@ -20,7 +20,7 @@ public class GameState {
     private Trick currentTrick;
     private List<Score> gameScores = new ArrayList<>();
     private ComboPoints comboPoints = new ComboPoints(0, 0);
-    private boolean pointsCounted = false;
+    private boolean dealerButtonAvailable = true;
 
     public GameState(String gameId) {
         this.gameId = gameId;
@@ -117,12 +117,12 @@ public class GameState {
         this.comboPoints = comboPoints;
     }
 
-    public boolean isPointsCounted() {
-        return pointsCounted;
+    public boolean isDealerButtonAvailable() {
+        return dealerButtonAvailable;
     }
 
-    public void setPointsCounted(boolean pointsCounted) {
-        this.pointsCounted = pointsCounted;
+    public void setDealerButtonAvailable(boolean dealerButtonAvailable) {
+        this.dealerButtonAvailable = dealerButtonAvailable;
     }
 
     public void dealHands() {
@@ -138,6 +138,7 @@ public class GameState {
                 card++;
             }
         }
+        dealerButtonAvailable = false;
     }
 
     public void fillSeat(Player player) {
@@ -179,7 +180,7 @@ public class GameState {
 
     public void dealNewHand() {
         if (getTurn() == getDealer() && getHands().isEmpty() && getPlayers().size() == 4) {
-            pointsCounted = false;
+            dealerButtonAvailable = false;
             dealHands();
             if (gameScores.isEmpty()) {
                 setBidding(Bidding.createFirstGameBidding()); // first game always clubs
@@ -282,7 +283,7 @@ public class GameState {
         if (previousTricks.size() == 8) {
             Score score = ScoreCalculator.calculateGameScore(bidding, previousTricks, comboPoints);
             gameScores.add(score);
-            pointsCounted = true;
+            dealerButtonAvailable = true;
             setUpNextGame();
         }
     }

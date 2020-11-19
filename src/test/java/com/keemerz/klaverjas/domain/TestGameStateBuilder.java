@@ -16,6 +16,7 @@ public class TestGameStateBuilder {
     private Bidding bidding = new TestBiddingBuilder().build();
     private Trick currentTrick = new Trick(bidding.getFinalTrump(), turn, new HashMap<>(), null, false);
     private List<Score> gameScores = new ArrayList<>();
+    private boolean dealerButtonAvailable = false;
 
     public GameState build() {
         GameState gameState = new GameState(gameId);
@@ -27,6 +28,7 @@ public class TestGameStateBuilder {
         gameState.setPreviousTricks(previousTricks);
         gameState.setTurn(turn);
         gameState.setGameScores(gameScores);
+        gameState.setDealerButtonAvailable(dealerButtonAvailable);
         return gameState;
     }
 
@@ -85,5 +87,8 @@ public class TestGameStateBuilder {
         return this;
     }
 
-
+    public TestGameStateBuilder withDealerButtonAvailable(boolean dealerButtonAvailable) {
+        this.dealerButtonAvailable = dealerButtonAvailable;
+        return this;
+    }
 }
