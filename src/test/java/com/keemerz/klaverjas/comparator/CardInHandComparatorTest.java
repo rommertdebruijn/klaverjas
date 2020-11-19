@@ -99,4 +99,60 @@ class CardInHandComparatorTest {
         assertThat(initialHand, is(expected));
     }
 
+    @Test
+    public void singleNonTrumpSuitShouldHaveCorrectOrder() {
+        List<Card> singleSuitHand = Arrays.asList(
+                Card.of(DIAMONDS, KING),
+                Card.of(DIAMONDS, SEVEN),
+                Card.of(DIAMONDS, TEN),
+                Card.of(DIAMONDS, JACK),
+                Card.of(DIAMONDS, QUEEN),
+                Card.of(DIAMONDS, NINE),
+                Card.of(DIAMONDS, ACE),
+                Card.of(DIAMONDS, EIGHT)
+        );
+
+        List<Card> expected = Arrays.asList(
+                Card.of(DIAMONDS, SEVEN),
+                Card.of(DIAMONDS, EIGHT),
+                Card.of(DIAMONDS, NINE),
+                Card.of(DIAMONDS, JACK),
+                Card.of(DIAMONDS, QUEEN),
+                Card.of(DIAMONDS, KING),
+                Card.of(DIAMONDS, TEN),
+                Card.of(DIAMONDS, ACE)
+        );
+
+        singleSuitHand.sort(new CardInHandComparator(SPADES));
+        assertThat(singleSuitHand, is(expected));
+    }
+
+    @Test
+    public void singleTrumpSuitShouldHaveCorrectOrder() {
+        List<Card> singleSuitHand = Arrays.asList(
+                Card.of(DIAMONDS, KING),
+                Card.of(DIAMONDS, SEVEN),
+                Card.of(DIAMONDS, TEN),
+                Card.of(DIAMONDS, JACK),
+                Card.of(DIAMONDS, QUEEN),
+                Card.of(DIAMONDS, NINE),
+                Card.of(DIAMONDS, ACE),
+                Card.of(DIAMONDS, EIGHT)
+        );
+
+        List<Card> expected = Arrays.asList(
+                Card.of(DIAMONDS, SEVEN),
+                Card.of(DIAMONDS, EIGHT),
+                Card.of(DIAMONDS, QUEEN),
+                Card.of(DIAMONDS, KING),
+                Card.of(DIAMONDS, TEN),
+                Card.of(DIAMONDS, ACE),
+                Card.of(DIAMONDS, NINE),
+                Card.of(DIAMONDS, JACK)
+        );
+
+        singleSuitHand.sort(new CardInHandComparator(DIAMONDS));
+        assertThat(singleSuitHand, is(expected));
+    }
+
 }
