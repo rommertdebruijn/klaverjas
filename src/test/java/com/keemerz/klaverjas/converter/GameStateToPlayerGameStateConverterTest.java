@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,17 @@ class GameStateToPlayerGameStateConverterTest {
                 .withHand(EAST, removeCardPlayed(ALL_HEARTS, Card.of(HEARTS, SEVEN)))
                 .withHand(SOUTH, ALL_DIAMONDS)
                 .withHand(WEST, ALL_CLUBS)
+                .withPreviousTricks(Arrays.asList(
+                        new TestTrickBuilder()
+                        .withTrickWinner(NORTH)
+                        .build(),
+                        new TestTrickBuilder()
+                                .withTrickWinner(NORTH)
+                                .build(),
+                        new TestTrickBuilder()
+                                .withTrickWinner(WEST)
+                                .build()
+                ))
                 .withTurn(SOUTH)
                 .withDealer(NORTH)
                 .withGameScore(new Score(121, 41, "", ""))
@@ -78,6 +90,11 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getNrOfCardsInHand().get(EAST), is(8));
         assertThat(output.getNrOfCardsInHand().get(SOUTH), is(7));
         assertThat(output.getNrOfCardsInHand().get(WEST), is(7));
+
+        assertThat(output.getNrOfTricks().get(NORTH), is(0));
+        assertThat(output.getNrOfTricks().get(EAST), is(1));
+        assertThat(output.getNrOfTricks().get(SOUTH), is(2));
+        assertThat(output.getNrOfTricks().get(WEST), is(0));
 
         assertThat(output.getPlayers().get(NORTH), is("Simone"));
         assertThat(output.getPlayers().get(EAST), is("Wendy"));
@@ -115,6 +132,11 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getNrOfCardsInHand().get(SOUTH), is(7));
         assertThat(output.getNrOfCardsInHand().get(WEST), is(8));
 
+        assertThat(output.getNrOfTricks().get(NORTH), is(1));
+        assertThat(output.getNrOfTricks().get(EAST), is(2));
+        assertThat(output.getNrOfTricks().get(SOUTH), is(0));
+        assertThat(output.getNrOfTricks().get(WEST), is(0));
+
         assertThat(output.getPlayers().get(NORTH), is("Wendy"));
         assertThat(output.getPlayers().get(EAST), is("Nico"));
         assertThat(output.getPlayers().get(SOUTH), is("Eddy"));
@@ -151,6 +173,11 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getNrOfCardsInHand().get(SOUTH), is(8));
         assertThat(output.getNrOfCardsInHand().get(WEST), is(8));
 
+        assertThat(output.getNrOfTricks().get(NORTH), is(2));
+        assertThat(output.getNrOfTricks().get(EAST), is(0));
+        assertThat(output.getNrOfTricks().get(SOUTH), is(0));
+        assertThat(output.getNrOfTricks().get(WEST), is(1));
+
         assertThat(output.getPlayers().get(NORTH), is("Nico"));
         assertThat(output.getPlayers().get(EAST), is("Eddy"));
         assertThat(output.getPlayers().get(SOUTH), is("Simone"));
@@ -186,6 +213,11 @@ class GameStateToPlayerGameStateConverterTest {
         assertThat(output.getNrOfCardsInHand().get(EAST), is(8));
         assertThat(output.getNrOfCardsInHand().get(SOUTH), is(8));
         assertThat(output.getNrOfCardsInHand().get(WEST), is(7));
+
+        assertThat(output.getNrOfTricks().get(NORTH), is(0));
+        assertThat(output.getNrOfTricks().get(EAST), is(0));
+        assertThat(output.getNrOfTricks().get(SOUTH), is(1));
+        assertThat(output.getNrOfTricks().get(WEST), is(2));
 
         assertThat(output.getPlayers().get(NORTH), is("Eddy"));
         assertThat(output.getPlayers().get(EAST), is("Simone"));

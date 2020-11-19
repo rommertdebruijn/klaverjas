@@ -46,6 +46,7 @@ public class GameStateToPlayerGameStateConverter {
                 rotatedTrick,
                 buildPlayerNamesMap(gameState, currentPlayerSeat),
                 buildCardsInHandMap(gameState, currentPlayerSeat),
+                buildNrOfTricksMap(gameState, currentPlayerSeat),
                 gameState.getTurn().rotateForSeat(currentPlayerSeat),
                 gameState.getDealer().rotateForSeat(currentPlayerSeat),
                 rotatedComboPoints,
@@ -82,6 +83,16 @@ public class GameStateToPlayerGameStateConverter {
         return cardsPerPlayer;
     }
 
+    private static Map<Seat, Integer> buildNrOfTricksMap(GameState gameState, Seat currentPlayerSeat) {
+        Map<Seat, Integer> cardsPerPlayer = new HashMap<>();
+        cardsPerPlayer.put(SOUTH, getNumberOfTricks(gameState, currentPlayerSeat));
+        cardsPerPlayer.put(WEST, getNumberOfTricks(gameState, currentPlayerSeat.getLeftHandPlayer()));
+        cardsPerPlayer.put(NORTH, getNumberOfTricks(gameState, currentPlayerSeat.getPartner()));
+        cardsPerPlayer.put(EAST, getNumberOfTricks(gameState, currentPlayerSeat.getRightHandPlayer()));
+        return cardsPerPlayer;
+    }
+
+
     private static Map<Seat, String> buildPlayerNamesMap(GameState gameState, Seat currentPlayerSeat) {
         Map<Seat, String> playerNames = new HashMap<>();
         playerNames.put(SOUTH, getName(gameState, currentPlayerSeat));
@@ -107,5 +118,15 @@ public class GameStateToPlayerGameStateConverter {
                 .map(List::size)
                 .findFirst()
                 .orElse(0);
+    }
+
+    private static int getNumberOfTricks(GameState gameState, Seat seat) {
+        if (gameState.getPreviousTricks() == null) {
+            return 0;
+        }
+
+        return (int) gameState.getPreviousTricks().stream()
+                .filter(trick -> trick.getTrickWinner() == seat)
+                .count();
     }
 }

@@ -230,8 +230,16 @@ function renderPlayer(state, seat) {
     if (!!state.bidding && state.bidding.finalBidBy === seat) {
         name += ' (speelt)';
     }
-    var nameHtml = '<div class="' + nameClass + '">' + name + '</div>';
-    $player.append(nameHtml);
+    var playerHtml = '' +
+        '<div class="playerDetails">' +
+        ' <div class="' + nameClass + '">' + name + '</div>';
+
+    if (state.nrOfTricks && state.nrOfTricks[seat] && state.nrOfTricks[seat] > 0) {
+        playerHtml += '' +
+        ' <div class="nrOfTricks">Slagen: ' + state.nrOfTricks[seat] + '</div>';
+    }
+    playerHtml += '</div>';
+    $player.append(playerHtml);
 
     if ('SOUTH' !== seat) {
         renderOtherPlayerCards(state, seat, $player);
@@ -251,7 +259,7 @@ function renderDealerButton(state) {
     if (allSeatsTaken(state)
         && isPlayerTurn()
         && state.dealer === 'SOUTH'
-        && (state.gameScores.length === 0 || state.pointsCounted) // either this is the very first game, or the previous game was counted
+        && state.pointsCounted
         && (!state.hand || state.hand.length === 0)
         && state.gameScores.length < 16) { // we play 16 games at most
         playerAction.append('<div id="dealer-button" class="action">DELEN</div>');

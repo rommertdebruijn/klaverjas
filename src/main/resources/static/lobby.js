@@ -79,7 +79,7 @@ function showActiveGame(activeGame) {
     }
     var elementId = 'join-' + activeGame.gameId;
 
-    var joinButtonHtml = '<div id="' + elementId + '" class="buttonLight">Join</div>';
+    var joinButtonHtml = '<div id="' + elementId + '" class="buttonLight">Meedoen</div>';
     var activeGameHtml = '' +
         '<tr>' +
         '  <td>' + playerString + '</td>' +

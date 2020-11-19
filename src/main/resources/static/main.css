@@ -67,7 +67,11 @@ body {
     font-size: 1.5em;
     color: white;
     margin-top: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
+}
+
+.nrOfTricks {
+    color: white;
 }
 
 .player-name-highlight {
@@ -233,4 +237,8 @@ body {
 .team {
     border-bottom: 1px solid black;
     margin-bottom: 3px;
+}
+
+.playerDetails {
+    margin-bottom: 15px;
 }
