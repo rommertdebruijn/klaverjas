@@ -13,8 +13,8 @@ import static com.keemerz.klaverjas.domain.Rank.*;
 import static com.keemerz.klaverjas.domain.Suit.*;
 
 public class CardInHandComparator implements Comparator<Card> {
-    private static final List<Suit> SUIT_NATURAL_ORDER = Arrays.asList(
-            CLUBS, DIAMONDS, SPADES, HEARTS);
+   static final List<Suit> SUIT_NATURAL_ORDER = Arrays.asList(
+            HEARTS, SPADES, DIAMONDS, CLUBS);
 
     private Suit trump;
 
@@ -25,8 +25,7 @@ public class CardInHandComparator implements Comparator<Card> {
     @Override
     public int compare(Card c1, Card c2) {
         List<Suit> reOrderedSuits = new ArrayList<>(SUIT_NATURAL_ORDER);
-        reOrderedSuits.remove(trump);
-        reOrderedSuits.add(trump); // makes sure trump in last position
+        reOrderedSuits.sort(new AlternatingColorsTrumpLastComparator(trump));
 
         if (c1.getSuit() != c2.getSuit()) {
             return Integer.compare(reOrderedSuits.indexOf(c1.getSuit()), reOrderedSuits.indexOf(c2.getSuit()));
