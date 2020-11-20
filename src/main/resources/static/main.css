@@ -114,8 +114,12 @@ body {
 }
 
 #tableNorth,
+#tableSouth {
+    height: 130px;
+    margin-left: 20px;
+}
+
 #tableEast,
-#tableSouth,
 #tableWest {
     height: 110px;
     margin-left: 20px;
