@@ -76,10 +76,13 @@ body {
 
 .player-name-highlight {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 1.5em;
-    color: goldenrod;
+    font-size: 1.2em;
+    color: black;
     margin-top: 10px;
     margin-bottom: 20px;
+    border-radius: 0.4em;
+    background-color: white;
+    padding-left: 10px;
 }
 
 #cards-table {
@@ -89,13 +92,25 @@ body {
 .diamonds,
 .hearts {
     color: red;
-    border: 2px solid red;
+    border-color: red;
 }
 
 .spades,
 .clubs {
     color: black;
-    border: 2px solid black;
+    border-color: black;
+}
+
+.diamonds,
+.clubs {
+    border-width: 4px;
+    border-style: double;
+}
+
+.hearts,
+.spades {
+    border-width: 2px;
+    border-style: solid;
 }
 
 #tableNorth,
@@ -157,17 +172,22 @@ body {
     color: white;
     width: 105px;
     border-radius: 0.4em;
-    padding: 2px 5px 0px;
+    padding: 2px 5px 0;
     margin: 10px;
     border: 2px solid white;
 }
 
 .bidOnTable {
+    padding-top: 33px;
+    padding-left: 7px;
+    margin: 10px;
+}
+
+.bidOnTable .bid {
     width: 50px;
     background-color: white;
     border-radius: 0.4em;
     padding-left: 7px;
-    margin: 10px;
 }
 
 .other-player-cards {

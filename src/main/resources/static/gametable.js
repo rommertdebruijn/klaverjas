@@ -118,7 +118,10 @@ function renderCurrentTrick(currentTrick) {
 
 function renderPlayerBidOnTable(elementId, bid) {
     if (!!bid) {
-        $(elementId).append('<div class="bidOnTable">' + bid + '</div>');
+        $(elementId).append('' +
+            '<div class="bidOnTable">' +
+            ' <div class="bid">' + bid + '</div>' +
+            '</div>');
     }
 }
 
