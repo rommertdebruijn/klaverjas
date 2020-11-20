@@ -370,7 +370,7 @@ function renderScore(state) {
 
             var scoreEW = score.scores['EW'];
             if (score.remarks['EW']) {
-                scoreNS = score.remarks['EW'];
+                scoreEW = score.remarks['EW'];
             }
 
             gameScoresHtml += '<div class="row">' +
