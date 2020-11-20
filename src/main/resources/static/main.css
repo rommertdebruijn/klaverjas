@@ -64,7 +64,7 @@ body {
 
 .player-name {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 1.5em;
+    font-size: 1.2em;
     color: white;
     margin-top: 10px;
     margin-bottom: 5px;
@@ -125,7 +125,6 @@ body {
     width: 50px;
     height: 90px;
     background-color: white;
-    border-width: 2px;
     border-radius: 0.4em;
     float: left;
     margin-left: 4px;
@@ -137,7 +136,6 @@ body {
     width: 50px;
     height: 90px;
     background-color: white;
-    border-width: 2px;
     border-radius: 0.4em;
     float: left;
     margin-left: 18px;
@@ -187,7 +185,8 @@ body {
     width: 50px;
     background-color: white;
     border-radius: 0.4em;
-    padding-left: 7px;
+    padding-left: 6px;
+    padding-top: 1px;
 }
 
 .other-player-cards {
