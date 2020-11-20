@@ -358,7 +358,7 @@ function renderScore(state) {
             '  <div class="col-md-12">Alle scores:</div>' +
             '</div>' +
             '<div class="row">' +
-            '  <div class="col-md-6"><div class="team">Wij</div></div><div class="col-md-6"><div class="team">Zij</div></div>' +
+            '  <div class="col-md-2"></div><div class="col-md-4"><div class="team">Wij</div></div><div class="col-md-6"><div class="team">Zij</div></div>' +
             '</div>';
         for (var i=0;i<state.gameScores.length;i++) {
             var score = state.gameScores[i];
@@ -374,7 +374,7 @@ function renderScore(state) {
             }
 
             gameScoresHtml += '<div class="row">' +
-                '  <div class="col-md-6">' + scoreNS + '</div><div class="col-md-6">' + scoreEW + '</div>' +
+                '  <div class="col-md-2">' + (i + 1) +'.</div><div class="col-md-4">' + scoreNS + '</div><div class="col-md-6">' + scoreEW + '</div>' +
                 '</div>'
         }
         gameScoresHtml += '</div>';
