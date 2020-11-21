@@ -134,6 +134,17 @@ public class GameStateController {
         }
     }
 
+    @MessageMapping("/game/requestState")
+    public void stateRequest(RequestStateMessage message, Principal principal) {
+        String userId = principal.getName();
+        GameState gameState = determineGameStateForPlayer(userId, message.getGameId());
+        if (gameState != null) {
+            String playerId = PlayerRepository.getInstance().getPlayerByUserId(userId).getPlayerId();
+            PlayerGameState playerGameState = GameStateToPlayerGameStateConverter.toPlayerGameStateForPlayer(playerId, gameState);
+            webSocket.convertAndSendToUser(userId, "/topic/game", playerGameState);
+        }
+    }
+
     private @Nullable GameState determineGameStateForPlayer(String userId, String gameId) {
         Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(userId);
         GameState gameState = gameStateRepository.getGameState(gameId);

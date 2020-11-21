@@ -1,10 +1,3 @@
-function setConnected(connected) {
-    $('#connect').prop('disabled', connected);
-    $('#disconnect').prop('disabled', !connected);
-
-    $('#generalInfo').html('');
-}
-
 function leaveLobby() {
     stompTopicClient.send('/app/lobby/goodbye', {},  JSON.stringify({}));
 

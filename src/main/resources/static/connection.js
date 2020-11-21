@@ -44,6 +44,7 @@ $(function () {
     $( '#leaveLobby' ).click(function() { leaveLobby();  });
     $( '#startGame' ).click(function() { startGame(); });
     $( '#leaveGame' ).click(function() { leaveGame(); });
+    $( '#requestState' ).click(function() { requestState(); });
 
     $('#lobby').show();
     $('#table').hide();
