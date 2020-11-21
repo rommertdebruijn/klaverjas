@@ -16,7 +16,6 @@ class HighestCardComparatorTest {
 
     @Test
     public void trumpShouldBeFirst() {
-        Suit trump = CLUBS;
         List<Card> actual = Arrays.asList(
                 Card.of(HEARTS, SEVEN),
                 Card.of(HEARTS, TEN),

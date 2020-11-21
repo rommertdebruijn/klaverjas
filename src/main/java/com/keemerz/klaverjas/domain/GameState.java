@@ -6,6 +6,7 @@ import com.keemerz.klaverjas.websocket.ScoreCalculator;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.keemerz.klaverjas.comparator.TrumpOrderComparator.TRUMP_ORDER;
 import static com.keemerz.klaverjas.domain.Seat.*;
 
 public class GameState {
@@ -273,10 +274,29 @@ public class GameState {
         if (handContainsSuit(hand, openingSuit)) {
             return followSuit(hand, currentTrick);
         } else if (partnerLeadsTrick(currentTrick)) {
-            return hand; // maatslag
+            return playCardsAvailableWhenPartnerLeadsTrick(currentTrick, hand);
         } else {
             return playTrumpIfAllowed(hand,currentTrick);
         }
+    }
+
+    private List<Card> playCardsAvailableWhenPartnerLeadsTrick(Trick currentTrick, List<Card> hand) {
+        List<Card> availableCards = new ArrayList<>(hand);
+        Card partnerCard = currentTrick.getCardsPlayed().get(getPartnerSeat());
+        Suit trump = currentTrick.getTrump();
+
+        // when partner leads trick with trump, it is not allowed to play lower trump cards unless hand contains only of lower trump cards
+        if (partnerCard.getSuit() == currentTrick.getTrump()) {
+            List<Card> allButTrumpCards = allButTrumpCards(hand, trump);
+            if (allButTrumpCards.isEmpty()) {
+                return hand; // apparently, all cards in hand are trump cards? Not bad... not bad at all...
+            }
+
+            availableCards = availableCards.stream()
+                    .filter(card -> card.getSuit() != trump || TRUMP_ORDER.indexOf(card.getRank()) > TRUMP_ORDER.indexOf(partnerCard.getRank()))
+                    .collect(Collectors.toList());
+        }
+        return availableCards; // maatslag
     }
 
     public void calculateScore() {
@@ -291,13 +311,16 @@ public class GameState {
     private boolean partnerLeadsTrick(Trick currentTrick) {
         Seat seatForHighestCard = currentTrick.determineHighestCardSeat();
 
-        Seat currentPlayer = getTurn();
-        Seat partnerSeat =
-               currentPlayer == NORTH ? SOUTH :
-               currentPlayer == EAST ? WEST :
-               currentPlayer == SOUTH ? NORTH :
-               EAST;
+        Seat partnerSeat = getPartnerSeat();
         return partnerSeat == seatForHighestCard;
+    }
+
+    private Seat getPartnerSeat() {
+        Seat currentPlayer = getTurn();
+        return currentPlayer == NORTH ? SOUTH :
+        currentPlayer == EAST ? WEST :
+        currentPlayer == SOUTH ? NORTH :
+        EAST;
     }
 
     private List<Card> followSuit(List<Card> hand, Trick currentTrick) {

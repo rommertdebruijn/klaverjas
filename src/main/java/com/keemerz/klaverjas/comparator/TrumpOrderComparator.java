@@ -11,7 +11,7 @@ import static com.keemerz.klaverjas.domain.Rank.*;
 
 public class TrumpOrderComparator implements Comparator<Card> {
 
-    private static final List<Rank> TRUMP_ORDER = Arrays.asList(
+    public static final List<Rank> TRUMP_ORDER = Arrays.asList(
             SEVEN, EIGHT, QUEEN, KING, TEN, ACE, NINE, JACK);
 
 

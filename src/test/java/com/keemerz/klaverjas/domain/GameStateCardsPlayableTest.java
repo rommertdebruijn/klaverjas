@@ -150,12 +150,64 @@ class GameStateCardsPlayableTest {
     }
 
     @Test
-    public void whenPartnerLeadsTrickWithTrumpAndRenonceInStartSuitThenAllCardsArePlayable() {
+    public void whenPartnerLeadsTrickWithTrumpAndRenonceInStartColorThenPlayingTrumpLowerThenPartnersTrumpIsNotAllowed() {
+        Trick currentTrick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withCardPlayed(WEST, Card.of(DIAMONDS, ACE))
+                .withCardPlayed(NORTH, Card.of(CLUBS, KING))
+                .withCardPlayed(EAST, Card.of(DIAMONDS, KING))
+                .withStartingPlayer(WEST)
+                .build();
+
+        List<Card> hand = Arrays.asList(
+                Card.of(SPADES, SEVEN), Card.of(SPADES, TEN),
+                Card.of(HEARTS, TEN), Card.of(HEARTS, ACE),
+                Card.of(CLUBS, QUEEN),  Card.of(CLUBS, JACK));
+
+        // all cards allowed because maatslag
+        List<Card> expected = Arrays.asList(
+                Card.of(SPADES, SEVEN), Card.of(SPADES, TEN),
+                Card.of(HEARTS, TEN), Card.of(HEARTS, ACE),
+                Card.of(CLUBS, JACK)
+        );
+
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void whenPartnerLeadsTrickWithTrumpAndOnlyTrumpCardsLeftThenPlayingTrumpLowerThenPartnersTrumpIsAllowed() {
+        Trick currentTrick = new TestTrickBuilder()
+                .withTrump(CLUBS)
+                .withCardPlayed(WEST, Card.of(DIAMONDS, ACE))
+                .withCardPlayed(NORTH, Card.of(CLUBS, KING))
+                .withCardPlayed(EAST, Card.of(DIAMONDS, KING))
+                .withStartingPlayer(WEST)
+                .build();
+
+        List<Card> hand = Arrays.asList(
+                Card.of(CLUBS, SEVEN),
+                Card.of(CLUBS, EIGHT),
+                Card.of(CLUBS, QUEEN));
+
+        // all cards allowed because troef is all that is left, so ondertroeven is allowed here
+        List<Card> expected = Arrays.asList(
+                Card.of(CLUBS, SEVEN),
+                Card.of(CLUBS, EIGHT),
+                Card.of(CLUBS, QUEEN)
+        );
+
+        List<Card> actual = gameState.determinePlayableCards(currentTrick, hand);
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void whenPartnerLeadsTrickWithTrumpWithStartSuitAndRenonceInStartSuitThenAllCardsArePlayable() {
         Trick currentTrick = new TestTrickBuilder()
                 .withTrump(CLUBS)
                 .withStartingPlayer(WEST)
                 .withCardPlayed(WEST, Card.of(DIAMONDS, EIGHT))
-                .withCardPlayed(NORTH, Card.of(CLUBS, SEVEN)) // plays trump, leads trick
+                .withCardPlayed(NORTH, Card.of(DIAMONDS, ACE))
                 .withCardPlayed(EAST, Card.of(DIAMONDS, KING))
                 .build();
 
