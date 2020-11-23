@@ -44,15 +44,17 @@ function getSuitCharacter(suit) {
 
 function renderCardInHand(card) {
     var cardId = card.cardId;
+    var cardElementId = cardId ? 'card-' + cardId : '';
+    var cardplayable = isPlayerTurn() && !cardId ? 'notPlayable' : 'playable';
     var cardHtml = '' +
-        '<div id="card-' + cardId + '" class="card-in-hand ' + card.suit.toLowerCase() + '">' +
+        ' <div id="' + cardElementId + '" class="card-in-hand ' + card.suit.toLowerCase() + ' ' + cardplayable + '">' +
         '  <div class="suit">' +
             getSuitCharacter(card.suit) +
         '  </div>' +
         '  <div class="rank">' +
             getRankName(card) +
         '  </div>' +
-        '</div>';
+        ' </div>';
     $('#cards-south').append(cardHtml);
 
     if (isPlayerTurn() && cardId) {
