@@ -12,7 +12,7 @@ function connectToLobby() {
     $('#lobby').show();
     $('#table').hide();
 
-    var socket = new SockJS('/gs-guide-websocket');
+    var socket = new SockJS('/klaverjas-websocket');
     stompTopicClient = Stomp.over(socket);
     stompTopicClient.connect({}, function (frame) {
         setConnected(true);
@@ -24,7 +24,7 @@ function connectToLobby() {
 }
 
 function connectToGameInfo() {
-    var socket = new SockJS('/gs-guide-websocket');
+    var socket = new SockJS('/klaverjas-websocket');
     stompQueueClient = Stomp.over(socket);
     stompQueueClient.connect({}, function (frame) {
         setConnected(true);
