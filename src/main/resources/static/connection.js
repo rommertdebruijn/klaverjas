@@ -2,9 +2,6 @@ var stompTopicClient = null; // for general info, like 'player plays card X'
 var stompQueueClient = null; // for user-specific info, like cards in hand
 
 function setConnected(connected) {
-    $('#connect').prop('disabled', connected);
-    $('#disconnect').prop('disabled', !connected);
-
     $('#generalInfo').html('');
 }
 
@@ -20,6 +17,10 @@ function connectToLobby() {
         stompTopicClient.subscribe('/topic/lobby', handleLobbyMessage);
 
         stompTopicClient.send('/app/lobby/hello', {},  JSON.stringify({}));
+    },
+    function() {
+        stompTopicClient = null;
+        stompQueueClient = null;
     });
 }
 
@@ -30,6 +31,14 @@ function connectToGameInfo() {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompQueueClient.subscribe('/user/topic/game', handleGameState);
+
+        if (gameState) {
+            requestState();
+        }
+    },
+    function() {
+        stompTopicClient = null;
+        stompQueueClient = null;
     });
 }
 
@@ -48,4 +57,12 @@ $(function () {
 
     $('#lobby').show();
     $('#table').hide();
+
+    setInterval(function() {
+        if (!stompTopicClient || !stompQueueClient) {
+            console.log('Auto-reconnecting...');
+            requestState();
+            console.log('connected');
+        }
+    }, 10000);
 });
