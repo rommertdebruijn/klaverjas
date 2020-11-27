@@ -1,10 +1,12 @@
 package com.keemerz.klaverjas.repository;
 
 import com.keemerz.klaverjas.domain.Credentials;
+import com.keemerz.klaverjas.domain.Player;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CredentialsRepository {
 
@@ -64,6 +66,9 @@ Niek
         CREDENTIALS.add(new Credentials("niek", encoder.encode("Niek")));
         CREDENTIALS.add(new Credentials("stefan", encoder.encode("Stefan")));
         CREDENTIALS.add(new Credentials("ties", encoder.encode("Ties")));
+        CREDENTIALS.add(new Credentials("hans", encoder.encode("Hans")));
+        CREDENTIALS.add(new Credentials("mark", encoder.encode("Mark")));
+        CREDENTIALS.add(new Credentials("matthijs", encoder.encode("Matthijs")));
 
     }
 
