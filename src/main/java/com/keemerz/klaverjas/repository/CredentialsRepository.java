@@ -10,32 +10,6 @@ import java.util.UUID;
 
 public class CredentialsRepository {
 
-/*
-martin
-alex
-ronald
-Eelco
-robert
-rommert
-Toon
-Jasper
-yoran
-paul
-joris
-Frank
-Janthijs
-Anton
-Edzo
-Marc
-Sander
-Michell
-Jonathan
-Niek
-
-
- */
-
-
     private static final CredentialsRepository INSTANCE = new CredentialsRepository();
     private static final List<Credentials> CREDENTIALS = new ArrayList<>();
     static {
@@ -69,6 +43,8 @@ Niek
         CREDENTIALS.add(new Credentials("hans", encoder.encode("Hans")));
         CREDENTIALS.add(new Credentials("mark", encoder.encode("Mark")));
         CREDENTIALS.add(new Credentials("matthijs", encoder.encode("Matthijs")));
+        CREDENTIALS.add(new Credentials("sidney", encoder.encode("bier"))); // maatjes van Ties
+        CREDENTIALS.add(new Credentials("rogier", encoder.encode("bier"))); // maatjes van Ties
 
     }
 
