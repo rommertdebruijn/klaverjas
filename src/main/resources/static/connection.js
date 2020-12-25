@@ -64,5 +64,5 @@ $(function () {
             requestState();
             console.log('connected');
         }
-    }, 10000);
+    }, 3000);
 });

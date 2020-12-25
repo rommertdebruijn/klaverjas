@@ -22,6 +22,7 @@ body {
     vertical-align: middle;
     display: inline-block;
     padding: 2px 12px;
+    cursor: pointer;
 }
 
 .buttonLight {
@@ -34,6 +35,7 @@ body {
     vertical-align: middle;
     display: inline-block;
     padding: 2px 12px;
+    cursor: pointer;
 }
 
 #main-content {
@@ -72,7 +74,7 @@ body {
     font-size: 1.2em;
     color: white;
     margin-top: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .nrOfTricks {
@@ -84,7 +86,7 @@ body {
     font-size: 1.2em;
     color: black;
     margin-top: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border-radius: 0.4em;
     background-color: white;
     padding-left: 10px;
@@ -141,10 +143,12 @@ body {
     margin-left: 4px;
     margin-bottom: 5px;
     font-size: 0.8em;
+    cursor: pointer;
 }
 
 .notPlayable {
     background-color: lightgrey;
+    cursor: default;
 }
 
 .notPlayable.diamonds,
@@ -200,6 +204,10 @@ body {
     border: 2px solid white;
 }
 
+.action:hover {
+    cursor:pointer;
+}
+
 .bidOnTable {
     padding-top: 33px;
     padding-left: 7px;
@@ -207,7 +215,7 @@ body {
 }
 
 .bidOnTable .bid {
-    width: 50px;
+    width: 41px;
     background-color: white;
     border-radius: 0.4em;
     padding-left: 6px;
@@ -266,7 +274,8 @@ body {
     border: 2px solid white;
     float: right;
     margin-top: 100px;
-    margin-right: 15px
+    margin-right: 15px;
+    cursor: pointer;
 }
 
 #leaveGame {
