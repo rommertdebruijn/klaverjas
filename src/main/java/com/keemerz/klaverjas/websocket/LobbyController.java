@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,19 +28,16 @@ public class LobbyController {
 	private ActiveGamesRepository activeGamesRepository = ActiveGamesRepository.getInstance();
 	private GameStateRepository gameStateRepository = GameStateRepository.getInstance();
 
-	private List<Player> playersInLobby = new ArrayList<>();
-
 	@MessageMapping("/lobby/hello")
 	@SendTo("/topic/lobby")
 	public LobbyMessage helloMessage(HelloMessage message, Principal principal) {
 		String userId = principal.getName(); // from Spring security
+		playerRepository.setLoginTimestamp(userId, LocalDateTime.now());
 		Player player = playerRepository.getPlayerByUserId(userId);
-		if (!playersInLobby.contains(player)) {
-			playersInLobby.add(player);
-		}
 
+		List<Player> activePlayers = playerRepository.getActivePlayers();
 		List<ActiveGame> activeGames = activeGamesRepository.getActiveGames();
-		return new PlayerJoinsLobbyMessage(HtmlUtils.htmlEscape(player.getName()) + " has joined the lobby.", getPlayerNames(), activeGames);
+		return new PlayerJoinsLobbyMessage(HtmlUtils.htmlEscape(player.getName()) + " komt binnen.", getPlayerNames(activePlayers), activeGames);
 	}
 
 	@MessageMapping("/lobby/goodbye")
@@ -47,15 +45,17 @@ public class LobbyController {
 	public LobbyMessage goodbyeMessage(GoodbyeMessage message, Principal principal) {
 		String userId = principal.getName(); // from Spring security
 		Player player = playerRepository.getPlayerByUserId(userId);
-		playersInLobby.remove(player);
 
+		playerRepository.removeLoginTimestamp(userId);
 		gameStateRepository.removePlayerFromGames(player);
+
+		List<Player> activePlayers = playerRepository.getActivePlayers();
 		List<ActiveGame> activeGames = activeGamesRepository.getActiveGames();
-		return new PlayerLeavesLobbyMessage(HtmlUtils.htmlEscape(player.getName()) + " has left the lobby.", getPlayerNames(), activeGames);
+		return new PlayerLeavesLobbyMessage(HtmlUtils.htmlEscape(player.getName()) + " is er vandoor.", getPlayerNames(activePlayers), activeGames);
 	}
 
-	private List<String> getPlayerNames() {
-		return playersInLobby.stream()
+	private List<String> getPlayerNames(List<Player> players) {
+		return players.stream()
 				.map(Player::getName)
 				.collect(Collectors.toList());
 	}

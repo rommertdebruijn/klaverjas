@@ -1,5 +1,6 @@
 package com.keemerz.klaverjas.domain;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.keemerz.klaverjas.domain.Seat.*;
@@ -8,6 +9,7 @@ import static com.keemerz.klaverjas.domain.Suit.CLUBS;
 public class TestGameStateBuilder {
 
     private String gameId = UUID.randomUUID().toString();
+    private LocalDateTime startDateTime = LocalDateTime.now();
     private Map<Seat, List<Card>> hands = new HashMap<>();
     private Map<Seat, Player> players = new HashMap<>();
     private Seat dealer = WEST;
@@ -19,7 +21,7 @@ public class TestGameStateBuilder {
     private boolean dealerButtonAvailable = false;
 
     public GameState build() {
-        GameState gameState = new GameState(gameId);
+        GameState gameState = new GameState(gameId, startDateTime);
         gameState.setBidding(bidding);
         gameState.setPlayers(players);
         gameState.setHands(hands);
@@ -34,6 +36,11 @@ public class TestGameStateBuilder {
 
     public TestGameStateBuilder withGameId(String gameId) {
         this.gameId = gameId;
+        return this;
+    }
+
+    public TestGameStateBuilder withStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
         return this;
     }
 

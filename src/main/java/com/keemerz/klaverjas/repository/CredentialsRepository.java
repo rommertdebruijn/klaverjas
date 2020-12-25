@@ -14,35 +14,37 @@ public class CredentialsRepository {
     private static final List<Credentials> CREDENTIALS = new ArrayList<>();
     static {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        CREDENTIALS.add(new Credentials("user1", encoder.encode("pass1")));
-        CREDENTIALS.add(new Credentials("user2", encoder.encode("pass2")));
-        CREDENTIALS.add(new Credentials("user3", encoder.encode("pass3")));
-        CREDENTIALS.add(new Credentials("user4", encoder.encode("pass4")));
-        CREDENTIALS.add(new Credentials("martin", encoder.encode("Martin")));
-        CREDENTIALS.add(new Credentials("alex", encoder.encode("Alex")));
-        CREDENTIALS.add(new Credentials("ronald", encoder.encode("Ronald")));
-        CREDENTIALS.add(new Credentials("eelco", encoder.encode("Eelco")));
-        CREDENTIALS.add(new Credentials("robert", encoder.encode("Robert")));
-        CREDENTIALS.add(new Credentials("rommert", encoder.encode("Rommert")));
-        CREDENTIALS.add(new Credentials("toon", encoder.encode("Toon")));
-        CREDENTIALS.add(new Credentials("jasper", encoder.encode("Jasper")));
-        CREDENTIALS.add(new Credentials("yoran", encoder.encode("Yoran")));
-        CREDENTIALS.add(new Credentials("paul", encoder.encode("Paul")));
-        CREDENTIALS.add(new Credentials("joris", encoder.encode("Joris")));
-        CREDENTIALS.add(new Credentials("frank", encoder.encode("Frank")));
-        CREDENTIALS.add(new Credentials("janthijs", encoder.encode("Janthijs")));
-        CREDENTIALS.add(new Credentials("anton", encoder.encode("Anton")));
-        CREDENTIALS.add(new Credentials("edzo", encoder.encode("Edzo")));
-        CREDENTIALS.add(new Credentials("marc", encoder.encode("Marc")));
-        CREDENTIALS.add(new Credentials("sander", encoder.encode("Sander")));
-        CREDENTIALS.add(new Credentials("michell", encoder.encode("Michell")));
-        CREDENTIALS.add(new Credentials("jonathan", encoder.encode("Jonathan")));
-        CREDENTIALS.add(new Credentials("niek", encoder.encode("Niek")));
-        CREDENTIALS.add(new Credentials("stefan", encoder.encode("Stefan")));
-        CREDENTIALS.add(new Credentials("ties", encoder.encode("Ties")));
-        CREDENTIALS.add(new Credentials("hans", encoder.encode("Hans")));
-        CREDENTIALS.add(new Credentials("mark", encoder.encode("Mark")));
-        CREDENTIALS.add(new Credentials("matthijs", encoder.encode("Matthijs")));
+        // for now, actual security is of no importance.
+        // What matters is that the logged in user has a Principal, which is required for individual web sockets to work :)
+        CREDENTIALS.add(new Credentials("user1", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("user2", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("user3", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("user4", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("martin", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("alex", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("ronald", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("eelco", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("robert", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("rommert", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("toon", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("jasper", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("yoran", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("paul", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("joris", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("frank", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("janthijs", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("anton", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("edzo", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("marc", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("sander", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("mitchell", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("jonathan", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("niek", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("stefan", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("ties", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("hans", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("mark", encoder.encode("bier")));
+        CREDENTIALS.add(new Credentials("matthijs", encoder.encode("bier")));
         CREDENTIALS.add(new Credentials("sidney", encoder.encode("bier"))); // maatjes van Ties
         CREDENTIALS.add(new Credentials("rogier", encoder.encode("bier"))); // maatjes van Ties
 

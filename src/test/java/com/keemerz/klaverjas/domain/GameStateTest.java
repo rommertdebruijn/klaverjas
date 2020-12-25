@@ -2,11 +2,10 @@ package com.keemerz.klaverjas.domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.*;
 
+import static com.keemerz.klaverjas.domain.GameState.MAX_IDLE_TIME_IN_SECONDS;
 import static com.keemerz.klaverjas.domain.Rank.*;
 import static com.keemerz.klaverjas.domain.Seat.*;
 import static com.keemerz.klaverjas.domain.Suit.*;
@@ -16,6 +15,18 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameStateTest {
+
+    @Test
+    public void oldGameShouldNotBeConsideredActive() {
+        GameState gameState = new GameState("someGameId", LocalDateTime.now().minusSeconds(MAX_IDLE_TIME_IN_SECONDS).minusSeconds(1));
+        assertThat(gameState.isActive(), is(false));
+    }
+
+    @Test
+    public void recentGameShouldBeConsideredActive() {
+        GameState gameState = new GameState("someGameId", LocalDateTime.now().minusSeconds(MAX_IDLE_TIME_IN_SECONDS).plusSeconds(1));
+        assertThat(gameState.isActive(), is(true));
+    }
 
     @Test
     public void shuffleShouldDeal8CardsToEachSeat() {

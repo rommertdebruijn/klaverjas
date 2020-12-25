@@ -5,6 +5,7 @@ import com.keemerz.klaverjas.domain.GameState;
 import com.keemerz.klaverjas.domain.Player;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ class GameStateToActiveGameConverterTest {
 
     @Test
     public void FullGameShouldContainPlayersButNoGameId() {
-        GameState input = new GameState("someGameId");
+        GameState input = new GameState("someGameId", LocalDateTime.now());
         input.fillSeat(new Player("user1", UUID.randomUUID().toString(), "Name1"));
         input.fillSeat(new Player("user2", UUID.randomUUID().toString(), "Name2"));
         input.fillSeat(new Player("user3", UUID.randomUUID().toString(), "Name3"));
@@ -31,7 +32,7 @@ class GameStateToActiveGameConverterTest {
 
     @Test
     public void partlyFilledGameShouldContainPlayersAndGameId() {
-        GameState input = new GameState("someGameId");
+        GameState input = new GameState("someGameId", LocalDateTime.now());
         input.fillSeat(new Player("user1", UUID.randomUUID().toString(), "Name1"));
         input.fillSeat(new Player("user2", UUID.randomUUID().toString(), "Name2"));
 

@@ -6,6 +6,11 @@ body {
     background-color: cadetblue;
 }
 
+#version {
+    font-size: 0.8em;
+    color: cadetblue;
+}
+
 .buttonDark {
     background: darkslategrey;
     color: white;
@@ -198,7 +203,7 @@ body {
 .bidOnTable {
     padding-top: 33px;
     padding-left: 7px;
-    margin: 10px;
+    margin: 5px 10px;
 }
 
 .bidOnTable .bid {
@@ -207,6 +212,10 @@ body {
     border-radius: 0.4em;
     padding-left: 6px;
     padding-top: 1px;
+}
+
+#bidPlay {
+    margin-bottom: 20px;
 }
 
 .other-player-cards {

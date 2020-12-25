@@ -3,6 +3,7 @@ package com.keemerz.klaverjas.domain;
 import com.keemerz.klaverjas.comparator.TrumpOrderComparator;
 import com.keemerz.klaverjas.websocket.ScoreCalculator;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,10 @@ import static com.keemerz.klaverjas.domain.Seat.*;
 
 public class GameState {
 
+    static final int MAX_IDLE_TIME_IN_SECONDS = 60 * 60 * 24;
+
     private String gameId;
+    private LocalDateTime startDateTime;
     private Bidding bidding;
     private Map<Seat, List<Card>> hands = new HashMap<>();
     private Map<Seat, Player> players = new HashMap<>();
@@ -23,12 +27,13 @@ public class GameState {
     private ComboPoints comboPoints = new ComboPoints(0, 0);
     private boolean dealerButtonAvailable = true;
 
-    public GameState(String gameId) {
+    public GameState(String gameId, LocalDateTime startDateTime) {
         this.gameId = gameId;
+        this.startDateTime = startDateTime;
     }
 
     public static GameState createNewGame() {
-        return new GameState(UUID.randomUUID().toString());
+        return new GameState(UUID.randomUUID().toString(), LocalDateTime.now());
     }
 
     public void setUpNextGame() {
@@ -43,6 +48,10 @@ public class GameState {
 
     public String getGameId() {
         return gameId;
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 
     public Bidding getBidding() {
@@ -402,5 +411,9 @@ public class GameState {
                 comboPoints.claimFor(Team.forSeat(getTurn()), nrOfComboPoints);
             }
         }
+    }
+
+    public boolean isActive() {
+        return startDateTime.isAfter(LocalDateTime.now().minusSeconds(MAX_IDLE_TIME_IN_SECONDS));
     }
 }

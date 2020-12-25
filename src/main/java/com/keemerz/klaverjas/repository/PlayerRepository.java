@@ -3,16 +3,17 @@ package com.keemerz.klaverjas.repository;
 import com.keemerz.klaverjas.domain.Player;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PlayerRepository {
 
     private static final PlayerRepository INSTANCE = new PlayerRepository();
     private static final List<Player> PLAYERS = new ArrayList<>();
     static {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         PLAYERS.add(new Player("user1", UUID.randomUUID().toString(), "Jim-Bob"));
         PLAYERS.add(new Player("user2", UUID.randomUUID().toString(), "Marlies"));
         PLAYERS.add(new Player("user3", UUID.randomUUID().toString(), "Ernst"));
@@ -36,7 +37,7 @@ public class PlayerRepository {
         PLAYERS.add(new Player("edzo", UUID.randomUUID().toString(), "Edzo"));
         PLAYERS.add(new Player("marc", UUID.randomUUID().toString(), "Marc"));
         PLAYERS.add(new Player("sander", UUID.randomUUID().toString(), "Sander"));
-        PLAYERS.add(new Player("michell", UUID.randomUUID().toString(), "Michell"));
+        PLAYERS.add(new Player("mitchell", UUID.randomUUID().toString(), "Mitchell"));
         PLAYERS.add(new Player("jonathan", UUID.randomUUID().toString(), "Jonathan"));
         PLAYERS.add(new Player("niek", UUID.randomUUID().toString(), "Niek"));
         PLAYERS.add(new Player("stefan", UUID.randomUUID().toString(), "Stefan"));
@@ -68,8 +69,18 @@ public class PlayerRepository {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public void removePlayer(String userId) {
-        PLAYERS.remove(getPlayerByUserId(userId));
+    public void setLoginTimestamp(String userId, LocalDateTime now) {
+        getPlayerByUserId(userId).setLoginTimestamp(now);
     }
 
+    public List<Player> getActivePlayers() {
+        return PLAYERS.stream()
+                .filter(Player::isActive)
+                .collect(Collectors.toList());
+    }
+
+    public void removeLoginTimestamp(String userId) {
+        Player player = getPlayerByUserId(userId);
+        player.setLoginTimestamp(null); // no longer logged in
+    }
 }

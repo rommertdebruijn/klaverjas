@@ -120,9 +120,10 @@ function renderCurrentTrick(currentTrick) {
 
 function renderPlayerBidOnTable(elementId, bid) {
     if (!!bid) {
+        // if this is rendered, then bid will, in fact, always be PASS
         $(elementId).append('' +
             '<div class="bidOnTable">' +
-            ' <div class="bid">' + bid + '</div>' +
+            ' <div class="bid">PAS</div>' +
             '</div>');
     }
 }
