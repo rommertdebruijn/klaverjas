@@ -176,6 +176,40 @@ class GameStateTest {
     }
 
     @Test
+    public void StukInLastTrickShouldGiveComboPoints() {
+        GameState gameState = new TestGameStateBuilder()
+                .withGameId("someGameId")
+                .withDealer(NORTH)
+                .withBidding(new TestBiddingBuilder()
+                        .withFinalTrump(CLUBS)
+                        .withFinalBidBy(SOUTH)
+                        .build())
+                .withPreviousTricks(buildSevenPreviousTricks())
+                .withHand(WEST, new ArrayList<>())
+                .withHand(NORTH, new ArrayList<>())
+                .withHand(EAST, new ArrayList<>())
+                .withHand(SOUTH, Arrays.asList(Card.of(CLUBS, KING)))
+                .withCurrentTrick(new TestTrickBuilder()
+                        .withTrump(CLUBS)
+                        .withCardPlayed(WEST, Card.of(CLUBS, QUEEN))
+                        .withCardPlayed(NORTH, Card.of(SPADES, TEN))
+                        .withCardPlayed(EAST, Card.of(SPADES, NINE))
+                        .withStartingPlayer(EAST)
+                        .build())
+                .build();
+
+        gameState.processCard(SOUTH, Card.of(CLUBS, KING));
+
+        // score should be scored, game should be fresh
+        assertThat(gameState.getComboPoints(), is(new ComboPoints(0, 0)));
+        assertThat(gameState.getPreviousTricks().size(), is(8));
+
+        gameState.claimCombo();
+
+        assertThat(gameState.getComboPoints(), is(new ComboPoints(20, 0)));
+    }
+
+    @Test
     public void calculateScoreShouldStartFreshGame() {
         List<Trick> previousTricks = buildSevenPreviousTricks();
         previousTricks.add(new TestTrickBuilder()
