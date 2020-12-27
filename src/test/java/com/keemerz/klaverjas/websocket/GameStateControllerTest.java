@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class GameStateControllerTest {
 
     @Test
@@ -35,7 +33,7 @@ class GameStateControllerTest {
         return solutions;
     }
 
-    class Solution {
+    static class Solution {
         private int a;
         private int b;
         private int c;
