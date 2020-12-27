@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.keemerz.klaverjas.domain.Rank.*;
-import static com.keemerz.klaverjas.domain.Rank.JACK;
 import static com.keemerz.klaverjas.domain.Suit.*;
 
 public class NaturalOrderCardComparator implements Comparator<Card> {

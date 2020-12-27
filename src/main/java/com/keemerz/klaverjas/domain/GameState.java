@@ -18,6 +18,7 @@ public class GameState {
     private LocalDateTime startDateTime;
     private Bidding bidding;
     private Map<Seat, List<Card>> hands = new HashMap<>();
+    private String deckSignature;
     private Map<Seat, Player> players = new HashMap<>();
     private Seat dealer = NORTH;
     private List<Trick> previousTricks = new ArrayList<>();
@@ -48,6 +49,10 @@ public class GameState {
 
     public String getGameId() {
         return gameId;
+    }
+
+    public String getDeckSignature() {
+        return deckSignature;
     }
 
     public LocalDateTime getStartDateTime() {
@@ -136,8 +141,9 @@ public class GameState {
     }
 
     public void dealHands() {
-        ShuffledDeck deck = new ShuffledDeck();
+        Deck deck = DeckFactory.getDeck();
         List<Card> cards = deck.getCards();
+        deckSignature = deck.getSignature(); // to be logged in the frontend, so we can replay games should something odd happen
 
         // OK, it's not 3-2-3, but hey
         for (int card = 0; card< cards.size();) {
@@ -193,9 +199,9 @@ public class GameState {
             dealerButtonAvailable = false;
             dealHands();
             if (gameScores.isEmpty()) {
-                setBidding(Bidding.createFirstGameBidding()); // first game always clubs
+                setBidding(BiddingFactory.createFirstGameBidding());
             } else {
-                setBidding(Bidding.createBidding());
+                setBidding(BiddingFactory.createBidding());
             }
             turn = getDealer().getLeftHandPlayer();
         }

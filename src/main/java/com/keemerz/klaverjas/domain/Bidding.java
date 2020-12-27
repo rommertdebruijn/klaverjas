@@ -22,20 +22,7 @@ public class Bidding {
         this.finalBidBy = finalBidBy;
     }
 
-    public static Bidding createFirstGameBidding() {
-        return createBidding(CLUBS);
-    }
 
-    public static Bidding createBidding() {
-        List<Suit> randomList = Arrays.asList(Suit.values());
-        Collections.shuffle(randomList);
-        Suit randomTrump = randomList.get(0);
-        return createBidding(randomTrump);
-    }
-
-    private static Bidding createBidding(Suit proposedTrump) {
-        return new Bidding(proposedTrump);
-    }
 
     Bidding(Suit proposedTrump) {
         this.proposedTrump = proposedTrump;

@@ -40,6 +40,7 @@ public class GameStateToPlayerGameStateConverter {
 
         return new PlayerGameState(
                 gameState.getGameId(),
+                gameState.getDeckSignature(),
                 rotatedBidding,
                 true,
                 modifiedHand,

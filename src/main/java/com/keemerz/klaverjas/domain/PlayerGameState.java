@@ -6,6 +6,7 @@ import java.util.Map;
 public class PlayerGameState {
 
     private String gameId;
+    private String deckSignature;
     private boolean playerStillPlaying;
 
     private Bidding bidding;
@@ -30,11 +31,12 @@ public class PlayerGameState {
         this.playerStillPlaying = playerStillPlaying; // ok not too pretty
     }
 
-    public PlayerGameState(String gameId, Bidding bidding, boolean playerStillPlaying, List<Card> hand, Trick currentTrick,
+    public PlayerGameState(String gameId, String deckSignature, Bidding bidding, boolean playerStillPlaying, List<Card> hand, Trick currentTrick,
                            Map<Seat, String> players, Map<Seat, Integer> nrOfCardsInHand, Map<Seat, Integer> nrOfTricks, Seat turn, Seat dealer,
                            ComboPoints comboPoints, List<Score> gameScores, Score totalScore,
                            boolean dealerButtonAvailable) {
         this.gameId = gameId;
+        this.deckSignature = deckSignature;
         this.playerStillPlaying = playerStillPlaying;
         this.bidding = bidding;
         this.hand = hand;
@@ -52,6 +54,14 @@ public class PlayerGameState {
 
     public String getGameId() {
         return gameId;
+    }
+
+    public String getDeckSignature() {
+        return deckSignature;
+    }
+
+    public void setDeckSignature(String deckSignature) {
+        this.deckSignature = deckSignature;
     }
 
     public boolean isPlayerStillPlaying() {
