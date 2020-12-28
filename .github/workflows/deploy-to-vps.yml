@@ -24,6 +24,14 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+      - name: Stop the server now plz
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}
+          KEY: ${{ secrets.SSHKEY }}
+          script: /home/rommert/stop.sh
       - name: push .jar to vps
         uses: appleboy/scp-action@master
         env:
@@ -34,3 +42,11 @@ jobs:
         with:
           source: "target/"
           target: "/home/rommert/"
+      - name: Running the jar!
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}
+          KEY: ${{ secrets.SSHKEY }}
+          script: /home/rommert/deploy.sh
