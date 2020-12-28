@@ -32,5 +32,5 @@ jobs:
           PORT: ${{ secrets.PORT }}
           KEY: ${{ secrets.SSHKEY }}
         with:
-          source: "target/klaverjas-0.0.1-SNAPSHOT.jar"
-          target: "/home/rommert/klaverjas.jar"
+          source: "target/"
+          target: "/home/rommert/"
