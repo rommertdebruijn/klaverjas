@@ -40,8 +40,8 @@ jobs:
           PORT: ${{ secrets.PORT }}
           KEY: ${{ secrets.SSHKEY }}
         with:
-          source: "target/"
-          target: "/home/rommert/"
+          source: "target/klaverjas-0.0.1-SNAPSHOT.jar"
+          target: "/home/klaverjas-github/klaver.jar"
       - name: Running the jar!
         uses: appleboy/ssh-action@master
         with:
@@ -49,4 +49,4 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           PORT: ${{ secrets.PORT }}
           KEY: ${{ secrets.SSHKEY }}
-          script: /home/rommert/deploy.sh
+          script: /home/klaverjas-github/deploy.sh
