@@ -419,19 +419,6 @@ function leaveGame() {
     stompQueueClient.send('/app/game/leave', {}, JSON.stringify({'gameId': gameState.gameId }));
 }
 
-function requestState() {
-    stompTopicClient = Stomp.over(new SockJS('/klaverjas-websocket'));
-    stompTopicClient.connect({}, function (frame) {
-        stompTopicClient.subscribe('/topic/lobby', handleLobbyMessage);
-    });
-
-    stompQueueClient = Stomp.over(new SockJS('/klaverjas-websocket'));
-    stompQueueClient.connect({}, function (frame) {
-        stompQueueClient.subscribe('/user/topic/game', handleGameState);
-        stompQueueClient.send('/app/game/requestState', {}, JSON.stringify({'gameId': gameState.gameId }));
-    });
-}
-
 function dealHand() {
     stompQueueClient.send('/app/game/deal', {}, JSON.stringify({'gameId': gameState.gameId }));
 }

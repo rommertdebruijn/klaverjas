@@ -1,5 +1,5 @@
-var stompTopicClient = null; // for general info, like 'player plays card X'
-var stompQueueClient = null; // for user-specific info, like cards in hand
+var stompTopicClient = null; // for general info, like 'player joined lobby'
+var stompQueueClient = null; // for user-specific info, like (per-player) gameState
 
 function setConnected(connected) {
     $('#generalInfo').html('');
@@ -18,10 +18,7 @@ function connectToLobby() {
 
         stompTopicClient.send('/app/lobby/hello', {},  JSON.stringify({}));
     },
-    function() {
-        stompTopicClient = null;
-        stompQueueClient = null;
-    });
+    clearStaleConnectionsOnError());
 }
 
 function connectToGameInfo() {
@@ -36,10 +33,31 @@ function connectToGameInfo() {
             requestState();
         }
     },
-    function() {
+    clearStaleConnectionsOnError());
+}
+
+function clearStaleConnectionsOnError() {
+    return function () {
         stompTopicClient = null;
         stompQueueClient = null;
-    });
+    };
+}
+
+function requestState() {
+    stompTopicClient = Stomp.over(new SockJS('/klaverjas-websocket'));
+    stompTopicClient.connect({}, function (frame) {
+        stompTopicClient.subscribe('/topic/lobby', handleLobbyMessage);
+    },
+    clearStaleConnectionsOnError());
+
+    stompQueueClient = Stomp.over(new SockJS('/klaverjas-websocket'));
+    stompQueueClient.connect({}, function (frame) {
+        stompQueueClient.subscribe('/user/topic/game', handleGameState);
+        if (!!gameState) {
+            stompQueueClient.send('/app/game/requestState', {}, JSON.stringify({'gameId': gameState.gameId}));
+        }
+    },
+    clearStaleConnectionsOnError());
 }
 
 $(function () {
