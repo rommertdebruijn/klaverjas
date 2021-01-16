@@ -1,4 +1,5 @@
 var gameState = null;
+var cardsMarked = [];
 
 function handleGameState(gameStateMessage) { // *player* game state!
     gameState = JSON.parse(gameStateMessage.body);
@@ -42,12 +43,22 @@ function getSuitCharacter(suit) {
     }
 }
 
-function renderCardInHand(card) {
+function getCardName(card) {
+    return 'card-' + card.suit.toLowerCase() + '-' + card.rank.toLowerCase();
+}
+
+function cardMarkingAvailable(state) {
+    return !!state.bidding && !!state.bidding.finalTrump;
+}
+
+function renderCardInHand(card, state) {
     var cardId = card.cardId;
     var cardElementId = cardId ? 'card-' + cardId : '';
     var cardplayable = isPlayerTurn() && !cardId ? 'notPlayable' : 'playable';
+    var cardName = getCardName(card);
+    var marked = cardIsMarked(cardName) ? 'marked' : '';
     var cardHtml = '' +
-        ' <div id="' + cardElementId + '" class="card-in-hand ' + card.suit.toLowerCase() + ' ' + cardplayable + '">' +
+        ' <div id="' + cardElementId + '" class="card-in-hand ' + card.suit.toLowerCase() + ' ' + cardplayable + ' ' + cardName + ' ' + marked + '">' +
         '  <div class="suit">' +
             getSuitCharacter(card.suit) +
         '  </div>' +
@@ -62,6 +73,28 @@ function renderCardInHand(card) {
             playCard(cardId);
         });
     }
+
+    if (!isPlayerTurn() && cardMarkingAvailable(state)) {
+        $('.' + cardName).click(function() {
+            markCard(card);
+        });
+    }
+}
+
+function cardIsMarked(cardName) {
+    return cardsMarked.indexOf(cardName) !== -1;
+}
+
+function markCard(card) {
+    var cardName = getCardName(card);
+    if (cardIsMarked(cardName)) {
+        cardsMarked = cardsMarked.filter(function(value, index, arr){
+            return value !== cardName;
+        });
+    } else {
+        cardsMarked.push(cardName);
+    }
+    renderCurrentPlayerHand(gameState);
 }
 
 function getImageNameSuitPart(card) {
@@ -158,7 +191,7 @@ function renderCurrentPlayerHand(state) {
     $('#cards-south').empty();
     if (!!hand && hand.length > 0) {
         for (var i = 0; i < hand.length; i++) {
-            renderCardInHand(hand[i]);
+            renderCardInHand(hand[i], state);
         }
     }
 }
@@ -386,6 +419,12 @@ function renderScore(state) {
     }
 }
 
+function cleanCardsMarked(state) {
+    if (!cardMarkingAvailable(state)) {
+       cardsMarked = []; // we don't know the trump, so marking makes no sense
+    }
+}
+
 function renderGameState(state) {
     renderPlayer(state, 'NORTH');
     renderPlayer(state, 'EAST');
@@ -393,6 +432,7 @@ function renderGameState(state) {
     renderPlayer(state, 'WEST');
 
     cleanTable();
+    cleanCardsMarked(state);
     if (!!state.bidding) {
         renderBidding(state.bidding);
         renderBiddingBox(state.bidding);

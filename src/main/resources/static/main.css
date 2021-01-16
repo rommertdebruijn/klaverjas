@@ -311,3 +311,7 @@ body {
     35% { transform: translate(-1px); }
     40% { transform: translate(0px); }
 }
+
+.marked {
+    border: 2px solid yellow;
+}
