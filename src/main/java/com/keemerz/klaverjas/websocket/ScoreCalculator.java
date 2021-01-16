@@ -33,35 +33,50 @@ public class ScoreCalculator {
         TRUMP_CARD_VALUES.put(JACK, 20);
     }
 
-    public static Score calculateGameScore(Bidding bidding, List<Trick> tricks, ComboPoints comboPoints) {
+    public static GameScore calculateGameScore(Bidding bidding, List<Trick> tricks, ComboPoints comboPoints) {
         Suit trump = bidding.getFinalTrump();
         Team contractTeam = Team.forSeat(bidding.getFinalBidBy());
 
-        Score score = new Score();
-        score.getScores().put(NS, getGameScoreForTeam(NS, tricks, trump, comboPoints));
-        score.getScores().put(EW, getGameScoreForTeam(EW, tricks, trump, comboPoints));
-        score.getRemarks().put(NS, "");
-        score.getRemarks().put(EW, "");
+        int gameScoreForTeamNS = getGameScoreForTeam(NS, tricks, trump, comboPoints);
+        int gameScoreForTeamEW = getGameScoreForTeam(EW, tricks, trump, comboPoints);
+
+        GameScore gameScore = new GameScore();
+        gameScore.getScores().put(NS, gameScoreForTeamNS);
+        gameScore.getScores().put(EW, gameScoreForTeamEW);
+        gameScore.getTableScores().put(NS, calculateTablePointsForTeam(NS, tricks, trump));
+        gameScore.getTableScores().put(EW, calculateTablePointsForTeam(EW, tricks, trump));
+        gameScore.getComboScores().put(NS, comboPoints.getComboPointsForTeam(NS));
+        gameScore.getComboScores().put(EW, comboPoints.getComboPointsForTeam(EW));
+        gameScore.getRemarks().put(NS, "");
+        gameScore.getRemarks().put(EW, "");
 
         // Contract breach?
-        if (score.getScores().get(contractTeam) <= score.getScores().get(contractTeam.opponentTeam())) {
+        if (gameScore.getScores().get(contractTeam) <= gameScore.getScores().get(contractTeam.opponentTeam())) {
             // Contract breach! All Combo points go to opponent!
             int allPoints = MAX_POINTS_162 + comboPoints.getComboPoints().values().stream().reduce(0, Integer::sum);
-            score.getScores().put(contractTeam, 0);
-            score.getScores().put(contractTeam.opponentTeam(), allPoints);
-            score.getRemarks().put(contractTeam, "NAT");
+            gameScore.getScores().put(contractTeam, 0);
+            gameScore.getScores().put(contractTeam.opponentTeam(), allPoints);
+            gameScore.getRemarks().put(contractTeam, "NAT");
         }
 
         // Pit?
         if (getTricksForTeam(contractTeam.opponentTeam(), tricks).isEmpty()) {
             // opponent did not get any tricks! Add 100 bonus points!
-            score.getScores().put(contractTeam, score.getScores().get(contractTeam) + 100);
-            score.getRemarks().put(contractTeam.opponentTeam(), "PIT");
+            gameScore.getScores().put(contractTeam, gameScore.getScores().get(contractTeam) + 100);
+            gameScore.getRemarks().put(contractTeam.opponentTeam(), "PIT");
         }
-        return score;
+        return gameScore;
     }
 
     private static int getGameScoreForTeam(Team team, List<Trick> tricks, Suit trump, ComboPoints comboPoints) {
+        int gameScoreForTeam = calculateTablePointsForTeam(team, tricks, trump);
+
+        // add comboPoints
+        gameScoreForTeam += comboPoints.getComboPointsForTeam(team);
+        return gameScoreForTeam;
+    }
+
+    private static int calculateTablePointsForTeam(Team team, List<Trick> tricks, Suit trump) {
         int gameScoreForTeam = 0;
 
         // last trick is worth 10 points!
@@ -79,9 +94,6 @@ public class ScoreCalculator {
                     return ScoreCalculator.getCardValue(card, trump);
                 })
                 .reduce(0, Integer::sum);
-
-        // add comboPoints
-        gameScoreForTeam += comboPoints.getComboPoints().get(team) == null ? 0 : comboPoints.getComboPoints().get(team);
         return gameScoreForTeam;
     }
 
@@ -91,19 +103,16 @@ public class ScoreCalculator {
                 .collect(Collectors.toList());
     }
 
-    public static Score calculateMatchScore(List<Score> scores) {
-        int totalScoreNS = scores.stream()
+    public static MatchScore calculateMatchScore(List<GameScore> gameScores) {
+        int totalScoreNS = gameScores.stream()
                 .map(score -> score.getScores().get(NS))
                 .reduce(0, Integer::sum);
 
-        int totalScoreEW = scores.stream()
+        int totalScoreEW = gameScores.stream()
                 .map(score -> score.getScores().get(EW))
                 .reduce(0, Integer::sum);
 
-        String remarkNS = totalScoreNS > totalScoreEW ? "" : "";
-        String remarkEW = totalScoreEW > totalScoreNS ? "" : "";
-
-        return new Score(totalScoreNS, totalScoreEW, remarkNS, remarkEW);
+        return new MatchScore(totalScoreNS, totalScoreEW);
     }
 
     private static int getCardValue(Card card, Suit trump) {

@@ -64,8 +64,8 @@ class GameStateToPlayerGameStateConverterTest {
                 ))
                 .withTurn(SOUTH)
                 .withDealer(NORTH)
-                .withGameScore(new Score(121, 41, "", ""))
-                .withGameScore(new Score(0, 162, "NAT", ""))
+                .withGameScore(new GameScore(121, 41, 121, 41, 0, 0, "", ""))
+                .withGameScore(new GameScore(0, 182, 80, 82, 0, 20, "NAT", ""))
                 .build();
     }
 
@@ -105,9 +105,9 @@ class GameStateToPlayerGameStateConverterTest {
 
         assertThat(output.getDealer(), is(SOUTH));
 
-        assertThat(output.getGameScores().get(0), is(new Score(121, 41, "", "")));
-        assertThat(output.getGameScores().get(1), is(new Score(0, 162, "NAT", "")));
-        assertThat(output.getTotalScore(), is(new Score(121, 203, "", "")));
+        assertThat(output.getGameScores().get(0), is(new GameScore(121, 41, 121, 41, 0, 0, "", "")));
+        assertThat(output.getGameScores().get(1), is(new GameScore(0, 182, 80, 82, 0, 20, "NAT", "")));
+        assertThat(output.getTotalScore(), is(new MatchScore(121, 223)));
     }
 
     @Test
@@ -146,9 +146,9 @@ class GameStateToPlayerGameStateConverterTest {
 
         assertThat(output.getDealer(), is(EAST));
 
-        assertThat(output.getGameScores().get(0), is(new Score(41, 121, "", "")));
-        assertThat(output.getGameScores().get(1), is(new Score(162, 0, "", "NAT")));
-        assertThat(output.getTotalScore(), is(new Score(203, 121 , "", "")));
+        assertThat(output.getGameScores().get(0), is(new GameScore(41, 121, 41, 121, 0, 0, "", "")));
+        assertThat(output.getGameScores().get(1), is(new GameScore(182, 0, 82, 80, 20, 0, "", "NAT")));
+        assertThat(output.getTotalScore(), is(new MatchScore(223, 121)));
     }
 
     @Test
@@ -187,9 +187,9 @@ class GameStateToPlayerGameStateConverterTest {
 
         assertThat(output.getDealer(), is(NORTH));
 
-        assertThat(output.getGameScores().get(0), is(new Score(121, 41, "", "")));
-        assertThat(output.getGameScores().get(1), is(new Score(0, 162, "NAT", "")));
-        assertThat(output.getTotalScore(), is(new Score(121, 203, "", "")));
+        assertThat(output.getGameScores().get(0), is(new GameScore(121, 41, 121, 41, 0, 0, "", "")));
+        assertThat(output.getGameScores().get(1), is(new GameScore(0, 182, 80, 82, 0, 20, "NAT", "")));
+        assertThat(output.getTotalScore(), is(new MatchScore(121, 223)));
     }
 
     @Test
@@ -228,9 +228,9 @@ class GameStateToPlayerGameStateConverterTest {
 
         assertThat(output.getDealer(), is(WEST));
 
-        assertThat(output.getGameScores().get(0), is(new Score(41, 121, "", "")));
-        assertThat(output.getGameScores().get(1), is(new Score(162, 0, "", "NAT")));
-        assertThat(output.getTotalScore(), is(new Score(203, 121 , "", "")));
+        assertThat(output.getGameScores().get(0), is(new GameScore(41, 121, 41, 121, 0, 0, "", "")));
+        assertThat(output.getGameScores().get(1), is(new GameScore(182, 0, 82, 80, 20, 0, "", "NAT")));
+        assertThat(output.getTotalScore(), is(new MatchScore(223, 121)));
     }
 
     private List<Card> removeCardPlayed(List<Card> allCards, Card... cardsPlayed) {

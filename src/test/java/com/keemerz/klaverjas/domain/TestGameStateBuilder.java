@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.keemerz.klaverjas.domain.Seat.*;
-import static com.keemerz.klaverjas.domain.Suit.CLUBS;
 
 public class TestGameStateBuilder {
 
@@ -17,7 +16,7 @@ public class TestGameStateBuilder {
     private Seat turn = NORTH;
     private Bidding bidding = new TestBiddingBuilder().build();
     private Trick currentTrick = new Trick(bidding.getFinalTrump(), turn, new HashMap<>(), null, false);
-    private List<Score> gameScores = new ArrayList<>();
+    private List<GameScore> gameGameScores = new ArrayList<>();
     private boolean dealerButtonAvailable = false;
 
     public GameState build() {
@@ -29,7 +28,7 @@ public class TestGameStateBuilder {
         gameState.setCurrentTrick(currentTrick);
         gameState.setPreviousTricks(previousTricks);
         gameState.setTurn(turn);
-        gameState.setGameScores(gameScores);
+        gameState.setGameGameScores(gameGameScores);
         gameState.setDealerButtonAvailable(dealerButtonAvailable);
         return gameState;
     }
@@ -89,8 +88,8 @@ public class TestGameStateBuilder {
         return this;
     }
 
-    public TestGameStateBuilder withGameScore(Score score) {
-        gameScores.add(score);
+    public TestGameStateBuilder withGameScore(GameScore gameScore) {
+        gameGameScores.add(gameScore);
         return this;
     }
 

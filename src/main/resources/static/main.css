@@ -299,6 +299,10 @@ body {
     background-color: blanchedalmond;
 }
 
+.scoreRow {
+    cursor: pointer;
+}
+
 .team {
     border-bottom: 1px solid black;
     margin-bottom: 3px;

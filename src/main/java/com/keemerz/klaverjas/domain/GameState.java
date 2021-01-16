@@ -24,7 +24,7 @@ public class GameState {
     private List<Trick> previousTricks = new ArrayList<>();
     private Seat turn = NORTH;
     private Trick currentTrick;
-    private List<Score> gameScores = new ArrayList<>();
+    private List<GameScore> gameGameScores = new ArrayList<>();
     private ComboPoints comboPoints = new ComboPoints(0, 0);
     private boolean dealerButtonAvailable = true;
 
@@ -116,12 +116,12 @@ public class GameState {
         this.currentTrick = currentTrick;
     }
 
-    public List<Score> getGameScores() {
-        return gameScores;
+    public List<GameScore> getGameGameScores() {
+        return gameGameScores;
     }
 
-    public void setGameScores(List<Score> gameScores) {
-        this.gameScores = gameScores;
+    public void setGameGameScores(List<GameScore> gameGameScores) {
+        this.gameGameScores = gameGameScores;
     }
 
     public ComboPoints getComboPoints() {
@@ -198,7 +198,7 @@ public class GameState {
         if (getTurn() == getDealer() && getHands().isEmpty() && getPlayers().size() == 4) {
             dealerButtonAvailable = false;
             dealHands();
-            if (gameScores.isEmpty()) {
+            if (gameGameScores.isEmpty()) {
                 setBidding(BiddingFactory.createFirstGameBidding());
             } else {
                 setBidding(BiddingFactory.createBidding());
@@ -316,8 +316,8 @@ public class GameState {
 
     public void calculateScore() {
         if (previousTricks.size() == 8) {
-            Score score = ScoreCalculator.calculateGameScore(bidding, previousTricks, comboPoints);
-            gameScores.add(score);
+            GameScore gameScore = ScoreCalculator.calculateGameScore(bidding, previousTricks, comboPoints);
+            gameGameScores.add(gameScore);
             dealerButtonAvailable = true;
             setUpNextGame();
         }

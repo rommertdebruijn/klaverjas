@@ -24,6 +24,10 @@ public class ComboPoints {
         }
     }
 
+    public int getComboPointsForTeam(Team team) {
+        return getComboPoints().get(team) == null ? 0 : getComboPoints().get(team);
+    }
+
     public Map<Team, Integer> getComboPoints() {
         return comboPoints;
     }

@@ -367,6 +367,28 @@ function renderComboScore(state) {
     }
 }
 
+function addScoreToggleHandler(scoreIndex) {
+    var container = $('#score-' + scoreIndex);
+    var remarksLine = $('#score-' + scoreIndex + '-remarks');
+    var rawScoresLine = $('#score-' + scoreIndex + '-scores');
+
+    rawScoresLine.hide();
+
+    container.click(function() {
+        if (remarksLine.is(':visible')) {
+            remarksLine.hide();
+            rawScoresLine.show();
+        } else {
+            remarksLine.show();
+            rawScoresLine.hide();
+        }
+    });
+}
+
+function addScoreToggleHandlers(nrOfScores) {
+
+}
+
 function renderScore(state) {
     var $score = $('#score');
 
@@ -398,24 +420,37 @@ function renderScore(state) {
             '</div>';
         for (var i=0;i<state.gameScores.length;i++) {
             var score = state.gameScores[i];
+            var scoreIndex = (i + 1);
 
-            var scoreNS = score.scores['NS'];
+            var rawScoreNS = score.tableScores['NS'] + '+(' + score.comboScores['NS'] + ')';
+            var rawScoreEW = score.tableScores['EW'] + '+(' + score.comboScores['EW'] + ')';
+
+            var remarkNS = score.scores['NS'];
             if (score.remarks['NS']) {
-                scoreNS = score.remarks['NS'];
+                remarkNS = score.remarks['NS'];
             }
 
-            var scoreEW = score.scores['EW'];
+            var remarkEW = score.scores['EW'];
             if (score.remarks['EW']) {
-                scoreEW = score.remarks['EW'];
+                remarkEW = score.remarks['EW'];
             }
 
-            gameScoresHtml += '<div class="row">' +
-                '  <div class="col-md-2">' + (i + 1) +'.</div><div class="col-md-4">' + scoreNS + '</div><div class="col-md-6">' + scoreEW + '</div>' +
-                '</div>'
+            gameScoresHtml += '' +
+                '<div id="score-' + scoreIndex + '" class="row scoreRow">' +
+                '  <div id="score-' + scoreIndex + '-remarks">' +
+                '    <div class="col-md-2">' + scoreIndex +'.</div><div class="col-md-4">' + remarkNS + '</div><div class="col-md-6">' + remarkEW + '</div>' +
+                '  </div>' +
+                '  <div id="score-' + scoreIndex + '-scores">' +
+                '    <div class="col-md-2">' + scoreIndex +'.</div><div class="col-md-4">' + rawScoreNS + '</div><div class="col-md-6">' + rawScoreEW + '</div>' +
+                '  </div>' +
+                '</div>';
         }
         gameScoresHtml += '</div>';
-
         $score.append(gameScoresHtml);
+
+        for (var scoreRow=1;scoreRow<=state.gameScores.length;scoreRow++) {
+            addScoreToggleHandler(scoreRow);
+        }
     }
 }
 

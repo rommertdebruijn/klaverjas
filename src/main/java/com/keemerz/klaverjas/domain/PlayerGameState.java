@@ -18,8 +18,8 @@ public class PlayerGameState {
     private Seat turn;
     private Seat dealer;
     private ComboPoints comboPoints;
-    private List<Score> gameScores;
-    private Score totalScore;
+    private List<GameScore> gameScores;
+    private MatchScore totalScore;
     private boolean dealerButtonAvailable;
 
     public static PlayerGameState playerLeftGameState(String gameId) {
@@ -33,7 +33,7 @@ public class PlayerGameState {
 
     public PlayerGameState(String gameId, String deckSignature, Bidding bidding, boolean playerStillPlaying, List<Card> hand, Trick currentTrick,
                            Map<Seat, String> players, Map<Seat, Integer> nrOfCardsInHand, Map<Seat, Integer> nrOfTricks, Seat turn, Seat dealer,
-                           ComboPoints comboPoints, List<Score> gameScores, Score totalScore,
+                           ComboPoints comboPoints, List<GameScore> gameScores, MatchScore totalScore,
                            boolean dealerButtonAvailable) {
         this.gameId = gameId;
         this.deckSignature = deckSignature;
@@ -104,11 +104,11 @@ public class PlayerGameState {
         return comboPoints;
     }
 
-    public List<Score> getGameScores() {
+    public List<GameScore> getGameScores() {
         return gameScores;
     }
 
-    public Score getTotalScore() {
+    public MatchScore getTotalScore() {
         return totalScore;
     }
 

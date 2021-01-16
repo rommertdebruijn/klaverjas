@@ -123,7 +123,7 @@ class GameStateTest {
         gameState.processCard(SOUTH, Card.of(HEARTS, KING));
 
         // score should be scored, game should be fresh
-        assertThat(gameState.getGameScores().size(), is(0));
+        assertThat(gameState.getGameGameScores().size(), is(0));
         assertThat(gameState.getDealer(), is(NORTH));
         assertThat(gameState.getTurn(), is(SOUTH));
         assertThat(gameState.getCurrentTrick().getTrickWinner(), is(SOUTH));
@@ -162,7 +162,7 @@ class GameStateTest {
        gameState.processCard(SOUTH, Card.of(HEARTS, KING));
 
        // score should be scored, game should be fresh
-       assertThat(gameState.getGameScores().size(), is(0));
+       assertThat(gameState.getGameGameScores().size(), is(0));
        assertThat(gameState.getDealer(), is(NORTH));
        assertThat(gameState.getTurn(), is(SOUTH));
        assertThat(gameState.getComboPoints(), is(new ComboPoints(0, 0)));
@@ -240,8 +240,8 @@ class GameStateTest {
         gameState.calculateScore();
 
         // score should be scored, game should be fresh
-        assertThat(gameState.getGameScores().size(), is(1));
-        assertThat(gameState.getGameScores().get(0).getScores().get(NS), is(17));
+        assertThat(gameState.getGameGameScores().size(), is(1));
+        assertThat(gameState.getGameGameScores().get(0).getScores().get(NS), is(17));
         assertThat(gameState.getDealer(), is(EAST));
         assertThat(gameState.getTurn(), is(EAST));
         assertNull(gameState.getBidding());

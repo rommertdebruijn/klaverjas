@@ -32,11 +32,11 @@ public class GameStateToPlayerGameStateConverter {
         ComboPoints rotatedComboPoints = gameState.getComboPoints().rotateForSeat(currentPlayerSeat);
 
 
-        List<Score> rotatedGameScores = gameState.getGameScores().stream()
+        List<GameScore> rotatedGameGameScores = gameState.getGameGameScores().stream()
                 .map(gameScore -> gameScore.rotateForSeat(currentPlayerSeat))
                 .collect(Collectors.toList());
 
-        Score totalScore = ScoreCalculator.calculateMatchScore(gameState.getGameScores()).rotateForSeat(currentPlayerSeat);
+        MatchScore totalScore = ScoreCalculator.calculateMatchScore(gameState.getGameGameScores()).rotateForSeat(currentPlayerSeat);
 
         return new PlayerGameState(
                 gameState.getGameId(),
@@ -51,7 +51,7 @@ public class GameStateToPlayerGameStateConverter {
                 gameState.getTurn().rotateForSeat(currentPlayerSeat),
                 gameState.getDealer().rotateForSeat(currentPlayerSeat),
                 rotatedComboPoints,
-                rotatedGameScores,
+                rotatedGameGameScores,
                 totalScore,
                 gameState.isDealerButtonAvailable()
         );
