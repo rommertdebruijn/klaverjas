@@ -58,11 +58,11 @@ function renderCardInHand(card, state) {
     var cardName = getCardName(card);
     var marked = cardIsMarked(cardName) ? 'marked' : '';
     var cardHtml = '' +
-        ' <div id="' + cardElementId + '" class="card-in-hand ' + card.suit.toLowerCase() + ' ' + cardplayable + ' ' + cardName + ' ' + marked + '">' +
+        ' <div id="' + cardElementId + '" class="card-in-hand ' + card.suit.toLowerCase() + ' ' + cardplayable + ' ' + cardName + '">' +
         '  <div class="suit">' +
             getSuitCharacter(card.suit) +
         '  </div>' +
-        '  <div class="rank">' +
+        '  <div class="rank ' + marked + '">' +
             getRankName(card) +
         '  </div>' +
         ' </div>';
