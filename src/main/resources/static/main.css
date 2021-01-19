@@ -184,7 +184,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     border-radius: 14px;
-    border: 2px solid white;
+    border: 2px solid transparent;
 }
 .marked {
     border: 2px solid gold;
