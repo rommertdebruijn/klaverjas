@@ -2,21 +2,15 @@ package com.keemerz.klaverjas.repository;
 
 import com.keemerz.klaverjas.domain.GameState;
 import com.keemerz.klaverjas.domain.Player;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
 public class GameStateRepository {
 
-    private static final GameStateRepository INSTANCE = new GameStateRepository();
     private static Map<String, GameState> GAMESTATES = new HashMap<>();
-
-    private GameStateRepository() {
-    }
-
-    public static GameStateRepository getInstance() {
-        return INSTANCE;
-    }
 
     public GameState getGameState(String gameId) {
         return GAMESTATES.get(gameId);

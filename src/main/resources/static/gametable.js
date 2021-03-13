@@ -190,8 +190,8 @@ function renderCurrentPlayerHand(state) {
     var hand = state.hand;
     $('#cards-south').empty();
     if (!!hand && hand.length > 0) {
-        for (var i = 0; i < hand.length; i++) {
-            renderCardInHand(hand[i], state);
+        for (const card of hand) {
+            renderCardInHand(card, state);
         }
     }
 }
@@ -219,8 +219,8 @@ function renderForcedBidButton(availableSuit) {
 }
 
 function renderForcedBidOptions(availableSuits) {
-    for (var i=0;i<availableSuits.length;i++) {
-        renderForcedBidButton(availableSuits[i]);
+    for (const availableSuit of availableSuits) {
+        renderForcedBidButton(availableSuit);
     }
 }
 

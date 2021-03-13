@@ -2,6 +2,7 @@ package com.keemerz.klaverjas.repository;
 
 import com.keemerz.klaverjas.domain.Player;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,9 +10,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Component
 public class PlayerRepository {
 
-    private static final PlayerRepository INSTANCE = new PlayerRepository();
     private static final List<Player> PLAYERS = new ArrayList<>();
     static {
         PLAYERS.add(new Player("user1", UUID.randomUUID().toString(), "Jim-Bob"));
@@ -47,12 +48,6 @@ public class PlayerRepository {
         PLAYERS.add(new Player("matthijs", UUID.randomUUID().toString(), "Matthijs"));
         PLAYERS.add(new Player("sidney", UUID.randomUUID().toString(), "Sidney")); // maatjes van Ties
         PLAYERS.add(new Player("rogier", UUID.randomUUID().toString(), "Rogier")); // maatjes van Ties
-    }
-
-    private PlayerRepository() {}
-
-    public static PlayerRepository getInstance() {
-        return INSTANCE;
     }
 
     public Player getPlayerByUserId(String userId) {

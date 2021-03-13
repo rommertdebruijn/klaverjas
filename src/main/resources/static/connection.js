@@ -1,7 +1,7 @@
 var stompTopicClient = null; // for general info, like 'player joined lobby'
 var stompQueueClient = null; // for user-specific info, like (per-player) gameState
 
-function setConnected(connected) {
+function cleanGeneralInfo() {
     $('#generalInfo').html('');
 }
 
@@ -12,7 +12,7 @@ function connectToLobby() {
     var socket = new SockJS('/klaverjas-websocket');
     stompTopicClient = Stomp.over(socket);
     stompTopicClient.connect({}, function (frame) {
-        setConnected(true);
+        cleanGeneralInfo();
         console.log('Connected: ' + frame);
         stompTopicClient.subscribe('/topic/lobby', handleLobbyMessage);
 
@@ -25,7 +25,7 @@ function connectToGameInfo() {
     var socket = new SockJS('/klaverjas-websocket');
     stompQueueClient = Stomp.over(socket);
     stompQueueClient.connect({}, function (frame) {
-        setConnected(true);
+        cleanGeneralInfo();
         console.log('Connected: ' + frame);
         stompQueueClient.subscribe('/user/topic/game', handleGameState);
 

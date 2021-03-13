@@ -10,6 +10,7 @@ import com.keemerz.klaverjas.websocket.inbound.HelloMessage;
 import com.keemerz.klaverjas.websocket.outbound.LobbyMessage;
 import com.keemerz.klaverjas.websocket.outbound.PlayerJoinsLobbyMessage;
 import com.keemerz.klaverjas.websocket.outbound.PlayerLeavesLobbyMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -24,9 +25,14 @@ import java.util.stream.Collectors;
 @Controller
 public class LobbyController {
 
-	private PlayerRepository playerRepository = PlayerRepository.getInstance();
-	private ActiveGamesRepository activeGamesRepository = ActiveGamesRepository.getInstance();
-	private GameStateRepository gameStateRepository = GameStateRepository.getInstance();
+	@Autowired
+	private PlayerRepository playerRepository;
+
+	@Autowired
+	private ActiveGamesRepository activeGamesRepository;
+
+	@Autowired
+	private GameStateRepository gameStateRepository;
 
 	@MessageMapping("/lobby/hello")
 	@SendTo("/topic/lobby")

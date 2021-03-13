@@ -11,21 +11,6 @@ function leaveLobby() {
     window.location.replace("logout.html")
 }
 
-function connectToLobby() {
-    $('#lobby').show();
-    $('#table').hide();
-
-    var socket = new SockJS('/klaverjas-websocket');
-    stompTopicClient = Stomp.over(socket);
-    stompTopicClient.connect({}, function (frame) {
-        setConnected(true);
-        console.log('Connected: ' + frame);
-        stompTopicClient.subscribe('/topic/lobby', handleLobbyMessage);
-
-        stompTopicClient.send('/app/lobby/hello', {},  JSON.stringify({}));
-    });
-}
-
 function handleLobbyMessage(lobbyMessage) {
     var msg = JSON.parse(lobbyMessage.body);
     if (msg.messageType === 'WELCOME') {
@@ -53,22 +38,22 @@ function showGoodbyeMessage(message) {
 
 function updateActiveGames(activeGames) {
     $('#gamesInfo').empty();
-    for (var j=0;j<activeGames.length;j++) {
-        showActiveGame(activeGames[j]);
+    for (const activeGame of activeGames) {
+        showActiveGame(activeGame);
     }
 }
 
 function updateLoggedInPlayers(loggedInPlayers) {
     $('#playersInfo').empty();
-    for (var i=0;i<loggedInPlayers.length;i++) {
-        showPlayer(loggedInPlayers[i]);
+    for (const loggedInPlayer of loggedInPlayers) {
+        showPlayer(loggedInPlayer);
     }
 }
 
 function showActiveGame(activeGame) {
     var playerString = '';
-    for (var i=0;i<activeGame.playerNames.length;i++) {
-        playerString = playerString + activeGame.playerNames[i] + ' '
+    for (const playerName of activeGame.playerNames) {
+        playerString = playerString + playerName + ' '
     }
     var elementId = 'join-' + activeGame.gameId;
 

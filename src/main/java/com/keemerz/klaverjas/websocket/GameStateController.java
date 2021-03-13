@@ -22,11 +22,18 @@ public class GameStateController {
     @Autowired
     private SimpMessagingTemplate webSocket;
 
-    private GameStateRepository gameStateRepository = GameStateRepository.getInstance();
+    @Autowired
+    private GameStateRepository gameStateRepository;
+
+    @Autowired
+    private ActiveGamesRepository activeGamesRepository;
+
+    @Autowired
+    private PlayerRepository playerRepository;
 
     @MessageMapping("/game/start")
     public void startGame(GameStartMessage message, Principal principal) {
-        Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
+        Player sendingPlayer = playerRepository.getPlayerByUserId(principal.getName());
 
         GameState gameState = GameState.createNewGame();
         gameState.fillSeat(sendingPlayer);
@@ -39,7 +46,7 @@ public class GameStateController {
 
     @MessageMapping("/game/join")
     public void joinGame(GameJoinMessage message, Principal principal) {
-        Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
+        Player sendingPlayer = playerRepository.getPlayerByUserId(principal.getName());
         GameState gameState = gameStateRepository.getGameState(message.getGameId());
 
         gameState.joinGame(sendingPlayer);
@@ -60,7 +67,7 @@ public class GameStateController {
 
     @MessageMapping("/game/leave")
     public void leaveGame(GameLeaveMessage message, Principal principal) {
-        Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(principal.getName());
+        Player sendingPlayer = playerRepository.getPlayerByUserId(principal.getName());
         String sendingPlayerId = sendingPlayer.getPlayerId();
 
         GameState gameState = gameStateRepository.getGameState(message.getGameId());
@@ -75,12 +82,12 @@ public class GameStateController {
     }
 
     private void updateLobby() {
-        List<ActiveGame> activeGames = ActiveGamesRepository.getInstance().getActiveGames();
+        List<ActiveGame> activeGames = activeGamesRepository.getActiveGames();
         webSocket.convertAndSend("/topic/lobby", new ActiveGamesMessage(activeGames));
     }
 
     private void updateGameStateForLeavingPlayer(String sendingPlayerId, String gameId) {
-        String userId = PlayerRepository.getInstance().getPlayerByPlayerId(sendingPlayerId).getUserId();
+        String userId = playerRepository.getPlayerByPlayerId(sendingPlayerId).getUserId();
         webSocket.convertAndSendToUser(userId, "/topic/game", PlayerGameState.playerLeftGameState(gameId));
     }
 
@@ -139,14 +146,14 @@ public class GameStateController {
         String userId = principal.getName();
         GameState gameState = determineGameStateForPlayer(userId, message.getGameId());
         if (gameState != null) {
-            String playerId = PlayerRepository.getInstance().getPlayerByUserId(userId).getPlayerId();
+            String playerId = playerRepository.getPlayerByUserId(userId).getPlayerId();
             PlayerGameState playerGameState = GameStateToPlayerGameStateConverter.toPlayerGameStateForPlayer(playerId, gameState);
             webSocket.convertAndSendToUser(userId, "/topic/game", playerGameState);
         }
     }
 
     private @Nullable GameState determineGameStateForPlayer(String userId, String gameId) {
-        Player sendingPlayer = PlayerRepository.getInstance().getPlayerByUserId(userId);
+        Player sendingPlayer = playerRepository.getPlayerByUserId(userId);
         GameState gameState = gameStateRepository.getGameState(gameId);
         if (gameState.determinePlayerIds().contains(sendingPlayer.getPlayerId())) {
             Seat seat = gameState.getAbsoluteSeatForPlayer(sendingPlayer.getPlayerId());
@@ -159,7 +166,7 @@ public class GameStateController {
 
     private void updateGameStateForAllPlayers(GameState gameState) {
         for (String playerId : gameState.determinePlayerIds()) {
-            String userId = PlayerRepository.getInstance().getPlayerByPlayerId(playerId).getUserId();
+            String userId = playerRepository.getPlayerByPlayerId(playerId).getUserId();
 
             PlayerGameState playerGameState = GameStateToPlayerGameStateConverter.toPlayerGameStateForPlayer(playerId, gameState);
             webSocket.convertAndSendToUser(userId, "/topic/game", playerGameState);
