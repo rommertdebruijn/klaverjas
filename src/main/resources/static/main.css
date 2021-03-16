@@ -3,16 +3,16 @@ body {
 }
 
 .lobbyheader {
-    background-color: cadetblue;
+    background-color: #134f5c;
 }
 
 #version {
     font-size: 0.8em;
-    color: cadetblue;
+    color: #134f5c;
 }
 
 .buttonDark {
-    background: darkslategrey;
+    background: #0c343d;
     color: white;
     font-size: 1.0em;
     border: 2px solid white;
@@ -26,7 +26,7 @@ body {
 }
 
 .buttonLight {
-    background: cadetblue;
+    background: #134f5c;
     color: white;
     font-size: 1.0em;
     border-radius: 0.2em;
@@ -51,22 +51,22 @@ body {
 
 .cards-table {
     height: 400px;
-    background-color: darkslategrey;
+    background-color: #0c343d;
 }
 
 .partner {
     height: 185px;
-    background-color: cadetblue;
+    background-color: #134f5c;
 }
 
 .opponent {
     height: 400px;
-    background-color: cadetblue;
+    background-color: #134f5c;
 }
 
 .player {
     height: 295px;
-    background-color: cadetblue;
+    background-color: #134f5c;
 }
 
 .player-name {
@@ -203,7 +203,7 @@ body {
 }
 
 .action {
-    background-color: cadetblue;
+    background-color: #134f5c;
     color: white;
     width: 105px;
     border-radius: 0.4em;
@@ -274,7 +274,7 @@ body {
 }
 
 #claim-button {
-    background-color: darkslategrey;
+    background-color: #0c343d;
     color: white;
     width: 60px;
     border-radius: 0.4em;
@@ -296,7 +296,7 @@ body {
     border: 1px solid black;
     margin: 5px -8px;
     padding: 3px;
-    background-color: blanchedalmond;
+    background-color: #fce5cdff;
 }
 
 .scoreRow {
