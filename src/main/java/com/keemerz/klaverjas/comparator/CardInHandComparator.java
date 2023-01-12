@@ -1,7 +1,6 @@
 package com.keemerz.klaverjas.comparator;
 
 import com.keemerz.klaverjas.domain.Card;
-import com.keemerz.klaverjas.domain.Rank;
 import com.keemerz.klaverjas.domain.Suit;
 
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.keemerz.klaverjas.domain.Rank.*;
 import static com.keemerz.klaverjas.domain.Suit.*;
 
 public class CardInHandComparator implements Comparator<Card> {

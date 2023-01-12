@@ -5,9 +5,9 @@ import java.util.Map;
 
 public class PlayerGameState {
 
-    private String gameId;
+    private final String gameId;
     private String deckSignature;
-    private boolean playerStillPlaying;
+    private final boolean playerStillPlaying;
 
     private Bidding bidding;
     private List<Card> hand;

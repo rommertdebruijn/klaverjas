@@ -2,8 +2,8 @@ package com.keemerz.klaverjas.domain;
 
 public class Credentials {
 
-    private String userId; // Spring security token
-    private String encryptedPassword;
+    private final String userId; // Spring security token
+    private final String encryptedPassword;
 
     public Credentials(String userId, String encryptedPassword) {
         this.userId = userId;

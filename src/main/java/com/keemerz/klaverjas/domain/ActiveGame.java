@@ -4,8 +4,8 @@ import java.util.List;
 
 public class ActiveGame {
 
-    private String gameId;
-    private List<String> playerNames;
+    private final String gameId;
+    private final List<String> playerNames;
 
     public ActiveGame(String gameId, List<String> playerNames) {
         this.gameId = gameId;

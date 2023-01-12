@@ -1,18 +1,15 @@
 package com.keemerz.klaverjas.repository;
 
 import com.keemerz.klaverjas.domain.Credentials;
-import com.keemerz.klaverjas.domain.Player;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class CredentialsRepository {
 
-    private static final CredentialsRepository INSTANCE = new CredentialsRepository();
     private static final List<Credentials> CREDENTIALS = new ArrayList<>();
 
     public static final String DEFAULT_PASSWORD = "bier";

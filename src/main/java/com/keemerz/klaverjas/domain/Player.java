@@ -6,9 +6,9 @@ public class Player {
 
     static final int MAX_IDLE_TIME_IN_SECONDS = 24 * 60 * 60; // 1 day idle max
 
-    private String userId; // Spring security token
-    private String playerId; // Player identifier
-    private String name; // human readable
+    private final String userId; // Spring security token
+    private final String playerId; // Player identifier
+    private final String name; // human readable
     private LocalDateTime loginTimestamp; // will be null if idle for too long
 
     public Player(String userId, String playerId, String name) {

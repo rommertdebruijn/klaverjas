@@ -1,10 +1,11 @@
 package com.keemerz.klaverjas.domain;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.keemerz.klaverjas.domain.Seat.*;
-import static com.keemerz.klaverjas.domain.Seat.EAST;
-import static com.keemerz.klaverjas.domain.Suit.CLUBS;
 
 public class Bidding {
 

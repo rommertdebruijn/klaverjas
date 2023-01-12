@@ -1,8 +1,5 @@
 package com.keemerz.klaverjas.domain;
 
-import com.keemerz.klaverjas.comparator.CardInHandComparator;
-
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.UUID;
 

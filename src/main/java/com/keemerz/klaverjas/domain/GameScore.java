@@ -8,10 +8,10 @@ import static com.keemerz.klaverjas.domain.Team.*;
 
 public class GameScore {
 
-    private Map<Team, Integer> scores = new HashMap<>();
-    private Map<Team, Integer> tableScores = new HashMap<>();
-    private Map<Team, Integer> comboScores = new HashMap<>();
-    private Map<Team, String> remarks = new HashMap<>();
+    private final Map<Team, Integer> scores = new HashMap<>();
+    private final Map<Team, Integer> tableScores = new HashMap<>();
+    private final Map<Team, Integer> comboScores = new HashMap<>();
+    private final Map<Team, String> remarks = new HashMap<>();
 
     public GameScore() {
     }

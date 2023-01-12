@@ -1,7 +1,6 @@
 package com.keemerz.klaverjas.repository;
 
 import com.keemerz.klaverjas.domain.Player;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
