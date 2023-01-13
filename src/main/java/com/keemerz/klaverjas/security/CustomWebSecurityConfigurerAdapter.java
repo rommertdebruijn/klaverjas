@@ -27,7 +27,7 @@ public class CustomWebSecurityConfigurerAdapter {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.authorizeHttpRequests()
                 .requestMatchers("/securityNone")
                 .permitAll()
                 .anyRequest()
