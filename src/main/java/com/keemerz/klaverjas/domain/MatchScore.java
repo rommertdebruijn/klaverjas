@@ -8,7 +8,7 @@ import static com.keemerz.klaverjas.domain.Team.EW;
 import static com.keemerz.klaverjas.domain.Team.NS;
 
 public class MatchScore {
-    private Map<Team, Integer> scores = new HashMap<>();
+    private final Map<Team, Integer> scores = new HashMap<>();
 
     public MatchScore() {
     }

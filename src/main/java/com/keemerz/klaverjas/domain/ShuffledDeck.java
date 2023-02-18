@@ -6,8 +6,8 @@ import java.util.*;
 
 public class ShuffledDeck implements Deck {
 
-    private List<Card> cards = new ArrayList<>();
-    private String signature;
+    private final List<Card> cards = new ArrayList<>();
+    private final String signature;
 
     public ShuffledDeck() {
         for (Suit suit : Suit.values()) {

@@ -12,7 +12,7 @@ public enum Rank {
     KING("K"),
     ACE("A");
 
-    private String abbreviation;
+    private final String abbreviation;
 
     Rank(String abbreviation) {
         this.abbreviation = abbreviation;
