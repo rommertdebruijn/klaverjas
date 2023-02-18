@@ -7,8 +7,8 @@ import java.util.List;
 
 public class StackedDeck implements Deck {
 
-    private List<Card> cards;
-    private String signature;
+    private final List<Card> cards;
+    private final String signature;
 
     public StackedDeck(String signature) {
         cards = DeckSignature.decrypt(signature);

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @Component
 public class GameStateRepository {
 
-    private static Map<String, GameState> GAMESTATES = new HashMap<>();
+    private static final Map<String, GameState> GAMESTATES = new HashMap<>();
 
     public GameState getGameState(String gameId) {
         return GAMESTATES.get(gameId);

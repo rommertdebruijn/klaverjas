@@ -11,8 +11,8 @@ import static com.keemerz.klaverjas.domain.Seat.*;
 
 public class Trick {
 
-    private Suit trump;
-    private Seat startingPlayer;
+    private final Suit trump;
+    private final Seat startingPlayer;
     private Map<Seat, Card> cardsPlayed = new HashMap<>();
     private boolean comboClaimed;
     private Seat trickWinner;
