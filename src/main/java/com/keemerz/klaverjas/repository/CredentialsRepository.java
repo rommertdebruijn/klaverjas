@@ -5,7 +5,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 public class CredentialsRepository {
@@ -18,38 +20,42 @@ public class CredentialsRepository {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         // for now, actual security is of no importance.
         // What matters is that the logged in user has a Principal, which is required for individual web sockets to work :)
-        CREDENTIALS.add(new Credentials("user1", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("user2", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("user3", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("user4", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("martin", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("alex", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("ronald", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("eelco", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("robert", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("rommert", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("toon", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("jasper", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("yoran", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("paul", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("joris", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("frank", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("janthijs", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("anton", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("edzo", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("marc", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("sander", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("mitchell", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("jonathan", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("niek", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("stefan", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("ties", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("hans", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("mark", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("matthijs", encoder.encode(DEFAULT_PASSWORD)));
-        CREDENTIALS.add(new Credentials("sidney", encoder.encode(DEFAULT_PASSWORD))); // maatjes van Ties
-        CREDENTIALS.add(new Credentials("rogier", encoder.encode(DEFAULT_PASSWORD))); // maatjes van Ties
 
+        Stream.of(
+            "user1",
+            "user2",
+            "user3",
+            "user4",
+            "martin",
+            "alex",
+            "ronald",
+            "eelco",
+            "robert",
+            "rommert",
+            "toon",
+            "jasper",
+            "yoran",
+            "paul",
+            "joris",
+            "frank",
+            "janthijs",
+            "anton",
+            "edzo",
+            "marc",
+            "sander",
+            "mitchell",
+            "jonathan",
+            "niek",
+            "stefan",
+            "ties",
+            "hans",
+            "mark",
+            "matthijs",
+            "sidney", // maatjes van Ties
+            "rogier" // maatjes van Ties
+        )
+        .map(u -> new Credentials(u, encoder.encode(DEFAULT_PASSWORD)))
+        .forEach(CREDENTIALS::add);
     }
 
     public Credentials getCredentials(String userId) {
